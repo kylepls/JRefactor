@@ -2,15 +2,16 @@ package in.kyle.parser.unit;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.RewriteableField;
-import in.kyle.parser.block.JBlock;
+import in.kyle.parser.statement.JBlock;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class JMethod extends JTypeable implements JClassMember {
+public class JMethod extends Typeable implements JClassMember {
     
     private String name;
     private final RewriteableField<JTypeName> resultType = new RewriteableField<>();
@@ -68,6 +69,15 @@ public class JMethod extends JTypeable implements JClassMember {
     
     public JBlock getBody() {
         return body.getValue();
+    }
+    
+    @Override
+    public List<RewriteableField> getChildren() {
+        return CollectionUtils.createList(super.getChildren(),
+                                          resultType,
+                                          parameters,
+                                          throwsTypes,
+                                          body);
     }
     
     @Override

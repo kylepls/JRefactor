@@ -1,17 +1,17 @@
 package in.kyle.parser.expression;
 
-import java.util.Arrays;
 import java.util.List;
 
 import in.kyle.parser.JObject;
 import in.kyle.parser.RewriteableField;
+import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class JLeftRightExpression extends JExpression {
+public class JLeftRightExpression implements JExpression {
     
     private final RewriteableField<Operation> operation = new RewriteableField<>();
     private final RewriteableField<JExpression> left = new RewriteableField<>();
@@ -54,7 +54,7 @@ public class JLeftRightExpression extends JExpression {
     
     @Override
     public List<RewriteableField> getChildren() {
-        return Arrays.asList(left, right);
+        return CollectionUtils.createList(left, right);
     }
     
     @AllArgsConstructor

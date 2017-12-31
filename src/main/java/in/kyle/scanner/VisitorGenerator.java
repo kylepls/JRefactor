@@ -2,6 +2,7 @@ package in.kyle.scanner;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +27,8 @@ public class VisitorGenerator {
     
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         List<Class<?>> classes = findClasses();
-        classes.removeIf(clazz -> !JObject.class.isAssignableFrom(clazz));
+        classes.removeIf(clazz -> !JObject.class.isAssignableFrom(clazz) ||
+                                  !Modifier.isPublic(clazz.getModifiers()));
         writeInterface(classes);
         writeClass(classes);
     }

@@ -1,14 +1,14 @@
 package in.kyle.parser.expression;
 
-import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.RewriteableField;
+import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.ToString;
 
 @ToString
-public class JParenthesisExpression extends JExpression {
+public class JParenthesisExpression implements JExpression {
     
     private final RewriteableField<JExpression> value = new RewriteableField<>();
     
@@ -31,6 +31,6 @@ public class JParenthesisExpression extends JExpression {
     
     @Override
     public List<RewriteableField> getChildren() {
-        return Collections.singletonList(value);
+        return CollectionUtils.createList(value);
     }
 }

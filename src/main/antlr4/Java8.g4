@@ -175,12 +175,11 @@ typeArgument
 	;
 
 wildcard
-	:	annotation* '?' wildcardBounds?
+	:	'?' wildcardBounds?
 	;
 
 wildcardBounds
-	:	'extends' referenceType
-	|	'super' referenceType
+	:	boundType=('extends'|'super') referenceType
 	;
 
 packageName
@@ -676,7 +675,7 @@ localVariableDeclarationStatement
 	;
 
 localVariableDeclaration
-	:	variableModifier* unannType variableDeclaratorList
+	:	annotation* variableModifier* unannType variableDeclaratorList
 	;
 
 statement
@@ -728,13 +727,13 @@ expressionStatement
 	;
 
 statementExpression
-	:	assignment
-	|	preIncrementExpression
-	|	preDecrementExpression
-	|	postIncrementExpression
-	|	postDecrementExpression
-	|	methodInvocation
-	|	classInstanceCreationExpression
+	:	assignment                      #assignementStatement
+	|	preIncrementExpression          #preIncrementStatement
+	|	preDecrementExpression          #preDecrementStatement
+	|	postIncrementExpression         #postIncrementStatement
+	|	postDecrementExpression         #postDecrementStatement
+	|	methodInvocation                #methodInvocationStatement
+	|	classInstanceCreationExpression #classInstanceCreationStatement
 	;
 
 ifThenStatement
@@ -909,20 +908,6 @@ expressionParenthesis
     :   '(' expression ')'
     ;
 
-primaryNoNewArray
-	:	literal                                                                 #ig17
-	|	typeName ('[' ']')* '.' 'class'                                         #arrayClass
-	|	'void' '.' 'class'                                                      #voidClass
-	|	'this'                                                                  #thisReference
-	|	typeName '.' 'this'                                                     #typedThis
-	|   expressionParenthesis                                                   #ig23
-	|	classInstanceCreationExpression                                         #ig18
-	|	fieldAccess                                                             #ig19
-	|	arrayAccess                                                             #ig20
-	|	methodInvocation                                                        #ig21
-	|	methodReference                                                         #ig22
-	;
-
 primaryNoNewArray_lf_arrayAccess
 	:
 	;
@@ -958,12 +943,24 @@ primaryNoNewArray_lf_primary_lfno_arrayAccess_lf_primary
 	|	methodInvocation_lf_primary
 	|	methodReference_lf_primary
 	;
+	
+primaryClassType
+    : primaryClassTypeAlternates bracketPair* '.' 'class'
+    ;
 
+primaryClassTypeAlternates
+    : typeName
+    | unannPrimitiveType
+    | 'void'
+    ;
+
+bracketPair
+    : '[' ']'
+    ;
+    
 primaryNoNewArray_lfno_primary
 	:	literal
-	|	typeName ('[' ']')* '.' 'class'
-	|	unannPrimitiveType ('[' ']')* '.' 'class'
-	|	'void' '.' 'class'
+	|	primaryClassType
 	|	'this'
 	|	typeName '.' 'this'
 	|   expressionParenthesis	
@@ -980,9 +977,7 @@ primaryNoNewArray_lfno_primary_lf_arrayAccess_lfno_primary
 
 primaryNoNewArray_lfno_primary_lfno_arrayAccess_lfno_primary
 	:	literal
-	|	typeName ('[' ']')* '.' 'class'
-	|	unannPrimitiveType ('[' ']')* '.' 'class'
-	|	'void' '.' 'class'
+	|	primaryClassType
 	|	'this'
 	|	typeName '.' 'this'
 	|	expressionParenthesis
@@ -992,12 +987,15 @@ primaryNoNewArray_lfno_primary_lfno_arrayAccess_lfno_primary
 	|	methodReference_lfno_primary
 	;
 
+classIdentifier
+    : Identifier ('.' Identifier)*
+    ;
+    
 classInstanceCreationExpression
-	:	'new' typeArguments? annotation* Identifier ('.' annotation* Identifier)* typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
-	|	expressionName '.' 'new' typeArguments? annotation* Identifier typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
-	|	primary '.' 'new' typeArguments? annotation* Identifier typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
+	:	'new' typeArguments?  classIdentifier typeArgumentsOrDiamond? 
+	    '(' argumentList? ')' classBody?
 	;
-
+	
 classInstanceCreationExpression_lf_primary
 	:	'.' 'new' typeArguments? annotation* Identifier typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
 	;
@@ -1008,8 +1006,8 @@ classInstanceCreationExpression_lfno_primary
 	;
 
 typeArgumentsOrDiamond
-	:	typeArguments
-	|	'<' '>'
+	:	typeArguments   #ig22
+	|	'<' '>'         #diamond
 	;
 
 fieldAccess

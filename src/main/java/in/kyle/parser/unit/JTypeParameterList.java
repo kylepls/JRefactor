@@ -2,14 +2,20 @@ package in.kyle.parser.unit;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.RewriteableField;
 import in.kyle.writer.CodeWriter;
+import lombok.Getter;
+import lombok.Setter;
 
-abstract class JTypeable extends JModifiable {
+public class JTypeParameterList {
     
     private final Set<RewriteableField<JTypeParameter>> typeParameters = new LinkedHashSet<>();
+    @Getter
+    @Setter
+    private boolean showTypeParametersEmpty = false;
     
     public Set<JTypeParameter> getTypeParameters() {
         return CollectionUtils.convertToJObjectSet(typeParameters);
@@ -27,7 +33,7 @@ abstract class JTypeable extends JModifiable {
         return CollectionUtils.removeValue(typeParameters, parameter);
     }
     
-    void writeTypeParameters(CodeWriter writer) {
+    public void writeTypeParameters(CodeWriter writer) {
         Set<JTypeParameter> typeParameters = getTypeParameters();
         if (!typeParameters.isEmpty()) {
             writer.append("<");
@@ -40,6 +46,12 @@ abstract class JTypeable extends JModifiable {
                 }
             }
             writer.append(">");
+        } else if (showTypeParametersEmpty) {
+            writer.append("<>");
         }
+    }
+    
+    public List<RewriteableField> getChildren() {
+        return CollectionUtils.createList(typeParameters);
     }
 }

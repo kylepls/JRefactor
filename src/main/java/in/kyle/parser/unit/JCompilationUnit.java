@@ -1,6 +1,5 @@
 package in.kyle.parser.unit;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,11 +58,7 @@ public class JCompilationUnit implements JObject {
     
     @Override
     public List<RewriteableField> getChildren() {
-        List<RewriteableField> list = new ArrayList<>();
-        list.add(packageName);
-        list.addAll(imports);
-        list.addAll(types);
-        return list;
+        return CollectionUtils.createList(packageName, imports, types);
     }
     
     @Override

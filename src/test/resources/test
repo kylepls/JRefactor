@@ -1,6 +1,7 @@
 class Main<T> {
 
     public void helloWorld() {
+        new Main();
     }
     
     private static final String string = "Hello" + " World" + (1 + 1 + 1 + 1) + ((" Swag"));

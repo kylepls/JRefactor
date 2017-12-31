@@ -1,11 +1,14 @@
 package in.kyle.parser.expression;
 
+import java.util.List;
+
 import in.kyle.parser.RewriteableField;
+import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class JConditionalExpression extends JExpression {
+public class JConditionalExpression implements JExpression {
     
     private final RewriteableField<JExpression> condition = new RewriteableField<>();
     private final RewriteableField<JExpression> left = new RewriteableField<>();
@@ -39,6 +42,11 @@ public class JConditionalExpression extends JExpression {
     
     public void setRight(JExpression expression) {
         this.right.setValue(expression);
+    }
+    
+    @Override
+    public List<RewriteableField> getChildren() {
+        return CollectionUtils.createList(condition, left, right);
     }
     
     @Override

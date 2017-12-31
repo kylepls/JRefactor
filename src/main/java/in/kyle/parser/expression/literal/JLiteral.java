@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public abstract class JLiteral<T> extends JExpression {
+public abstract class JLiteral<T> implements JExpression {
     
     private T value;
     

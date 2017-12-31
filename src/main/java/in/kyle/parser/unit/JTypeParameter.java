@@ -59,6 +59,6 @@ public class JTypeParameter extends JTypeName implements JObject {
     
     @Override
     public List<RewriteableField> getChildren() {
-        return new ArrayList<>(bounds);
+        return CollectionUtils.createList(bounds);
     }
 }

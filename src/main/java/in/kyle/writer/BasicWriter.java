@@ -8,7 +8,7 @@ public class BasicWriter implements CodeWriter {
     
     private final StringBuilder buffer = new StringBuilder();
     private String indentString = "    ";
-    private String currentIndent = "";
+    private final StringBuilder currentIndent = new StringBuilder();
     private boolean newLine = false;
     
     public void setIndentAmount(int amount) {
@@ -16,12 +16,12 @@ public class BasicWriter implements CodeWriter {
     }
     
     public BasicWriter indent() {
-        currentIndent += indentString;
+        currentIndent.append(indentString);
         return this;
     }
     
     public BasicWriter dedent() {
-        currentIndent = currentIndent.substring(0, currentIndent.length() - indentString.length());
+        currentIndent.setLength(currentIndent.length()-indentString.length());
         return this;
     }
     
@@ -33,16 +33,14 @@ public class BasicWriter implements CodeWriter {
     }
     
     private void appendIndent() {
-        buffer.append(currentIndent);
+        buffer.append(currentIndent.toString());
     }
     
     @Override
     public CodeWriter appendLine(Object object) {
         String string = objectToString(object);
-        if (string.isEmpty()) {
-        } else {
-            appendIndent();
-            buffer.append(string);
+        if (!string.isEmpty()) {
+            append(string);
         }
         appendLine();
         return this;
@@ -61,11 +59,16 @@ public class BasicWriter implements CodeWriter {
     protected String objectToString(Object o) {
         if (o instanceof JObject) {
             BasicWriter writer = new BasicWriter();
+            writer.indentString = indentString;
+            writer.currentIndent.append(currentIndent.toString());
             ((JObject) o).write(writer);
             return writer.toString();
         } else if (o instanceof RewriteableField) {
             return objectToString(((RewriteableField) o).getValue());
         } else {
+            if (o == null) {
+                throw new RuntimeException("Error printing");
+            }
             return o != null ? o.toString() : "ERROR";
         }
     }

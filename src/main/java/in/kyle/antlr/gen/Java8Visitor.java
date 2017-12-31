@@ -853,11 +853,54 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionStatement(Java8Parser.ExpressionStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Java8Parser#statementExpression}.
+	 * Visit a parse tree produced by the {@code assignementStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatementExpression(Java8Parser.StatementExpressionContext ctx);
+	T visitAssignementStatement(Java8Parser.AssignementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code preIncrementStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPreIncrementStatement(Java8Parser.PreIncrementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code preDecrementStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPreDecrementStatement(Java8Parser.PreDecrementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code postIncrementStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPostIncrementStatement(Java8Parser.PostIncrementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code postDecrementStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPostDecrementStatement(Java8Parser.PostDecrementStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methodInvocationStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodInvocationStatement(Java8Parser.MethodInvocationStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code classInstanceCreationStatement}
+	 * labeled alternative in {@link Java8Parser#statementExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassInstanceCreationStatement(Java8Parser.ClassInstanceCreationStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#ifThenStatement}.
 	 * @param ctx the parse tree
@@ -1093,83 +1136,6 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionParenthesis(Java8Parser.ExpressionParenthesisContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ig17}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg17(Java8Parser.Ig17Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code arrayClass}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayClass(Java8Parser.ArrayClassContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code voidClass}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVoidClass(Java8Parser.VoidClassContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code thisReference}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitThisReference(Java8Parser.ThisReferenceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code typedThis}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypedThis(Java8Parser.TypedThisContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig23}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg23(Java8Parser.Ig23Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig18}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg18(Java8Parser.Ig18Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig19}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg19(Java8Parser.Ig19Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig20}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg20(Java8Parser.Ig20Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig21}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg21(Java8Parser.Ig21Context ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ig22}
-	 * labeled alternative in {@link Java8Parser#primaryNoNewArray}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIg22(Java8Parser.Ig22Context ctx);
-	/**
 	 * Visit a parse tree produced by {@link Java8Parser#primaryNoNewArray_lf_arrayAccess}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1200,6 +1166,24 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrimaryNoNewArray_lf_primary_lfno_arrayAccess_lf_primary(Java8Parser.PrimaryNoNewArray_lf_primary_lfno_arrayAccess_lf_primaryContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Java8Parser#primaryClassType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryClassType(Java8Parser.PrimaryClassTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#primaryClassTypeAlternates}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryClassTypeAlternates(Java8Parser.PrimaryClassTypeAlternatesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#bracketPair}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBracketPair(Java8Parser.BracketPairContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Java8Parser#primaryNoNewArray_lfno_primary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1217,6 +1201,12 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrimaryNoNewArray_lfno_primary_lfno_arrayAccess_lfno_primary(Java8Parser.PrimaryNoNewArray_lfno_primary_lfno_arrayAccess_lfno_primaryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#classIdentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassIdentifier(Java8Parser.ClassIdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#classInstanceCreationExpression}.
 	 * @param ctx the parse tree
@@ -1236,11 +1226,19 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitClassInstanceCreationExpression_lfno_primary(Java8Parser.ClassInstanceCreationExpression_lfno_primaryContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Java8Parser#typeArgumentsOrDiamond}.
+	 * Visit a parse tree produced by the {@code ig22}
+	 * labeled alternative in {@link Java8Parser#typeArgumentsOrDiamond}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeArgumentsOrDiamond(Java8Parser.TypeArgumentsOrDiamondContext ctx);
+	T visitIg22(Java8Parser.Ig22Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code diamond}
+	 * labeled alternative in {@link Java8Parser#typeArgumentsOrDiamond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDiamond(Java8Parser.DiamondContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#fieldAccess}.
 	 * @param ctx the parse tree

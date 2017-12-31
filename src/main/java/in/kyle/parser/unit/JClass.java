@@ -1,21 +1,21 @@
 package in.kyle.parser.unit;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.RewriteableField;
+import in.kyle.parser.statement.JBlockStatement;
 import in.kyle.writer.CodeWriter;
 import lombok.ToString;
 
 @ToString
-public class JClass extends JType {
+public class JClass extends JType implements JBlockStatement {
     
     private final RewriteableField<JTypeName> extendsType = new RewriteableField<>();
     private final Set<RewriteableField<JTypeName>> implementsTypes = new LinkedHashSet<>();
-    private final Set<RewriteableField<JClassMember>> members = new LinkedHashSet<>();
+    private final RewriteableField<JClassBody> body = new RewriteableField<>();
     
     public JTypeName getExtendsType() {
         return extendsType.getValue();
@@ -33,21 +33,21 @@ public class JClass extends JType {
         return CollectionUtils.removeValue(implementsTypes, typeName);
     }
     
-    public boolean addMember(JClassMember member) {
-        return CollectionUtils.addValue(members, member);
+    public void setBody(JClassBody body) {
+        this.body.setValue(body);
     }
     
-    public boolean removeMember(JClassMember member) {
-        return CollectionUtils.removeValue(members, member);
+    public JClassBody getBody() {
+        return body.getValue();
     }
+    
     
     @Override
     public List<RewriteableField> getChildren() {
-        List<RewriteableField> list = new ArrayList<>(getRewriteableAnnotations());
-        list.add(extendsType);
-        list.addAll(implementsTypes);
-        list.addAll(members);
-        return list;
+        return CollectionUtils.createList(super.getChildren(),
+                                          extendsType,
+                                          implementsTypes,
+                                          body);
     }
     
     @Override
@@ -57,11 +57,7 @@ public class JClass extends JType {
         writeTypeParameters(writer);
         writeExtendsString(writer);
         writeImplementsString(writer);
-        writer.appendLine(" {");
-        writer.indent();
-        writeMembersString(writer);
-        writer.dedent();
-        writer.appendLine("}");
+        writer.append(body);
     }
     
     private void writeExtendsString(CodeWriter writer) {
@@ -78,15 +74,6 @@ public class JClass extends JType {
                 if (iterator.hasNext()) {
                     writer.append(", ");
                 }
-            }
-        }
-    }
-    
-    private void writeMembersString(CodeWriter writer) {
-        if (!members.isEmpty()) {
-            
-            for (RewriteableField<JClassMember> member : members) {
-                writer.appendLine(member.getValue());
             }
         }
     }

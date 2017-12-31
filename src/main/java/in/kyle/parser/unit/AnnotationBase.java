@@ -1,7 +1,7 @@
 package in.kyle.parser.unit;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.RewriteableField;
@@ -30,7 +30,8 @@ abstract class AnnotationBase implements JAnnotatable {
         return CollectionUtils.convertToJObjectSet(annotations);
     }
     
-    protected Set<RewriteableField<JAnnotation>> getRewriteableAnnotations() {
-        return Collections.unmodifiableSet(annotations);
+    @Override
+    public List<RewriteableField> getChildren() {
+        return CollectionUtils.createList(annotations);
     }
 }

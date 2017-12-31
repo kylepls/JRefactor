@@ -1,6 +1,5 @@
 package in.kyle.parser.unit;
 
-import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.RewriteableField;
@@ -10,7 +9,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class JParameter extends JModifiable {
+public class JParameter extends Modifiable {
     
     private String name;
     private final RewriteableField<JTypeName> type = new RewriteableField<>();
@@ -32,6 +31,6 @@ public class JParameter extends JModifiable {
     
     @Override
     public List<RewriteableField> getChildren() {
-        return Collections.singletonList(type);
+        return CollectionUtils.createList(type);
     }
 }
