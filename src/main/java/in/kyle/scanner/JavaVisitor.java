@@ -1,4 +1,7 @@
 package in.kyle.scanner;
+
+import in.kyle.parser.statement.JStatement;
+
 public interface JavaVisitor<T> {
     T visitOperator(in.kyle.parser.expression.JAssignment.Operator object);
     T visitJAssignment(in.kyle.parser.expression.JAssignment object);
@@ -22,7 +25,7 @@ public interface JavaVisitor<T> {
     T visitJStringLiteral(in.kyle.parser.expression.literal.JStringLiteral object);
     T visitJObject(in.kyle.parser.JObject object);
     T visitJBlock(in.kyle.parser.statement.JBlock object);
-    T visitJBlockStatement(in.kyle.parser.statement.JBlockStatement object);
+    T visitJBlockStatement(JStatement object);
     T visitJEmptyStatement(in.kyle.parser.statement.JEmptyStatement object);
     T visitJExpressionStatement(in.kyle.parser.statement.JExpressionStatement object);
     T visitJLocalVariableDeclaration(in.kyle.parser.statement.JLocalVariableDeclaration object);

@@ -2,7 +2,7 @@ package in.kyle.parser.expression;
 
 import java.util.List;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
@@ -13,15 +13,7 @@ import lombok.Getter;
 public class JUnaryExpression implements JExpression {
     
     private Operator operator;
-    private RewriteableField<JExpression> expression = new RewriteableField<>();
-    
-    public void setExpression(JExpression expression) {
-        this.expression.setValue(expression);
-    }
-    
-    public JExpression getExpression() {
-        return expression.getValue();
-    }
+    private JExpression expression;
     
     @Override
     public void write(CodeWriter writer) {
@@ -29,7 +21,7 @@ public class JUnaryExpression implements JExpression {
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(expression);
     }
     

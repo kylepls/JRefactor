@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.parser.statement.JBlock;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
@@ -14,65 +14,33 @@ import lombok.Data;
 public class JMethod extends Typeable implements JClassMember {
     
     private String name;
-    private final RewriteableField<JTypeName> resultType = new RewriteableField<>();
-    private final Set<RewriteableField<JParameter>> parameters = new LinkedHashSet<>();
-    private final Set<RewriteableField<JTypeName>> throwsTypes = new LinkedHashSet<>();
-    private final RewriteableField<JBlock> body = new RewriteableField<>();
+    private JTypeName resultType;
+    private Set<JParameter> parameters = new LinkedHashSet<>();
+    private Set<JTypeName> throwsTypes = new LinkedHashSet<>();
+    private JBlock body;
     
     public JMethod(String name) {
         this.name = name;
     }
     
-    public void setResultType(JTypeName typeName) {
-        this.resultType.setValue(typeName);
-    }
-    
-    public JTypeName getResultType() {
-        return resultType.getValue();
-    }
-    
     public boolean addParameter(JParameter parameter) {
-        return CollectionUtils.addValue(parameters, parameter);
+        return parameters.add(parameter);
     }
     
     public boolean removeParameter(JParameter parameter) {
-        return CollectionUtils.removeValue(parameters, parameter);
-    }
-    
-    public void setParameters(Set<JParameter> parameters) {
-        CollectionUtils.overwrite(this.parameters, parameters);
-    }
-    
-    public Set<JParameter> getParameters() {
-        return CollectionUtils.convertToJObjectSet(parameters);
+        return parameters.remove(parameter);
     }
     
     public boolean addThrowsType(JTypeName typeName) {
-        return CollectionUtils.addValue(throwsTypes, typeName);
+        return throwsTypes.add(typeName);
     }
     
     public boolean removeThrowsType(JTypeName typeName) {
-        return CollectionUtils.removeValue(throwsTypes, typeName);
-    }
-    
-    public void setThrowsTypes(Set<JTypeName> set) {
-        CollectionUtils.overwrite(throwsTypes, set);
-    }
-    
-    public Set<JTypeName> getThrowsTypes() {
-        return CollectionUtils.convertToJObjectSet(throwsTypes);
-    }
-    
-    public void setBody(JBlock body) {
-        this.body.setValue(body);
-    }
-    
-    public JBlock getBody() {
-        return body.getValue();
+        return throwsTypes.remove(typeName);
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(super.getChildren(),
                                           resultType,
                                           parameters,
@@ -93,9 +61,8 @@ public class JMethod extends Typeable implements JClassMember {
     
     void writeParameters(CodeWriter writer) {
         writer.append("(");
-        for (Iterator<RewriteableField<JParameter>> iterator =
-             parameters.iterator(); iterator.hasNext(); ) {
-            JParameter parameter = iterator.next().getValue();
+        for (Iterator<JParameter> iterator = parameters.iterator(); iterator.hasNext(); ) {
+            JParameter parameter = iterator.next();
             writer.append(parameter);
             if (iterator.hasNext()) {
                 writer.append(", ");
@@ -107,10 +74,9 @@ public class JMethod extends Typeable implements JClassMember {
     void writeThrows(CodeWriter writer) {
         if (!throwsTypes.isEmpty()) {
             writer.append("throws ");
-            for (Iterator<RewriteableField<JTypeName>> iterator =
-                 throwsTypes.iterator(); iterator.hasNext(); ) {
-                RewriteableField<JTypeName> throwsType = iterator.next();
-                writer.append(throwsType.getValue());
+            for (Iterator<JTypeName> iterator = throwsTypes.iterator(); iterator.hasNext(); ) {
+                JTypeName throwsType = iterator.next();
+                writer.append(throwsType);
                 if (iterator.hasNext()) {
                     writer.append(", ");
                 }

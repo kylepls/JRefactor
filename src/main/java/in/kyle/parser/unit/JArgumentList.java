@@ -5,34 +5,27 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.parser.expression.JExpression;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class JArgumentList {
     
-    private final Set<RewriteableField<JExpression>> arguments = new LinkedHashSet<>();
+    private Set<JExpression> arguments = new LinkedHashSet<>();
     
-    public void setArguments(Set<JExpression> set) {
-        CollectionUtils.overwrite(arguments, set);
-    }
-    
-    public Set<JExpression> getArguments() {
-        return CollectionUtils.convertToJObjectSet(arguments);
-    }
-    
-    public boolean addArguement(JExpression arg) {
-        return CollectionUtils.addValue(arguments, arg);
+    public boolean addArgument(JExpression arg) {
+        return arguments.add(arg);
     }
     
     public boolean removeArguement(JExpression arg) {
-        return CollectionUtils.removeValue(arguments, arg);
+        return arguments.remove(arg);
     }
     
     public void write(CodeWriter writer) {
-        for (Iterator<RewriteableField<JExpression>> iterator =
-             arguments.iterator(); iterator.hasNext(); ) {
-            RewriteableField<JExpression> argument = iterator.next();
+        for (Iterator<JExpression> iterator = arguments.iterator(); iterator.hasNext(); ) {
+            JExpression argument = iterator.next();
             writer.append(argument);
             if (iterator.hasNext()) {
                 writer.append(", ");
@@ -40,7 +33,7 @@ public class JArgumentList {
         }
     }
     
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(arguments);
     }
 }

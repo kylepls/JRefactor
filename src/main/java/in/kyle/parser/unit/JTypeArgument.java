@@ -3,8 +3,8 @@ package in.kyle.parser.unit;
 import java.util.List;
 
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import in.kyle.writer.CodeWriter;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 public interface JTypeArgument extends JObject {
@@ -28,7 +28,7 @@ public interface JTypeArgument extends JObject {
         }
         
         @Override
-        public List<RewriteableField> getChildren() {
+        public List<JObject> getChildren() {
             return super.getChildren();
         }
         
@@ -47,29 +47,19 @@ public interface JTypeArgument extends JObject {
         }
     }
     
+    @Data
+    @AllArgsConstructor
     class JReferenceTypeArgument implements JTypeArgument {
         
-        private final RewriteableField<JTypeName> referenceType = new RewriteableField<>();
+        private JTypeName referenceType;
     
-        public JReferenceTypeArgument(JTypeName referenceType) {
-            this.referenceType.setValue(referenceType);
-        }
-    
-        public void setReferenceType(JTypeName type) {
-            referenceType.setValue(type);
-        }
-        
-        public JTypeName getReferenceType() {
-            return referenceType.getValue();
-        }
-        
         @Override
         public void write(CodeWriter writer) {
             writer.append(referenceType);
         }
         
         @Override
-        public List<RewriteableField> getChildren() {
+        public List<JObject> getChildren() {
             return CollectionUtils.createList(referenceType);
         }
     }

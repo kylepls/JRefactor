@@ -1,9 +1,10 @@
 package in.kyle.scanner;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
+import in.kyle.api.utils.Try;
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -20,9 +21,9 @@ public class RefactorSession {
             if (isChild(search, subject)) {
                 return search;
             } else {
-                List<RewriteableField> children = search.getChildren();
-                for (RewriteableField child : children) {
-                    JObject result = findParent(child.getValue(), subject);
+                List<JObject> children = search.getChildren();
+                for (JObject child : children) {
+                    JObject result = findParent(child, subject);
                     if (result != null) {
                         return result;
                     }
@@ -32,10 +33,10 @@ public class RefactorSession {
         return null;
     }
     
-    private <T extends JObject> RewriteableField<T> findField(JObject parent, T child) {
-        for (RewriteableField field : parent.getChildren()) {
-            if (field.getValue() == child) {
-                return field;
+    private <T extends JObject> T findField(JObject parent, T child) {
+        for (JObject field : parent.getChildren()) {
+            if (field == child) {
+                return (T) field;
             }
         }
         throw new RuntimeException("Field not found");
@@ -43,8 +44,8 @@ public class RefactorSession {
     
     public boolean isChild(JObject parent, JObject child) {
         if (parent != null) {
-            for (RewriteableField jObject : parent.getChildren()) {
-                if (jObject.getValue() == child) {
+            for (JObject jObject : parent.getChildren()) {
+                if (jObject == child) {
                     return true;
                 }
             }
@@ -54,7 +55,20 @@ public class RefactorSession {
     
     public <T extends JObject> void replace(T subject, T replacement) {
         JObject parent = findParent(subject);
-        RewriteableField<T> field = findField(parent, subject);
-        field.setValue(replacement);
+        Try.to(() -> replaceField(parent, subject, replacement));
+    }
+    
+    static <T> void replaceField(Object object, T subject, T replacement)
+            throws IllegalAccessException {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            Object o = field.get(object);
+            if (o == subject) {
+                field.set(object, replacement);
+                break;
+            }
+        }
     }
 }

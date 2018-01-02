@@ -3,7 +3,6 @@ package in.kyle.parser.expression;
 import java.util.List;
 
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
@@ -14,24 +13,8 @@ import lombok.Getter;
 public class JAssignment implements JExpression {
     
     private Operator operator;
-    private final RewriteableField<JExpression> left = new RewriteableField<>();
-    private final RewriteableField<JExpression> right = new RewriteableField<>();
-    
-    public void setLeft(JExpression expression) {
-        this.left.setValue(expression);
-    }
-    
-    public JExpression getLeft() {
-        return left.getValue();
-    }
-    
-    public void setRight(JExpression expression) {
-        this.right.setValue(expression);
-    }
-    
-    public JExpression getRight() {
-        return right.getValue();
-    }
+    private JExpression left;
+    private JExpression right;
     
     @Override
     public void write(CodeWriter writer) {
@@ -39,7 +22,7 @@ public class JAssignment implements JExpression {
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(left, operator, right);
     }
     

@@ -5,37 +5,30 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class TypeArgumentList {
     
-    private final Set<RewriteableField<JTypeArgument>> typeArguments = new LinkedHashSet<>();
+    private final Set<JTypeArgument> typeArguments = new LinkedHashSet<>();
     
-    public boolean addTypeArguement(JTypeArgument argument) {
-        return CollectionUtils.addValue(typeArguments, argument);
+    public boolean addTypeArgument(JTypeArgument argument) {
+        return typeArguments.add(argument);
     }
     
     public boolean removeTypeArguement(JTypeArgument argument) {
-        return CollectionUtils.removeValue(typeArguments, argument);
+        return typeArguments.remove(argument);
     }
     
-    public Set<JTypeArgument> getTypeArguments() {
-        return CollectionUtils.convertToJObjectSet(typeArguments);
-    }
-    
-    public void setTypeArguments(Set<JTypeArgument> arguments) {
-        CollectionUtils.overwrite(this.typeArguments, arguments);
-    }
-    
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(typeArguments);
     }
     
     public void writeTypeArguments(CodeWriter writer) {
-        for (Iterator<RewriteableField<JTypeArgument>> iterator =
-             typeArguments.iterator(); iterator.hasNext(); ) {
-            RewriteableField<JTypeArgument> argument = iterator.next();
+        for (Iterator<JTypeArgument> iterator = typeArguments.iterator(); iterator.hasNext(); ) {
+            JTypeArgument argument = iterator.next();
             writer.append(argument);
             if (iterator.hasNext()) {
                 writer.append(", ");

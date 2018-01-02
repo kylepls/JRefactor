@@ -16,10 +16,10 @@ import in.kyle.parser.expression.*;
 import in.kyle.parser.expression.literal.JIntegerLiteral;
 import in.kyle.parser.expression.literal.JStringLiteral;
 import in.kyle.parser.statement.JBlock;
-import in.kyle.parser.statement.JBlockStatement;
 import in.kyle.parser.statement.JEmptyStatement;
 import in.kyle.parser.statement.JExpressionStatement;
 import in.kyle.parser.statement.JLocalVariableDeclaration;
+import in.kyle.parser.statement.JStatement;
 import in.kyle.parser.unit.*;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
@@ -101,7 +101,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JTypeParameter visitTypeParameter(TypeParameterContext ctx) {
         JTypeParameter typeParameter = new JTypeParameter(ctx.Identifier().getText());
         if (ctx.typeBound() != null) {
-            typeParameter.setBounds((Set<JTypeName>) visit(ctx.typeBound()));
+            typeParameter.setBounds((List<JTypeName>) visit(ctx.typeBound()));
         }
         return typeParameter;
     }
@@ -450,7 +450,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JBlock visitBlock(Java8Parser.BlockContext ctx) {
         JBlock jBlock = new JBlock();
         for (BlockStatementContext statementCtx : ctx.blockStatement()) {
-            JBlockStatement statement = (JBlockStatement) visitBlockStatement(statementCtx);
+            JStatement statement = (JStatement) visitBlockStatement(statementCtx);
             jBlock.addStatement(statement);
         }
         return jBlock;
@@ -496,8 +496,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JParameter visitFormalParameter(FormalParameterContext ctx) {
         String name = ctx.variableDeclaratorId().getText();
-        JParameter parameter = new JParameter(name);
         JTypeName type = new JTypeName(ctx.unannType().getText());
+        JParameter parameter = new JParameter(name, type);
         parameter.setType(type);
         return parameter;
     }
@@ -505,8 +505,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JParameter visitLastFormalParameter(Java8Parser.LastFormalParameterContext ctx) {
         String name = ctx.variableDeclaratorId().getText();
-        JParameter parameter = new JParameter(name);
         JTypeName type = new JTypeName(ctx.unannType().getText());
+        JParameter parameter = new JParameter(name, type);
         parameter.setType(type);
         return parameter;
     }
@@ -698,7 +698,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         List<TypeArgumentContext> types = ctx.typeArgumentList().typeArgument();
         for (TypeArgumentContext type : types) {
             JTypeArgument argument = (JTypeArgument) visitTypeArgument(type);
-            argumentList.addTypeArguement(argument);
+            argumentList.addTypeArgument(argument);
         }
         return argumentList;
     }
@@ -724,7 +724,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JArgumentList visitArgumentList(ArgumentListContext ctx) {
         JArgumentList argumentList = new JArgumentList();
         for (ExpressionContext expressionContext : ctx.expression()) {
-            argumentList.addArguement(visitExpression(expressionContext));
+            argumentList.addArgument(visitExpression(expressionContext));
         }
         return argumentList;
     }

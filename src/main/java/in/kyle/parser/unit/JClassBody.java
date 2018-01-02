@@ -5,31 +5,24 @@ import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class JClassBody implements JObject {
     
-    private final Set<RewriteableField<JClassMember>> members = new LinkedHashSet<>();
+    private final Set<JClassMember> members = new LinkedHashSet<>();
     
     public boolean addMember(JClassMember member) {
-        return CollectionUtils.addValue(members, member);
+        return members.add(member);
     }
     
     public boolean removeMember(JClassMember member) {
-        return CollectionUtils.removeValue(members, member);
-    }
-    
-    public Set<JClassMember> getMembers() {
-        return CollectionUtils.convertToJObjectSet(members);
-    }
-    
-    public void setMembers(Set<JClassMember> members) {
-        CollectionUtils.overwrite(this.members, members);
+        return members.remove(member);
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(members);
     }
     
@@ -43,8 +36,8 @@ public class JClassBody implements JObject {
     }
     
     private void writeMembers(CodeWriter writer) {
-        for (RewriteableField<JClassMember> member : members) {
-            if (member.getValue() instanceof JField) {
+        for (JClassMember member : members) {
+            if (member instanceof JField) {
                 writer.appendLine("{};", member);
             } else {
                 writer.appendLine(member);

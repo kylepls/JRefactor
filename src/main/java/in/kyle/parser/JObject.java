@@ -9,7 +9,7 @@ public interface JObject {
     
     void write(CodeWriter writer);
     
-    default List<RewriteableField> getChildren() {
+    default List<JObject> getChildren() {
         return Collections.emptyList();
     }
 }

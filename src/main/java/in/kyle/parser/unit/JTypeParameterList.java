@@ -5,32 +5,26 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Data
 public class JTypeParameterList {
     
-    private final Set<RewriteableField<JTypeParameter>> typeParameters = new LinkedHashSet<>();
+    private Set<JTypeParameter> typeParameters = new LinkedHashSet<>();
     @Getter
     @Setter
     private boolean showTypeParametersEmpty = false;
     
-    public Set<JTypeParameter> getTypeParameters() {
-        return CollectionUtils.convertToJObjectSet(typeParameters);
-    }
-    
-    public void setTypeParameters(Set<JTypeParameter> parameters) {
-        CollectionUtils.overwrite(typeParameters, parameters);
-    }
-    
     public boolean addTypeParameter(JTypeParameter parameter) {
-        return CollectionUtils.addValue(typeParameters, parameter);
+        return typeParameters.add(parameter);
     }
     
     public boolean removeTypeParameter(JTypeParameter parameter) {
-        return CollectionUtils.removeValue(typeParameters, parameter);
+        return typeParameters.remove(parameter);
     }
     
     public void writeTypeParameters(CodeWriter writer) {
@@ -51,7 +45,7 @@ public class JTypeParameterList {
         }
     }
     
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(typeParameters);
     }
 }

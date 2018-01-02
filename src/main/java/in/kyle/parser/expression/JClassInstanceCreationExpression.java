@@ -3,7 +3,6 @@ package in.kyle.parser.expression;
 import java.util.List;
 
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JArgumentList;
 import in.kyle.parser.unit.JClassBody;
@@ -16,27 +15,19 @@ import lombok.experimental.Delegate;
 @Data
 public class JClassInstanceCreationExpression implements JExpression {
     
-    private final RewriteableField<JTypeName> type = new RewriteableField<>();
-    private final RewriteableField<JClassBody> body = new RewriteableField<>();
+    private JTypeName type;
+    private JClassBody body;
     @Delegate(excludes = JObject.class)
     private JArgumentList argumentList = new JArgumentList();
     @Delegate(excludes = JObject.class)
     private TypeArgumentList typeArgumentList = new TypeArgumentList();
     
     public JClassInstanceCreationExpression(JTypeName type) {
-        this.type.setValue(type);
-    }
-    
-    public void setBody(JClassBody body) {
-        this.body.setValue(body);
-    }
-    
-    public JClassBody getBody() {
-        return body.getValue();
+        this.type = type;
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(body,
                                           argumentList.getChildren(),
                                           typeArgumentList.getChildren());
@@ -49,6 +40,8 @@ public class JClassInstanceCreationExpression implements JExpression {
         writer.append("(");
         argumentList.write(writer);
         writer.append(")");
-        body.ifPresent(writer::append);
+        if (body != null) {
+            writer.append(body);
+        }
     }
 }

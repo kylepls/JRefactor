@@ -4,6 +4,6 @@ class Main<T> {
         new Main();
     }
     
-    private static final String string = "Hello" + " World" + (1 + 1 + 1 + 1) + ((" Swag"));
-    
+    //private static final String string = "Hello" + " World" + (1 + 1 + 1 + 1) + ((" Swag"));
+    private static final String string = "Hello" + " World" + 1 + (1 + 1 + 1 + 1) + ((" Swag")); 
 }

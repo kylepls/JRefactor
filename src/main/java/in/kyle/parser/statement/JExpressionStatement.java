@@ -1,24 +1,15 @@
 package in.kyle.parser.statement;
 
-import in.kyle.parser.RewriteableField;
 import in.kyle.parser.expression.JExpression;
 import in.kyle.writer.CodeWriter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public class JExpressionStatement implements JBlockStatement {
+@Data
+@AllArgsConstructor
+public class JExpressionStatement implements JStatement {
     
-    private final RewriteableField<JExpression> expression = new RewriteableField<>();
-    
-    public JExpressionStatement(JExpression expression) {
-        this.expression.setValue(expression);
-    }
-    
-    public void setExpression(JExpression expression) {
-        this.expression.setValue(expression);
-    }
-    
-    public JExpression getExpression() {
-        return expression.getValue();
-    }
+    private JExpression expression;
     
     @Override
     public void write(CodeWriter writer) {

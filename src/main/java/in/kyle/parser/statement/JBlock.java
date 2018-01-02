@@ -2,32 +2,23 @@ package in.kyle.parser.statement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
-import lombok.ToString;
+import lombok.Data;
 
-@ToString
-public class JBlock implements JBlockStatement {
+@Data
+public class JBlock implements JStatement {
     
-    private final List<RewriteableField<JBlockStatement>> statements = new ArrayList<>();
+    private final List<JStatement> statements = new ArrayList<>();
     
-    public boolean addStatement(JBlockStatement statement) {
-        return CollectionUtils.addValue(statements, statement);
+    public boolean addStatement(JStatement statement) {
+        return statements.add(statement);
     }
     
-    public boolean removeStatement(JBlockStatement statement) {
-        return CollectionUtils.removeValue(statements, statement);
-    }
-    
-    public void setStatements(Set<JBlockStatement> statements) {
-        CollectionUtils.overwrite(this.statements, statements);
-    }
-    
-    public Set<JBlockStatement> getStatements() {
-        return CollectionUtils.convertToJObjectSet(statements);
+    public boolean removeStatement(JStatement statement) {
+        return statements.remove(statement);
     }
     
     @Override
@@ -35,7 +26,7 @@ public class JBlock implements JBlockStatement {
         writer.append("{");
         writer.indent();
         writer.appendLine();
-        for (RewriteableField<JBlockStatement> statement : statements) {
+        for (JStatement statement : statements) {
             writer.append(statement).appendLine();
         }
         writer.dedent();
@@ -43,7 +34,7 @@ public class JBlock implements JBlockStatement {
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(statements);
     }
 }

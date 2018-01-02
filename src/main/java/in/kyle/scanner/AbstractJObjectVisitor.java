@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 
 import in.kyle.api.utils.Try;
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 
 class AbstractJObjectVisitor<T> {
     
@@ -32,8 +31,8 @@ class AbstractJObjectVisitor<T> {
     
     public T visitChildren(JObject jObject) {
         if (jObject != null) {
-            for (RewriteableField object : jObject.getChildren()) {
-                visit(object.getValue());
+            for (JObject object : jObject.getChildren()) {
+                visit(object);
             }
         }
         return null;

@@ -2,7 +2,6 @@ package in.kyle.writer;
 
 import in.kyle.api.utils.StringUtils;
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 
 public class BasicWriter implements CodeWriter {
     
@@ -63,8 +62,6 @@ public class BasicWriter implements CodeWriter {
             writer.currentIndent.append(currentIndent.toString());
             ((JObject) o).write(writer);
             return writer.toString();
-        } else if (o instanceof RewriteableField) {
-            return objectToString(((RewriteableField) o).getValue());
         } else {
             if (o == null) {
                 throw new RuntimeException("Error printing");

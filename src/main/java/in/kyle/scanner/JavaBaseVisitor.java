@@ -1,4 +1,7 @@
 package in.kyle.scanner;
+
+import in.kyle.parser.statement.JStatement;
+
 public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements JavaVisitor<T> {
     public T visitOperator(in.kyle.parser.expression.JAssignment.Operator object) {
         return visitChildren(object);
@@ -66,7 +69,7 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJBlock(in.kyle.parser.statement.JBlock object) {
         return visitChildren(object);
     }
-    public T visitJBlockStatement(in.kyle.parser.statement.JBlockStatement object) {
+    public T visitJBlockStatement(JStatement object) {
         return visitChildren(object);
     }
     public T visitJEmptyStatement(in.kyle.parser.statement.JEmptyStatement object) {

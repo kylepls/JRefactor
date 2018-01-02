@@ -2,7 +2,7 @@ package in.kyle.parser.unit;
 
 import java.util.List;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,15 +12,7 @@ import lombok.Data;
 public class JParameter extends Modifiable {
     
     private String name;
-    private final RewriteableField<JTypeName> type = new RewriteableField<>();
-    
-    public void setType(JTypeName type) {
-        this.type.setValue(type);
-    }
-    
-    public JTypeName getType() {
-        return type.getValue();
-    }
+    private JTypeName type;
     
     @Override
     public void write(CodeWriter writer) {
@@ -30,7 +22,7 @@ public class JParameter extends Modifiable {
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(type);
     }
 }

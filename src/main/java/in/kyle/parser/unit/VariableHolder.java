@@ -1,45 +1,30 @@
 package in.kyle.parser.unit;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.RewriteableField;
+import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public abstract class VariableHolder extends Modifiable {
     
-    private final RewriteableField<JTypeName> type = new RewriteableField<>();
-    private final Set<RewriteableField<JVariable>> variables = new LinkedHashSet<>();
-    
-    public void setType(JTypeName type) {
-        this.type.setValue(type);
-    }
-    
-    public JTypeName getType() {
-        return type.getValue();
-    }
+    private JTypeName type;
+    private Set<JVariable> variables = new LinkedHashSet<>();
     
     public boolean addVariable(JVariable variable) {
-        return variables.add(new RewriteableField<>(variable));
+        return variables.add(variable);
     }
     
     public boolean removeVariable(JVariable variable) {
-        return CollectionUtils.removeValue(variables, variable);
-    }
-    
-    public void setVariables(Collection<JVariable> variables) {
-        CollectionUtils.overwrite(this.variables, variables);
-    }
-    
-    public Set<JVariable> getVariables() {
-        return CollectionUtils.convertToJObjectSet(variables);
+        return variables.remove(variable);
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return CollectionUtils.createList(super.getChildren(), type, variables);
     }
     

@@ -4,20 +4,13 @@ import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.JObject;
-import in.kyle.parser.RewriteableField;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class JAnnotation implements JObject {
     
-    private RewriteableField<JTypeName> type = new RewriteableField<>();
-    
-    public void setType(JTypeName type) {
-        this.type.setValue(type);
-    }
-    
-    public JTypeName getType() {
-        return type.getValue();
-    }
+    private JTypeName type;
     
     @Override
     public void write(CodeWriter writer) {
@@ -25,7 +18,7 @@ public class JAnnotation implements JObject {
     }
     
     @Override
-    public List<RewriteableField> getChildren() {
+    public List<JObject> getChildren() {
         return Collections.singletonList(type);
     }
 }
