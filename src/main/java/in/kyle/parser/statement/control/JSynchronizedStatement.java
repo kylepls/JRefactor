@@ -7,7 +7,9 @@ import in.kyle.parser.expression.JExpression;
 import in.kyle.parser.statement.JBlock;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class JSynchronizedStatement implements JControlStatement {
     
     private JExpression expression;

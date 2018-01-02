@@ -13,9 +13,11 @@ import in.kyle.parser.unit.JTypeName;
 import in.kyle.parser.unit.ModifierSet;
 import in.kyle.writer.CodeWriter;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 
+@Data
 public class JCatchClause implements JObject {
     
     @Delegate

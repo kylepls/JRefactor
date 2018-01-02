@@ -1004,16 +1004,6 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitEnumConstant(Java8Parser.EnumConstantContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link Java8Parser#enumConstantModifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterEnumConstantModifier(Java8Parser.EnumConstantModifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Java8Parser#enumConstantModifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitEnumConstantModifier(Java8Parser.EnumConstantModifierContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link Java8Parser#enumBodyDeclarations}.
 	 * @param ctx the parse tree
 	 */
@@ -1778,6 +1768,30 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitTryStatement(Java8Parser.TryStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code tryCatchStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterTryCatchStatement(Java8Parser.TryCatchStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code tryCatchStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitTryCatchStatement(Java8Parser.TryCatchStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code tryCatchFinallyStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterTryCatchFinallyStatement(Java8Parser.TryCatchFinallyStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code tryCatchFinallyStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitTryCatchFinallyStatement(Java8Parser.TryCatchFinallyStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Java8Parser#catches}.
 	 * @param ctx the parse tree
 	 */
@@ -1797,26 +1811,6 @@ public interface Java8Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCatchClause(Java8Parser.CatchClauseContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link Java8Parser#catchFormalParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterCatchFormalParameter(Java8Parser.CatchFormalParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Java8Parser#catchFormalParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitCatchFormalParameter(Java8Parser.CatchFormalParameterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link Java8Parser#catchType}.
-	 * @param ctx the parse tree
-	 */
-	void enterCatchType(Java8Parser.CatchTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link Java8Parser#catchType}.
-	 * @param ctx the parse tree
-	 */
-	void exitCatchType(Java8Parser.CatchTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Java8Parser#finally_}.
 	 * @param ctx the parse tree
@@ -2919,4 +2913,14 @@ public interface Java8Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCastLamda(Java8Parser.CastLamdaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Java8Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(Java8Parser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Java8Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(Java8Parser.IdentifierContext ctx);
 }

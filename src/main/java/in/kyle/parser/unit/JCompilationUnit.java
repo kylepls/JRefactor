@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import in.kyle.parser.JObject;
+import in.kyle.parser.unit.types.JClass;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 

@@ -53,6 +53,7 @@ Total lexer+parser time 30844ms.
  */
 grammar Java8;
 
+// added
 literal
 	:	IntegerLiteral #IntegerLiteral 
 	|	FloatingPointLiteral #FloatingPointLiteral 
@@ -62,21 +63,25 @@ literal
 	|	NullLiteral #NullLiteral
 	;
 
+// added
 type
 	:	primitiveType
 	|	referenceType
 	;
 
+// added
 primitiveType
 	:	annotation* numericType
 	|	annotation* 'boolean'
 	;
 
+// added
 numericType
 	:	integralType
 	|	floatingPointType
 	;
 
+// added
 integralType
 	:	'byte'
 	|	'short'
@@ -85,6 +90,7 @@ integralType
 	|	'char'
 	;
 
+// added
 floatingPointType
 	:	'float'
 	|	'double'
@@ -106,16 +112,16 @@ classOrInterfaceType
 	;
 
 classType
-	:	annotation* Identifier typeArguments?
-	|	classOrInterfaceType '.' annotation* Identifier typeArguments?
+	:	annotation* identifier typeArguments?
+	|	classOrInterfaceType '.' annotation* identifier typeArguments?
 	;
 
 classType_lf_classOrInterfaceType
-	:	'.' annotation* Identifier typeArguments?
+	:	'.' annotation* identifier typeArguments?
 	;
 
 classType_lfno_classOrInterfaceType
-	:	annotation* Identifier typeArguments?
+	:	annotation* identifier typeArguments?
 	;
 
 interfaceType
@@ -131,7 +137,7 @@ interfaceType_lfno_classOrInterfaceType
 	;
 
 typeVariable
-	:	annotation* Identifier
+	:	annotation* identifier
 	;
 
 arrayType
@@ -144,40 +150,49 @@ dims
 	:	annotation* '[' ']' (annotation* '[' ']')*
 	;
 
+// added
 typeParameter
-	:	typeParameterModifier* Identifier typeBound?
+	:	typeParameterModifier* identifier typeBound?
 	;
 
+// added
 typeParameterModifier
 	:	annotation
 	;
 
+// added
 typeBound
 	:	'extends' typeVariable                          #simpleTypeBound
 	|	'extends' classOrInterfaceType additionalBound* #classTypeBound
 	;
 
+// added
 additionalBound
 	:	'&' interfaceType
 	;
 
+// added
 typeArguments
 	:	'<' typeArgumentList '>'
 	;
 
+// added
 typeArgumentList
 	:	typeArgument (',' typeArgument)*
 	;
 
+// added
 typeArgument
 	:	referenceType
 	|	wildcard
 	;
 
+// added
 wildcard
 	:	'?' wildcardBounds?
 	;
 
+// added
 wildcardBounds
 	:	boundType=('extends'|'super') referenceType
 	;
@@ -212,16 +227,21 @@ ambiguousName
 	;
 
 // common entry point
+// added
 compilationUnit
 	:	packageDeclaration? importDeclaration* typeDeclaration* EOF
 	;
 
+// added
 packageDeclaration
 	:	'package' packageName ';'
 	;
 
+// added
 import_static: 'static';
+// added
 import_wildcard: '.' '*';
+// added
 importDeclaration
     : 'import' import_static? packageOrTypeName import_wildcard? ';'
     ;
@@ -235,7 +255,7 @@ typeDeclaration
 
 // start class
 classDeclaration
-	:	annotation* classModifier* 'class' Identifier typeParameters? superclass? superinterfaces? classBody
+	:	annotation* classModifier* 'class' identifier typeParameters? superclass? superinterfaces? classBody
 	;
 
 classModifier
@@ -306,7 +326,7 @@ variableDeclarator
 	;
 
 variableDeclaratorId
-	:	Identifier dims?
+	:	identifier dims?
 	;
 
 variableInitializer
@@ -374,10 +394,12 @@ unannArrayType
 	|	unannTypeVariable dims
 	;
 
+// added
 methodDeclaration
 	:	annotation* methodModifier* methodHeader methodBody
 	;
 
+// added
 methodModifier
 	:	'public'
 	|	'protected'
@@ -390,58 +412,69 @@ methodModifier
 	|	'strictfp'
 	;
 
+// added
 methodHeader
 	:	result methodDeclarator throws_?
 	|	typeParameters annotation* result methodDeclarator throws_?
 	;
 
+// added
 result
 	:	unannType
 	|	'void'
 	;
 
+// added
 methodDeclarator
-	:	Identifier '(' formalParameterList? ')' dims?
+	:	identifier '(' formalParameterList? ')' dims?
 	;
+	
+// added
 formalParameterList
 	:	receiverParameter
 	|	formalParameters ',' lastFormalParameter
 	|	lastFormalParameter
 	;
+// added
 formalParameters
 	:	formalParameter (',' formalParameter)*
 	|	receiverParameter (',' formalParameter)*
 	;
+// added
 formalParameter
 	:	annotation* variableModifier* unannType variableDeclaratorId
 	;
-
+// added
 variableModifier 
     :	'final'
 	;
-
+// added
 lastFormalParameter
 	:	variableModifier* unannType annotation* '...' variableDeclaratorId
 	|	formalParameter
 	;
 
 receiverParameter
-	:	annotation* unannType (Identifier '.')? 'this'
+	:	annotation* unannType (identifier '.')? 'this'
 	;
 
+// added
 throws_
 	:	'throws' exceptionTypeList
 	;
 
+// added
 exceptionTypeList
 	:	exceptionType (',' exceptionType)*
 	;
 
+// added
 exceptionType
 	:	classType
 	|	typeVariable
 	;
 
+// added
 methodBody
 	:	block
 	|	';'
@@ -484,26 +517,27 @@ explicitConstructorInvocation
 	|	primary '.' typeArguments? 'super' '(' argumentList? ')' ';'
 	;
 
+// added
 enumDeclaration
-	:	annotation* classModifier* 'enum' Identifier superinterfaces? enumBody
+	:	annotation* classModifier* 'enum' identifier superinterfaces? enumBody
 	;
 
+// added
 enumBody
 	:	'{' enumConstantList? ','? enumBodyDeclarations? '}'
 	;
 
+// added
 enumConstantList
 	:	enumConstant (',' enumConstant)*
 	;
 
+// added
 enumConstant
-	:	enumConstantModifier* Identifier ('(' argumentList? ')')? classBody?
+	:	annotation* identifier ('(' argumentList? ')')? classBody?
 	;
 
-enumConstantModifier
-	:	annotation
-	;
-
+// added
 enumBodyDeclarations
 	:	';' classBodyDeclaration*
 	;
@@ -517,10 +551,12 @@ interfaceDeclaration
 	|	annotationTypeDeclaration
 	;
 
+// added
 normalInterfaceDeclaration
-	:	annotation* interfaceModifier* 'interface' Identifier typeParameters? extendsInterfaces? interfaceBody
+	:	annotation* interfaceModifier* 'interface' identifier typeParameters? extendsInterfaces? interfaceBody
 	;
 
+// added
 interfaceModifier
 	:	'public'
 	|	'protected'
@@ -530,10 +566,12 @@ interfaceModifier
 	|	'strictfp'
 	;
 
+// added
 extendsInterfaces
 	:	'extends' interfaceTypeList
 	;
 
+// added
 interfaceBody
 	:	'{' interfaceMemberDeclaration* '}'
 	;
@@ -557,13 +595,14 @@ constantModifier
 	|	'final'
 	;
 
+// added
 interfaceMethodDeclaration
-	:	interfaceMethodModifier* methodHeader methodBody
+	:	annotation* interfaceMethodModifier* methodHeader methodBody
 	;
 
+// added
 interfaceMethodModifier
-	:	annotation
-	|	'public'
+	:	'public'
 	|	'abstract'
 	|	'default'
 	|	'static'
@@ -615,7 +654,7 @@ elementValuePairList
 	;
 
 elementValuePair
-	:	Identifier '=' elementValue
+	:	identifier '=' elementValue
 	;
 
 elementValue
@@ -715,11 +754,11 @@ emptyStatement
 	;
 
 labeledStatement
-	:	Identifier ':' statement
+	:	identifier ':' statement
 	;
 
 labeledStatementNoShortIf
-	:	Identifier ':' statementNoShortIf
+	:	identifier ':' statementNoShortIf
 	;
 
 expressionStatement
@@ -776,7 +815,7 @@ switchLabel
 	;
 
 enumConstantName
-	:	Identifier
+	:	identifier
 	;
 
 whileStatement
@@ -831,11 +870,11 @@ enhancedForStatementNoShortIf
 	;
 
 breakStatement
-	:	'break' Identifier? ';'
+	:	'break' identifier? ';'
 	;
 
 continueStatement
-	:	'continue' Identifier? ';'
+	:	'continue' identifier? ';'
 	;
 
 returnStatement
@@ -851,25 +890,20 @@ synchronizedStatement
 	;
 
 tryStatement
-	:	'try' block catches
-	|	'try' block catches? finally_
+    :   basicTryStatement
 	|	tryWithResourcesStatement
 	;
 
+basicTryStatement
+    :   'try' block catches             #tryCatchStatement
+    |   'try' block catches? finally_   #tryCatchFinallyStatement
+    ;
 catches
 	:	catchClause catchClause*
 	;
 
 catchClause
-	:	'catch' '(' catchFormalParameter ')' block
-	;
-
-catchFormalParameter
-	:	variableModifier* catchType variableDeclaratorId
-	;
-
-catchType
-	:	unannClassType ('|' classType)*
+	:	'catch' '(' variableModifier* unannClassType ('|' classType)* variableDeclaratorId ')' block
 	;
 
 finally_
@@ -1011,18 +1045,18 @@ typeArgumentsOrDiamond
 	;
 
 fieldAccess
-	:	primary '.' Identifier
-	|	'super' '.' Identifier
-	|	typeName '.' 'super' '.' Identifier
+	:	primary '.' identifier
+	|	'super' '.' identifier
+	|	typeName '.' 'super' '.' identifier
 	;
 
 fieldAccess_lf_primary
-	:	'.' Identifier
+	:	'.' identifier
 	;
 
 fieldAccess_lfno_primary
-	:	'super' '.' Identifier
-	|	typeName '.' 'super' '.' Identifier
+	:	'super' '.' identifier
+	|	typeName '.' 'super' '.' identifier
 	;
 
 arrayAccess
@@ -1050,23 +1084,23 @@ arrayAccess_lfno_primary
 
 methodInvocation
 	:	methodName '(' argumentList? ')'
-	|	typeName '.' typeArguments? Identifier '(' argumentList? ')'
-	|	expressionName '.' typeArguments? Identifier '(' argumentList? ')'
-	|	primary '.' typeArguments? Identifier '(' argumentList? ')'
-	|	'super' '.' typeArguments? Identifier '(' argumentList? ')'
-	|	typeName '.' 'super' '.' typeArguments? Identifier '(' argumentList? ')'
+	|	typeName '.' typeArguments? identifier '(' argumentList? ')'
+	|	expressionName '.' typeArguments? identifier '(' argumentList? ')'
+	|	primary '.' typeArguments? identifier '(' argumentList? ')'
+	|	'super' '.' typeArguments? identifier '(' argumentList? ')'
+	|	typeName '.' 'super' '.' typeArguments? identifier '(' argumentList? ')'
 	;
 
 methodInvocation_lf_primary
-	:	'.' typeArguments? Identifier '(' argumentList? ')'
+	:	'.' typeArguments? identifier '(' argumentList? ')'
 	;
 
 methodInvocation_lfno_primary
 	:	methodName '(' argumentList? ')'
-	|	typeName '.' typeArguments? Identifier '(' argumentList? ')'
-	|	expressionName '.' typeArguments? Identifier '(' argumentList? ')'
-	|	'super' '.' typeArguments? Identifier '(' argumentList? ')'
-	|	typeName '.' 'super' '.' typeArguments? Identifier '(' argumentList? ')'
+	|	typeName '.' typeArguments? identifier '(' argumentList? ')'
+	|	expressionName '.' typeArguments? identifier '(' argumentList? ')'
+	|	'super' '.' typeArguments? identifier '(' argumentList? ')'
+	|	typeName '.' 'super' '.' typeArguments? identifier '(' argumentList? ')'
 	;
 
 argumentList
@@ -1074,24 +1108,24 @@ argumentList
 	;
 
 methodReference
-	:	expressionName '::' typeArguments? Identifier
-	|	referenceType '::' typeArguments? Identifier
-	|	primary '::' typeArguments? Identifier
-	|	'super' '::' typeArguments? Identifier
-	|	typeName '.' 'super' '::' typeArguments? Identifier
+	:	expressionName '::' typeArguments? identifier
+	|	referenceType '::' typeArguments? identifier
+	|	primary '::' typeArguments? identifier
+	|	'super' '::' typeArguments? identifier
+	|	typeName '.' 'super' '::' typeArguments? identifier
 	|	classType '::' typeArguments? 'new'
 	|	arrayType '::' 'new'
 	;
 
 methodReference_lf_primary
-	:	'::' typeArguments? Identifier
+	:	'::' typeArguments? identifier
 	;
 
 methodReference_lfno_primary
-	:	expressionName '::' typeArguments? Identifier
-	|	referenceType '::' typeArguments? Identifier
-	|	'super' '::' typeArguments? Identifier
-	|	typeName '.' 'super' '::' typeArguments? Identifier
+	:	expressionName '::' typeArguments? identifier
+	|	referenceType '::' typeArguments? identifier
+	|	'super' '::' typeArguments? identifier
+	|	typeName '.' 'super' '::' typeArguments? identifier
 	|	classType '::' typeArguments? 'new'
 	|	arrayType '::' 'new'
 	;
@@ -1125,13 +1159,13 @@ lambdaExpression
 	;
 
 lambdaParameters
-	:	Identifier
+	:	identifier
 	|	'(' formalParameterList? ')'
 	|	'(' inferredFormalParameterList ')'
 	;
 
 inferredFormalParameterList
-	:	Identifier (',' Identifier)*
+	:	identifier (',' identifier)*
 	;
 
 lambdaBody
@@ -1287,6 +1321,12 @@ castExpression
 	|	'(' referenceType additionalBound* ')' unaryExpressionNotPlusMinus  #castSimpleBound
 	|	'(' referenceType additionalBound* ')' lambdaExpression             #castLamda
 	;
+
+// Misc
+
+identifier
+    :   Identifier
+    ;
 
 // LEXER
 

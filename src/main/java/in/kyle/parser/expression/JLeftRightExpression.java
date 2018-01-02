@@ -1,5 +1,6 @@
 package in.kyle.parser.expression;
 
+import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.JObject;
@@ -56,6 +57,11 @@ public class JLeftRightExpression implements JExpression {
         @Override
         public void write(CodeWriter writer) {
             writer.append(javaString);
+        }
+        
+        @Override
+        public List<JObject> getChildren() {
+            return Collections.emptyList();
         }
     }
 }

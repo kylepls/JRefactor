@@ -8,7 +8,7 @@ import in.kyle.parser.JObject;
 import lombok.Data;
 
 @Data
-abstract class AnnotationBase implements JAnnotatable {
+public abstract class AnnotationBase implements JAnnotatable {
     
     private Set<JAnnotation> annotations = new LinkedHashSet<>();
     

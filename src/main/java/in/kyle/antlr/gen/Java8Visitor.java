@@ -607,12 +607,6 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEnumConstant(Java8Parser.EnumConstantContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Java8Parser#enumConstantModifier}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEnumConstantModifier(Java8Parser.EnumConstantModifierContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link Java8Parser#enumBodyDeclarations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1070,6 +1064,20 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTryStatement(Java8Parser.TryStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code tryCatchStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTryCatchStatement(Java8Parser.TryCatchStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code tryCatchFinallyStatement}
+	 * labeled alternative in {@link Java8Parser#basicTryStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTryCatchFinallyStatement(Java8Parser.TryCatchFinallyStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Java8Parser#catches}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1081,18 +1089,6 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCatchClause(Java8Parser.CatchClauseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link Java8Parser#catchFormalParameter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCatchFormalParameter(Java8Parser.CatchFormalParameterContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link Java8Parser#catchType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCatchType(Java8Parser.CatchTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#finally_}.
 	 * @param ctx the parse tree
@@ -1745,4 +1741,10 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCastLamda(Java8Parser.CastLamdaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#identifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifier(Java8Parser.IdentifierContext ctx);
 }

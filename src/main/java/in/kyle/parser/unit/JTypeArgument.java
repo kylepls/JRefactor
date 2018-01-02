@@ -1,5 +1,6 @@
 package in.kyle.parser.unit;
 
+import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.JObject;
@@ -40,7 +41,12 @@ public interface JTypeArgument extends JObject {
             public void write(CodeWriter writer) {
                 writer.append(name().toLowerCase());
             }
-            
+    
+            @Override
+            public List<JObject> getChildren() {
+                return Collections.emptyList();
+            }
+    
             public static Type fromJava(String string) {
                 return valueOf(string.toUpperCase());
             }

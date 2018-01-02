@@ -1,5 +1,6 @@
 package in.kyle.parser.expression;
 
+import java.util.Collections;
 import java.util.List;
 
 import in.kyle.parser.JObject;
@@ -51,6 +52,11 @@ public class JAssignment implements JExpression {
         
         public static Operator fromJava(String string) {
             return valueOf(string.toUpperCase());
+        }
+        
+        @Override
+        public List<JObject> getChildren() {
+            return Collections.emptyList();
         }
     }
 }

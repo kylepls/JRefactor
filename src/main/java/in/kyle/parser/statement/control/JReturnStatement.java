@@ -6,7 +6,9 @@ import in.kyle.parser.JObject;
 import in.kyle.parser.expression.JExpression;
 import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
+import lombok.Data;
 
+@Data
 public class JReturnStatement implements JControlStatement {
     
     private JExpression expression;

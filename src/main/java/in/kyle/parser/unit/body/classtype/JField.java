@@ -1,5 +1,6 @@
-package in.kyle.parser.unit;
+package in.kyle.parser.unit.body.classtype;
 
+import in.kyle.parser.unit.body.VariableHolder;
 import lombok.Data;
 
 @Data

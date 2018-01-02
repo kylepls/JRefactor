@@ -1,4 +1,4 @@
-package in.kyle.parser.unit;
+package in.kyle.parser.unit.body;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -7,11 +7,12 @@ import java.util.Set;
 
 import in.kyle.parser.JObject;
 import in.kyle.parser.expression.JExpression;
+import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class JArgumentList {
+public class JArgumentList implements JObject {
     
     private Set<JExpression> arguments = new LinkedHashSet<>();
     
@@ -33,6 +34,7 @@ public class JArgumentList {
         }
     }
     
+    @Override
     public List<JObject> getChildren() {
         return CollectionUtils.createList(arguments);
     }

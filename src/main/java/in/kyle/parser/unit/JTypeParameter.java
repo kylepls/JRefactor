@@ -8,12 +8,13 @@ import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class JTypeParameter extends JTypeName implements JObject {
+public class JTypeParameter implements JObject {
     
+    private JIdentifier name;
     private List<JTypeName> bounds = new ArrayList<>(0);
     
-    public JTypeParameter(String name) {
-        super(name);
+    public JTypeParameter(JIdentifier name) {
+        this.name = name;
     }
     
     public void setInitialBound(JTypeName name) {
