@@ -20,7 +20,7 @@ public class BasicWriter implements CodeWriter {
     }
     
     public BasicWriter dedent() {
-        currentIndent.setLength(currentIndent.length()-indentString.length());
+        currentIndent.setLength(currentIndent.length() - indentString.length());
         return this;
     }
     
@@ -62,15 +62,14 @@ public class BasicWriter implements CodeWriter {
             writer.currentIndent.append(currentIndent.toString());
             ((JObject) o).write(writer);
             return writer.toString();
+        } else if (o == null) {
+            throw new RuntimeException("Error printing, object is null");
         } else {
-            if (o == null) {
-                throw new RuntimeException("Error printing");
-            }
-            return o != null ? o.toString() : "ERROR";
+            return o.toString();
         }
     }
     
-    protected void objectArrayToStrings(Object[] o) {
+    private void objectArrayToStrings(Object[] o) {
         for (int i = 0; i < o.length; i++) {
             o[i] = objectToString(o[i]);
         }

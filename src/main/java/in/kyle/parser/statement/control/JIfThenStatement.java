@@ -1,4 +1,4 @@
-package in.kyle.parser.statement.control.loops;
+package in.kyle.parser.statement.control;
 
 import java.util.List;
 
@@ -10,20 +10,18 @@ import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class JBasicForStatement implements JLoopStatement {
+public class JIfThenStatement implements JControlStatement {
     
-    private JExpression init;
     private JExpression expression;
-    private JExpression update;
     private JStatement statement;
     
     @Override
     public List<JObject> getChildren() {
-        return CollectionUtils.createList(init, expression, update, statement);
+        return CollectionUtils.createList(expression, statement);
     }
     
     @Override
     public void write(CodeWriter writer) {
-        writer.append("for ({}; {}; {}) {}", init, expression, update, statement);
+        writer.append("if ({}) {}", expression, statement);
     }
 }
