@@ -197,30 +197,36 @@ wildcardBounds
 	:	boundType=('extends'|'super') referenceType
 	;
 
+// added
 packageName
 	:	Identifier
 	|	packageName '.' Identifier
 	;
 
+// added
 typeName
 	:	Identifier
 	|	packageOrTypeName '.' Identifier
 	;
 
+// added
 packageOrTypeName
 	:	Identifier
 	|	packageOrTypeName '.' Identifier
 	;
 
+// added
 expressionName
 	:	Identifier
 	|	ambiguousName '.' Identifier
 	;
 
+// added
 methodName
 	:	Identifier
 	;
 
+// added
 ambiguousName
 	:	Identifier
 	|	ambiguousName '.' Identifier
@@ -246,6 +252,7 @@ importDeclaration
     : 'import' import_static? packageOrTypeName import_wildcard? ';'
     ;
     
+// added
 typeDeclaration
 	:	classDeclaration
 	|   enumDeclaration
@@ -253,11 +260,12 @@ typeDeclaration
 	|	';'
 	;
 
-// start class
+// added
 classDeclaration
 	:	annotation* classModifier* 'class' identifier typeParameters? superclass? superinterfaces? classBody
 	;
 
+// added
 classModifier
 	:	'public'
 	|	'protected'
@@ -268,25 +276,32 @@ classModifier
 	|	'strictfp'
 	;
 
+// added
 typeParameterList
 	:	typeParameter (',' typeParameter)*
 	;
+	
+// added
 typeParameters
 	:	'<' typeParameterList '>'
 	;
 
+// added
 superclass
 	:	'extends' classType
 	;
 
+// added
 superinterfaces
 	:	'implements' interfaceTypeList
 	;
 
+// added
 interfaceTypeList
 	:	interfaceType (',' interfaceType)*
 	;
 
+// added
 classBody
 	:	'{' classBodyDeclaration* '}'
 	;
@@ -296,7 +311,7 @@ classBodyDeclaration
 	|	methodDeclaration
 	|	classDeclaration
 	|	interfaceDeclaration
-	|	';'
+	|	emptyStatement
 	|	instanceInitializer
 	|	staticInitializer
 	|	constructorDeclaration
@@ -480,24 +495,29 @@ methodBody
 	|	';'
 	;
 
+// added
 instanceInitializer
 	:	block
 	;
 
+// added
 staticInitializer
 	:	'static' block
 	;
 
+// added
 constructorDeclaration
 	:	annotation* constructorModifier* constructorDeclarator throws_? constructorBody
 	;
 
+// added
 constructorModifier
 	:	'public'
 	|	'protected'
 	|	'private'
 	;
 
+// added
 constructorDeclarator
 	:	typeParameters? simpleTypeName '(' formalParameterList? ')'
 	;
@@ -506,12 +526,13 @@ simpleTypeName
 	:	Identifier
 	;
 
+// added
 constructorBody
 	:	'{' explicitConstructorInvocation? blockStatements? '}'
 	;
 
 explicitConstructorInvocation
-	:	typeArguments? 'this' '(' argumentList? ')' ';'
+	:	typeArguments? 'this' '(' argumentList? ')' ';'                     
 	|	typeArguments? 'super' '(' argumentList? ')' ';'
 	|	expressionName '.' typeArguments? 'super' '(' argumentList? ')' ';'
 	|	primary '.' typeArguments? 'super' '(' argumentList? ')' ';'
@@ -546,6 +567,7 @@ enumBodyDeclarations
  * Productions from §9 (Interfaces)
  */
 
+// added
 interfaceDeclaration
 	:	normalInterfaceDeclaration
 	|	annotationTypeDeclaration
@@ -576,21 +598,23 @@ interfaceBody
 	:	'{' interfaceMemberDeclaration* '}'
 	;
 
+// added
 interfaceMemberDeclaration
 	:	constantDeclaration
 	|	interfaceMethodDeclaration
 	|	classDeclaration
 	|	interfaceDeclaration
-	|	';'
+	|   emptyStatement	
 	;
 
+// added
 constantDeclaration
-	:	constantModifier* unannType variableDeclaratorList ';'
+	:	annotation* constantModifier* unannType variableDeclaratorList ';'
 	;
 
+// added
 constantModifier
-	:	annotation
-	|	'public'
+	:	'public'
 	|	'static'
 	|	'final'
 	;
@@ -609,14 +633,17 @@ interfaceMethodModifier
 	|	'strictfp'
 	;
 
+// added
 annotationTypeDeclaration
-	:	interfaceModifier* '@' 'interface' Identifier annotationTypeBody
+	:	annotation* interfaceModifier* '@' 'interface' identifier annotationTypeBody
 	;
 
+// added
 annotationTypeBody
 	:	'{' annotationTypeMemberDeclaration* '}'
 	;
 
+// added
 annotationTypeMemberDeclaration
 	:	annotationTypeElementDeclaration
 	|	constantDeclaration
@@ -625,56 +652,66 @@ annotationTypeMemberDeclaration
 	|	';'
 	;
 
+// added
 annotationTypeElementDeclaration
-	:	annotationTypeElementModifier* unannType Identifier '(' ')' dims? defaultValue? ';'
+	:	annotation* annotationTypeElementModifier* unannType identifier '(' ')' dims? defaultValue? ';'
 	;
 
+// added
 annotationTypeElementModifier
-	:	annotation
-	|	'public'
+	:	'public'
 	|	'abstract'
 	;
 
+// added
 defaultValue
 	:	'default' elementValue
 	;
 
+// added
 annotation
 	:	normalAnnotation
 	|	markerAnnotation
 	|	singleElementAnnotation
 	;
 
+// added
 normalAnnotation
 	:	'@' typeName '(' elementValuePairList? ')'
 	;
 
+// added
 elementValuePairList
 	:	elementValuePair (',' elementValuePair)*
 	;
 
+// added
 elementValuePair
 	:	identifier '=' elementValue
 	;
 
+// added
 elementValue
-	:	conditionalExpression
-	|	elementValueArrayInitializer
-	|	annotation
+	:	conditionalExpression           #elementValueExpression
+	|	elementValueArrayInitializer    #elementValueArray
+	|	annotation                      #elementValueAnnotation
 	;
 
 elementValueArrayInitializer
 	:	'{' elementValueList? ','? '}'
 	;
 
+// added
 elementValueList
 	:	elementValue (',' elementValue)*
 	;
 
+// added
 markerAnnotation
 	:	'@' typeName
 	;
 
+// added
 singleElementAnnotation
 	:	'@' typeName '(' elementValue ')'
 	;
@@ -695,28 +732,34 @@ variableInitializerList
  * Productions from §14 (Blocks and Statements)
  */
 
+// added
 block
 	:	'{' blockStatement* '}'
 	;
 
+// added
 blockStatements
 	:	blockStatement+
 	;
 
+// added
 blockStatement
 	:	localVariableDeclarationStatement
 	|	classDeclaration
 	|	statement
 	;
 
+// added
 localVariableDeclarationStatement
 	:	localVariableDeclaration ';'
 	;
 
+// added
 localVariableDeclaration
 	:	annotation* variableModifier* unannType variableDeclaratorList
 	;
 
+// added
 statement
 	:	statementWithoutTrailingSubstatement
 	|	labeledStatement
@@ -726,6 +769,7 @@ statement
 	|	forStatement
 	;
 
+// added
 statementNoShortIf
 	:	statementWithoutTrailingSubstatement
 	|	labeledStatementNoShortIf
@@ -734,6 +778,7 @@ statementNoShortIf
 	|	forStatementNoShortIf
 	;
 
+// added
 statementWithoutTrailingSubstatement
 	:	block
 	|	emptyStatement
@@ -749,22 +794,27 @@ statementWithoutTrailingSubstatement
 	|	tryStatement
 	;
 
+// added
 emptyStatement
 	:	';'
 	;
 
+// added
 labeledStatement
 	:	identifier ':' statement
 	;
 
+// added
 labeledStatementNoShortIf
 	:	identifier ':' statementNoShortIf
 	;
 
+// added
 expressionStatement
 	:	statementExpression ';'
 	;
 
+// added
 statementExpression
 	:	assignment                      #assignementStatement
 	|	preIncrementExpression          #preIncrementStatement
@@ -775,18 +825,22 @@ statementExpression
 	|	classInstanceCreationExpression #classInstanceCreationStatement
 	;
 
+// added
 ifThenStatement
 	:	'if' '(' expression ')' statement
 	;
 
+// added
 ifThenElseStatement
 	:	'if' '(' expression ')' statementNoShortIf 'else' statement
 	;
 
+// added
 ifThenElseStatementNoShortIf
 	:	'if' '(' expression ')' statementNoShortIf 'else' statementNoShortIf
 	;
 
+// added
 assertStatement
 	:	'assert' expression ';'
 	|	'assert' expression ':' expression ';'
@@ -818,32 +872,39 @@ enumConstantName
 	:	identifier
 	;
 
+// added
 whileStatement
 	:	'while' '(' expression ')' statement
 	;
 
+// added
 whileStatementNoShortIf
 	:	'while' '(' expression ')' statementNoShortIf
 	;
 
+// added
 doStatement
 	:	'do' statement 'while' '(' expression ')' ';'
 	;
 
+// added
 forStatement
 	:	basicForStatement
 	|	enhancedForStatement
 	;
 
+// added
 forStatementNoShortIf
 	:	basicForStatementNoShortIf
 	|	enhancedForStatementNoShortIf
 	;
 
+// added
 basicForStatement
 	:	'for' '(' forInit? ';' expression? ';' forUpdate? ')' statement
 	;
 
+// added
 basicForStatementNoShortIf
 	:	'for' '(' forInit? ';' expression? ';' forUpdate? ')' statementNoShortIf
 	;
@@ -857,55 +918,68 @@ forUpdate
 	:	statementExpressionList
 	;
 
+// added
 statementExpressionList
 	:	statementExpression (',' statementExpression)*
 	;
 
+// added
 enhancedForStatement
 	:	'for' '(' variableModifier* unannType variableDeclaratorId ':' expression ')' statement
 	;
 
+// added
 enhancedForStatementNoShortIf
 	:	'for' '(' variableModifier* unannType variableDeclaratorId ':' expression ')' statementNoShortIf
 	;
 
+// added
 breakStatement
 	:	'break' identifier? ';'
 	;
 
+// added
 continueStatement
 	:	'continue' identifier? ';'
 	;
 
+// added
 returnStatement
 	:	'return' expression? ';'
 	;
 
+// added
 throwStatement
 	:	'throw' expression ';'
 	;
 
+// added
 synchronizedStatement
 	:	'synchronized' '(' expression ')' block
 	;
 
+// added
 tryStatement
     :   basicTryStatement
 	|	tryWithResourcesStatement
 	;
 
+// added
 basicTryStatement
     :   'try' block catches             #tryCatchStatement
     |   'try' block catches? finally_   #tryCatchFinallyStatement
     ;
+// added
 catches
 	:	catchClause catchClause*
 	;
 
+// added
 catchClause
 	:	'catch' '(' variableModifier* unannClassType ('|' classType)* variableDeclaratorId ')' block
 	;
 
+// added
 finally_
 	:	'finally' block
 	;
@@ -938,6 +1012,7 @@ primary
 		)*
 	;
 	
+// added
 expressionParenthesis
     :   '(' expression ')'
     ;
@@ -1039,6 +1114,7 @@ classInstanceCreationExpression_lfno_primary
 	|	expressionName '.' 'new' typeArguments? annotation* Identifier typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
 	;
 
+// added
 typeArgumentsOrDiamond
 	:	typeArguments   #ig22
 	|	'<' '>'         #diamond
@@ -1173,21 +1249,25 @@ lambdaBody
 	|	block
 	;
 
+// added
 assignmentExpression
 	:	conditionalExpression
 	|	assignment
 	;
 
+// added
 assignment
 	:	leftHandSide assignmentOperator expression
 	;
 
+// added
 leftHandSide
 	:	expressionName
 	|	fieldAccess
 	|	arrayAccess
 	;
 
+// added
 assignmentOperator
 	:	'='
 	|	'*='
@@ -1203,42 +1283,50 @@ assignmentOperator
 	|	'|='
 	;
 	
+// added
 conditionalExpression
 	:	conditionalOrExpression                                             #ig1
 	|	conditionalOrExpression '?' expression ':' conditionalExpression    #conditionalTernary
 	;
 
+// added
 conditionalOrExpression
 	:	conditionalAndExpression                                            #ig2
 	|	conditionalOrExpression '||' conditionalAndExpression               #conditionalOr
 	;
 
+// added
 conditionalAndExpression
 	:	inclusiveOrExpression                                               #ig3
 	|	conditionalAndExpression '&&' inclusiveOrExpression                 #conditionalAnd
 	;
 
+// added
 inclusiveOrExpression
 	:	exclusiveOrExpression                                               #ig4
 	|	inclusiveOrExpression '|' exclusiveOrExpression                     #binaryInclusiveOr
 	;
 
+// added
 exclusiveOrExpression
 	:	andExpression                                                       #ig5
 	|	exclusiveOrExpression '^' andExpression                             #binaryExclusiveOr
 	;
 
+// added
 andExpression
 	:	equalityExpression                                                  #ig6
 	|	andExpression '&' equalityExpression                                #binaryAnd
 	;
 
+// added
 equalityExpression
 	:	relationalExpression                                                #ig7
 	|	equalityExpression '==' relationalExpression                        #conditionalEquality
 	|	equalityExpression '!=' relationalExpression                        #conditionalNotEquality
 	;
 
+// added
 relationalExpression
 	:	shiftExpression                                                     #ig8
 	|	relationalExpression '<' shiftExpression                            #conditionalLessThan
@@ -1248,6 +1336,7 @@ relationalExpression
 	|	relationalExpression 'instanceof' referenceType                     #conditionalInstanceOf
 	;
 
+// added
 shiftExpression
 	:	additiveExpression                                                  #ig9
 	|	shiftExpression '<' '<' additiveExpression                          #binaryShiftLeft
@@ -1255,12 +1344,14 @@ shiftExpression
 	|	shiftExpression '>' '>' '>' additiveExpression                      #binarcyAllignRight
 	;
 
+// added
 additiveExpression
 	:	multiplicativeExpression                                            #ig10
 	|	additiveExpression '+' multiplicativeExpression                     #expressionAdd
 	|	additiveExpression '-' multiplicativeExpression                     #expressionSubtract
 	;
 
+// added
 multiplicativeExpression
 	:	unaryExpression                                                     #ig11
 	|	multiplicativeExpression '*' unaryExpression                        #expressionMultiply
@@ -1268,6 +1359,7 @@ multiplicativeExpression
 	|	multiplicativeExpression '%' unaryExpression                        #expressionModulus
 	;
 
+// added
 unaryExpression
 	:	preIncrementExpression                                              #ig12
 	|	preDecrementExpression                                              #ig13
@@ -1276,14 +1368,17 @@ unaryExpression
 	|	unaryExpressionNotPlusMinus                                         #ig14
 	;
 
+// added
 preIncrementExpression
 	:	'++' unaryExpression
 	;
 
+// added
 preDecrementExpression
 	:	'--' unaryExpression
 	;
 
+// added
 unaryExpressionNotPlusMinus
 	:	postfixExpression                                                   #ig15
 	|	'~' unaryExpression                                                 #binaryNot
@@ -1300,18 +1395,22 @@ postfixExpression
 		)*
 	;
 
+// added
 postIncrementExpression
 	:	postfixExpression '++'
 	;
 
+// added
 postIncrementExpression_lf_postfixExpression
 	:	'++'
 	;
 
+// added
 postDecrementExpression
 	:	postfixExpression '--'
 	;
 
+// added
 postDecrementExpression_lf_postfixExpression
 	:	'--'
 	;
@@ -1324,6 +1423,7 @@ castExpression
 
 // Misc
 
+// added
 identifier
     :   Identifier
     ;

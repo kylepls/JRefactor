@@ -50,17 +50,24 @@ public interface JavaVisitor<T> {
     T visitJLocalVariableDeclaration(in.kyle.parser.statement.JLocalVariableDeclaration object);
     T visitJStatement(in.kyle.parser.statement.JStatement object);
     T visitAnnotationBase(in.kyle.parser.unit.AnnotationBase object);
+    T visitJAnnotationBody(in.kyle.parser.unit.body.annotationtype.JAnnotationBody object);
+    T visitJAnnotationMember(in.kyle.parser.unit.body.annotationtype.JAnnotationMember object);
+    T visitJAnnotationTypeElement(in.kyle.parser.unit.body.annotationtype.JAnnotationTypeElement object);
+    T visitJElementValue(in.kyle.parser.unit.body.annotationtype.JElementValue object);
     T visitJClassBody(in.kyle.parser.unit.body.classtype.JClassBody object);
+    T visitJClassInitializer(in.kyle.parser.unit.body.classtype.JClassInitializer object);
+    T visitJClassInstanceInitializer(in.kyle.parser.unit.body.classtype.JClassInstanceInitializer object);
     T visitJClassMember(in.kyle.parser.unit.body.classtype.JClassMember object);
+    T visitJClassStaticInitializer(in.kyle.parser.unit.body.classtype.JClassStaticInitializer object);
     T visitJField(in.kyle.parser.unit.body.classtype.JField object);
     T visitJEnumBody(in.kyle.parser.unit.body.enumtype.JEnumBody object);
     T visitJEnumConstant(in.kyle.parser.unit.body.enumtype.JEnumConstant object);
     T visitJEnumMember(in.kyle.parser.unit.body.enumtype.JEnumMember object);
-    T visitJInterface(in.kyle.parser.unit.body.interfacetype.JInterface object);
     T visitJInterfaceBody(in.kyle.parser.unit.body.interfacetype.JInterfaceBody object);
     T visitJInterfaceMember(in.kyle.parser.unit.body.interfacetype.JInterfaceMember object);
     T visitJInterfaceMethod(in.kyle.parser.unit.body.interfacetype.JInterfaceMethod object);
     T visitJArgumentList(in.kyle.parser.unit.body.JArgumentList object);
+    T visitJConstructorDeclaration(in.kyle.parser.unit.body.JConstructorDeclaration object);
     T visitJMember(in.kyle.parser.unit.body.JMember object);
     T visitJMethod(in.kyle.parser.unit.body.JMethod object);
     T visitJMethodHeader(in.kyle.parser.unit.body.JMethodHeader object);
@@ -71,6 +78,10 @@ public interface JavaVisitor<T> {
     T visitVariableHolder(in.kyle.parser.unit.body.VariableHolder object);
     T visitJAnnotatable(in.kyle.parser.unit.JAnnotatable object);
     T visitJAnnotation(in.kyle.parser.unit.JAnnotation object);
+    T visitJElementPair(in.kyle.parser.unit.JAnnotationValue.JElementPair object);
+    T visitJPairCollection(in.kyle.parser.unit.JAnnotationValue.JPairCollection object);
+    T visitJSingleValue(in.kyle.parser.unit.JAnnotationValue.JSingleValue object);
+    T visitJAnnotationValue(in.kyle.parser.unit.JAnnotationValue object);
     T visitJCompilationUnit(in.kyle.parser.unit.JCompilationUnit object);
     T visitJIdentifier(in.kyle.parser.unit.JIdentifier object);
     T visitJImport(in.kyle.parser.unit.JImport object);
@@ -87,7 +98,9 @@ public interface JavaVisitor<T> {
     T visitJTypeParameter(in.kyle.parser.unit.JTypeParameter object);
     T visitModifiable(in.kyle.parser.unit.Modifiable object);
     T visitTypeable(in.kyle.parser.unit.Typeable object);
-    T visitJClass(in.kyle.parser.unit.types.JClass object);
-    T visitJEnum(in.kyle.parser.unit.types.JEnum object);
+    T visitJAnnotationDeclaration(in.kyle.parser.unit.types.JAnnotationDeclaration object);
+    T visitJClassDeclaration(in.kyle.parser.unit.types.JClassDeclaration object);
+    T visitJEnumDeclaration(in.kyle.parser.unit.types.JEnumDeclaration object);
+    T visitJInterfaceDeclaration(in.kyle.parser.unit.types.JInterfaceDeclaration object);
 
 }

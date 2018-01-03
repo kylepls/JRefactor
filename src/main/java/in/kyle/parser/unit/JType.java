@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public abstract class JType<T extends JTypeBody> extends Modifiable implements JClassMember {
     
-    private JIdentifier name;
+    private JIdentifier identifier;
     private T body;
     
     @Override
     public List<JObject> getChildren() {
-        return CollectionUtils.createList(name, body);
+        return CollectionUtils.createList(identifier, body);
     }
 }

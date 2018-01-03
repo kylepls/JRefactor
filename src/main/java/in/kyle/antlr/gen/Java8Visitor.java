@@ -733,11 +733,26 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitElementValuePair(Java8Parser.ElementValuePairContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Java8Parser#elementValue}.
+	 * Visit a parse tree produced by the {@code elementValueExpression}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitElementValue(Java8Parser.ElementValueContext ctx);
+	T visitElementValueExpression(Java8Parser.ElementValueExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code elementValueArray}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElementValueArray(Java8Parser.ElementValueArrayContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code elementValueAnnotation}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElementValueAnnotation(Java8Parser.ElementValueAnnotationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#elementValueArrayInitializer}.
 	 * @param ctx the parse tree

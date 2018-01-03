@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 
 @Data
-public class JEnum extends JType<JEnumBody> {
+public class JEnumDeclaration extends JType<JEnumBody> {
     
     @Getter(value = AccessLevel.NONE)
     @Delegate(excludes = JObject.class)
@@ -22,7 +22,7 @@ public class JEnum extends JType<JEnumBody> {
     @Override
     public void write(CodeWriter writer) {
         writeModifiers(writer);
-        writer.append("enum ").append(getName());
+        writer.append("enum ").append(getIdentifier());
         superInterfaceList.write(writer);
         writer.append(getBody());
     }

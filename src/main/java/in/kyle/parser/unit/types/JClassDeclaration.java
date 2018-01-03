@@ -8,7 +8,9 @@ import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JType;
 import in.kyle.parser.unit.JTypeName;
 import in.kyle.parser.unit.JTypeParameterList;
+import in.kyle.parser.unit.body.annotationtype.JAnnotationMember;
 import in.kyle.parser.unit.body.classtype.JClassBody;
+import in.kyle.parser.unit.body.classtype.JClassMember;
 import in.kyle.parser.unit.body.interfacetype.JInterfaceMember;
 import in.kyle.writer.CodeWriter;
 import lombok.AccessLevel;
@@ -17,7 +19,8 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 
 @Data
-public class JClass extends JType<JClassBody> implements JStatement, JInterfaceMember {
+public class JClassDeclaration extends JType<JClassBody>
+        implements JStatement, JInterfaceMember, JAnnotationMember, JClassMember {
     
     @Delegate(excludes = JObject.class)
     @Getter(value = AccessLevel.NONE)
@@ -40,7 +43,7 @@ public class JClass extends JType<JClassBody> implements JStatement, JInterfaceM
     @Override
     public void write(CodeWriter writer) {
         writeModifiers(writer);
-        writer.append("class ").append(getName());
+        writer.append("class ").append(getIdentifier());
         writeTypeParameters(writer);
         writeExtendsString(writer);
         superInterfaceList.write(writer);

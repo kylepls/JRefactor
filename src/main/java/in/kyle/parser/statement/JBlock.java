@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class JBlock implements JStatement {
     
-    private final List<JStatement> statements = new ArrayList<>();
+    private List<JStatement> statements = new ArrayList<>();
     
     public boolean addStatement(JStatement statement) {
         return statements.add(statement);

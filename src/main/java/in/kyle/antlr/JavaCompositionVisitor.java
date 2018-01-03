@@ -2,11 +2,13 @@ package in.kyle.antlr;
 
 import org.antlr.v4.runtime.RuleContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import in.kyle.antlr.gen.Java8BaseVisitor;
@@ -24,23 +26,35 @@ import in.kyle.parser.statement.control.loops.JEnhancedForStatement;
 import in.kyle.parser.statement.control.loops.JWhileStatement;
 import in.kyle.parser.unit.*;
 import in.kyle.parser.unit.body.JArgumentList;
+import in.kyle.parser.unit.body.JConstructorDeclaration;
 import in.kyle.parser.unit.body.JMethod;
 import in.kyle.parser.unit.body.JMethodHeader;
 import in.kyle.parser.unit.body.JParameter;
 import in.kyle.parser.unit.body.JVariable;
+import in.kyle.parser.unit.body.annotationtype.JAnnotationBody;
+import in.kyle.parser.unit.body.annotationtype.JAnnotationMember;
+import in.kyle.parser.unit.body.annotationtype.JAnnotationTypeElement;
+import in.kyle.parser.unit.body.annotationtype.JElementValue;
 import in.kyle.parser.unit.body.classtype.JClassBody;
+import in.kyle.parser.unit.body.classtype.JClassInstanceInitializer;
 import in.kyle.parser.unit.body.classtype.JClassMember;
+import in.kyle.parser.unit.body.classtype.JClassStaticInitializer;
 import in.kyle.parser.unit.body.classtype.JField;
 import in.kyle.parser.unit.body.enumtype.JEnumBody;
 import in.kyle.parser.unit.body.enumtype.JEnumConstant;
-import in.kyle.parser.unit.body.interfacetype.JInterface;
 import in.kyle.parser.unit.body.interfacetype.JInterfaceBody;
 import in.kyle.parser.unit.body.interfacetype.JInterfaceMember;
 import in.kyle.parser.unit.body.interfacetype.JInterfaceMethod;
-import in.kyle.parser.unit.types.JClass;
-import in.kyle.parser.unit.types.JEnum;
+import in.kyle.parser.unit.types.JAnnotationDeclaration;
+import in.kyle.parser.unit.types.JClassDeclaration;
+import in.kyle.parser.unit.types.JEnumDeclaration;
+import in.kyle.parser.unit.types.JInterfaceDeclaration;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
+    
+    private static <T> Collector<T, ?, LinkedHashSet<T>> createLinkedSetCollector() {
+        return Collectors.toCollection(LinkedHashSet::new);
+    }
     
     @Override
     public JCompilationUnit visitCompilationUnit(Java8Parser.CompilationUnitContext ctx) {
@@ -50,7 +64,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
             jPackage = visitPackageDeclaration(ctx.packageDeclaration());
         }
         Set<JImport> imports = visitImports(ctx.importDeclaration());
-        Set<JClass> types = visitTypeDeclarations(ctx.typeDeclaration());
+        Set<JClassDeclaration> types = visitTypeDeclarations(ctx.typeDeclaration());
         
         unit.setPackageName(jPackage);
         unit.setImports(imports);
@@ -81,24 +95,24 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JClass visitClassDeclaration(ClassDeclarationContext ctx) {
+    public JClassDeclaration visitClassDeclaration(ClassDeclarationContext ctx) {
         Set<JAnnotation> annotations = visitAnnotations(ctx.annotation());
         
         
-        JClass jClass = new JClass();
-        jClass.setAnnotations(annotations);
-        jClass.setModifiers(visitClassModifiers(ctx.classModifier()));
-        jClass.setName(visitIdentifier(ctx.identifier()));
+        JClassDeclaration jClassDeclaration = new JClassDeclaration();
+        jClassDeclaration.setAnnotations(annotations);
+        jClassDeclaration.setModifiers(visitClassModifiers(ctx.classModifier()));
+        jClassDeclaration.setIdentifier(visitIdentifier(ctx.identifier()));
         
-        setClassSuperClass(ctx, jClass);
+        setClassSuperClass(ctx, jClassDeclaration);
         if (ctx.superinterfaces() != null) {
-            jClass.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
+            jClassDeclaration.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
         }
-        setClassTypeParameters(ctx, jClass);
+        setClassTypeParameters(ctx, jClassDeclaration);
         
         
-        jClass.setBody(visitClassBody(ctx.classBody()));
-        return jClass;
+        jClassDeclaration.setBody(visitClassBody(ctx.classBody()));
+        return jClassDeclaration;
     }
     
     @Override
@@ -116,7 +130,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return types;
     }
     
-    private void setClassTypeParameters(ClassDeclarationContext ctx, JClass jClass) {
+    private void setClassTypeParameters(ClassDeclarationContext ctx,
+                                        JClassDeclaration jClassDeclaration) {
         if (ctx.typeParameters() != null) {
             List<TypeParameterContext> list =
                     ctx.typeParameters().typeParameterList().typeParameter();
@@ -124,7 +139,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
             for (TypeParameterContext typeParameterContext : list) {
                 parameters.add(visitTypeParameter(typeParameterContext));
             }
-            jClass.setTypeParameters(parameters);
+            jClassDeclaration.setTypeParameters(parameters);
         }
     }
     
@@ -154,10 +169,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return set;
     }
     
-    private void setClassSuperClass(ClassDeclarationContext ctx, JClass jClass) {
+    private void setClassSuperClass(ClassDeclarationContext ctx,
+                                    JClassDeclaration jClassDeclaration) {
         if (ctx.superclass() != null) {
             JTypeName extendsType = new JTypeName(ctx.superclass().getText());
-            jClass.setExtendsType(extendsType);
+            jClassDeclaration.setExtendsType(extendsType);
         }
     }
     
@@ -397,14 +413,14 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JEnum visitEnumDeclaration(Java8Parser.EnumDeclarationContext ctx) {
-        JEnum jEnum = new JEnum();
-        jEnum.setAnnotations(visitAnnotations(ctx.annotation()));
-        jEnum.setModifiers(visitClassModifiers(ctx.classModifier()));
-        jEnum.setName(visitIdentifier(ctx.identifier()));
-        jEnum.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
-        jEnum.setBody(visitEnumBody(ctx.enumBody()));
-        return jEnum;
+    public JEnumDeclaration visitEnumDeclaration(Java8Parser.EnumDeclarationContext ctx) {
+        JEnumDeclaration jEnumDeclaration = new JEnumDeclaration();
+        jEnumDeclaration.setAnnotations(visitAnnotations(ctx.annotation()));
+        jEnumDeclaration.setModifiers(visitClassModifiers(ctx.classModifier()));
+        jEnumDeclaration.setIdentifier(visitIdentifier(ctx.identifier()));
+        jEnumDeclaration.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
+        jEnumDeclaration.setBody(visitEnumBody(ctx.enumBody()));
+        return jEnumDeclaration;
     }
     
     @Override
@@ -456,23 +472,25 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JInterface visitNormalInterfaceDeclaration(NormalInterfaceDeclarationContext ctx) {
-        JInterface jInterface = new JInterface();
-        jInterface.setAnnotations(visitAnnotations(ctx.annotation()));
+    public JInterfaceDeclaration visitNormalInterfaceDeclaration
+            (NormalInterfaceDeclarationContext ctx) {
+        JInterfaceDeclaration jInterfaceDeclaration = new JInterfaceDeclaration();
+        jInterfaceDeclaration.setAnnotations(visitAnnotations(ctx.annotation()));
         if (ctx.interfaceModifier() != null) {
-            jInterface.setModifiers(visitInterfaceModifiers(ctx.interfaceModifier()));
+            jInterfaceDeclaration.setModifiers(visitInterfaceModifiers(ctx.interfaceModifier()));
         }
-        jInterface.setName(visitIdentifier(ctx.identifier()));
+        jInterfaceDeclaration.setIdentifier(visitIdentifier(ctx.identifier()));
         if (ctx.typeParameters() != null) {
-            jInterface.setTypeParameters(visitTypeParameters(ctx.typeParameters()));
+            jInterfaceDeclaration.setTypeParameters(visitTypeParameters(ctx.typeParameters()));
         }
         
         if (ctx.extendsInterfaces() != null) {
-            jInterface.setSuperInterfaces(visitExtendsInterfaces(ctx.extendsInterfaces()));
+            jInterfaceDeclaration.setSuperInterfaces(visitExtendsInterfaces(ctx.extendsInterfaces
+                    ()));
         }
         
-        jInterface.setBody(visitInterfaceBody(ctx.interfaceBody()));
-        return jInterface;
+        jInterfaceDeclaration.setBody(visitInterfaceBody(ctx.interfaceBody()));
+        return jInterfaceDeclaration;
     }
     
     @Override
@@ -527,10 +545,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
                    .collect(Collectors.toSet());
     }
     
-    private Set<JClass> visitTypeDeclarations(List<TypeDeclarationContext> list) {
+    private Set<JClassDeclaration> visitTypeDeclarations(List<TypeDeclarationContext> list) {
         return list.stream()
                    .map(this::visitTypeDeclaration)
-                   .map(JClass.class::cast)
+                   .map(JClassDeclaration.class::cast)
                    .collect(Collectors.toSet());
     }
     
@@ -1092,5 +1110,213 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JIdentifier visitIdentifier(IdentifierContext ctx) {
         return new JIdentifier(ctx.getText());
+    }
+    
+    @Override
+    public JField visitConstantDeclaration(ConstantDeclarationContext ctx) {
+        JField field = new JField();
+        field.setAnnotations(visitAnnotations(ctx.annotation()));
+        field.setModifiers(visitConstantModifiers(ctx.constantModifier()));
+        field.setType(visitUnannType(ctx.unannType()));
+        field.setVariables(visitVariableDeclaratorList(ctx.variableDeclaratorList()));
+        return field;
+    }
+    
+    private Set<JModifier> visitConstantModifiers(List<ConstantModifierContext> list) {
+        return list.stream()
+                   .map(this::visitConstantModifier)
+                   .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+    
+    @Override
+    public JClassInstanceInitializer visitInstanceInitializer(InstanceInitializerContext ctx) {
+        JClassInstanceInitializer initializer = new JClassInstanceInitializer();
+        initializer.setBlock(visitBlock(ctx.block()));
+        return initializer;
+    }
+    
+    @Override
+    public JClassStaticInitializer visitStaticInitializer(StaticInitializerContext ctx) {
+        JClassStaticInitializer initializer = new JClassStaticInitializer();
+        initializer.setBlock(visitBlock(ctx.block()));
+        return initializer;
+    }
+    
+    @Override
+    public JConstructorDeclaration visitConstructorDeclaration(ConstructorDeclarationContext ctx) {
+        JConstructorDeclaration declaration = new JConstructorDeclaration();
+        declaration.setAnnotations(visitAnnotations(ctx.annotation()));
+        declaration.setTypeParameters(visitTypeParameters(ctx.constructorDeclarator()
+                                                             .typeParameters()));
+        declaration.setIdentifier(visitSimpleTypeName(ctx.constructorDeclarator()
+                                                         .simpleTypeName()));
+        if (ctx.throws_() != null) {
+            declaration.setThrowsList(visitThrows_(ctx.throws_()));
+        }
+        declaration.setBody(visitConstructorBody(ctx.constructorBody()));
+        
+        return declaration;
+    }
+    
+    @Override
+    public JBlock visitConstructorBody(ConstructorBodyContext ctx) {
+        JBlock block = new JBlock();
+        
+        List<JStatement> statements = new ArrayList<>();
+        if (ctx.explicitConstructorInvocation() != null) {
+            statements.add((JStatement) visitExplicitConstructorInvocation(ctx.explicitConstructorInvocation()));
+        }
+        
+        if (ctx.blockStatements() != null) {
+            List<JStatement> temp = visitBlockStatements(ctx.blockStatements());
+            statements.addAll(temp);
+        }
+        
+        block.setStatements(statements);
+        return block;
+    }
+    
+    
+    @Override
+    public JAnnotationDeclaration visitAnnotationTypeDeclaration(AnnotationTypeDeclarationContext
+                                                                             ctx) {
+        JAnnotationDeclaration declaration = new JAnnotationDeclaration();
+        if (ctx.annotation() != null) {
+            declaration.setAnnotations(visitAnnotations(ctx.annotation()));
+        }
+        
+        if (ctx.interfaceModifier() != null) {
+            declaration.setModifiers(visitInterfaceModifiers(ctx.interfaceModifier()));
+        }
+        
+        declaration.setIdentifier(visitIdentifier(ctx.identifier()));
+        declaration.setBody(visitAnnotationTypeBody(ctx.annotationTypeBody()));
+        return declaration;
+    }
+    
+    @Override
+    public JAnnotationBody visitAnnotationTypeBody(AnnotationTypeBodyContext ctx) {
+        JAnnotationBody body = new JAnnotationBody();
+        Set<JAnnotationMember> members = ctx.annotationTypeMemberDeclaration()
+                                            .stream()
+                                            .map(this::visitAnnotationTypeMemberDeclaration)
+                                            .collect(createLinkedSetCollector());
+        body.setMembers(members);
+        return body;
+    }
+    
+    @Override
+    public JAnnotationMember visitAnnotationTypeMemberDeclaration(
+            AnnotationTypeMemberDeclarationContext ctx) {
+        return (JAnnotationMember) super.visitAnnotationTypeMemberDeclaration(ctx);
+    }
+    
+    @Override
+    public JAnnotationTypeElement visitAnnotationTypeElementDeclaration(
+            AnnotationTypeElementDeclarationContext ctx) {
+        JAnnotationTypeElement element = new JAnnotationTypeElement();
+        element.setAnnotations(visitAnnotations(ctx.annotation()));
+        element.setModifiers(visitAnnotationTypeElementModifiers(ctx.annotationTypeElementModifier()));
+        element.setType(visitUnannType(ctx.unannType()));
+        element.setIdentifier(visitIdentifier(ctx.identifier()));
+        
+        if (ctx.defaultValue() != null) {
+            element.setDefaultValue((JElementValue) visitDefaultValue(ctx.defaultValue()));
+        }
+        return element;
+    }
+    
+    @Override
+    public JExpression visitElementValueExpression(ElementValueExpressionContext ctx) {
+        return (JExpression) visit(ctx.conditionalExpression());
+    }
+    
+    @Override
+    public JAnnotation visitElementValueAnnotation(ElementValueAnnotationContext ctx) {
+        return visitAnnotation(ctx.annotation());
+    }
+    
+    @Override
+    public JAnnotation visitAnnotation(AnnotationContext ctx) {
+        return (JAnnotation) super.visitAnnotation(ctx);
+    }
+    
+    @Override
+    public JAnnotation visitNormalAnnotation(NormalAnnotationContext ctx) {
+        JAnnotation annotation = new JAnnotation();
+        annotation.setType(visitTypeName(ctx.typeName()));
+        if (ctx.elementValuePairList() != null) {
+            annotation.setValue(visitElementValuePairList(ctx.elementValuePairList()));
+        }
+        return annotation;
+    }
+    
+    @Override
+    public JAnnotation visitMarkerAnnotation(MarkerAnnotationContext ctx) {
+        JAnnotation annotation = new JAnnotation();
+        annotation.setType(visitTypeName(ctx.typeName()));
+        return annotation;
+    }
+    
+    @Override
+    public JAnnotation visitSingleElementAnnotation(SingleElementAnnotationContext ctx) {
+        JAnnotation annotation = new JAnnotation();
+        annotation.setType(visitTypeName(ctx.typeName()));
+        JAnnotationValue.JSingleValue value = new JAnnotationValue.JSingleValue();
+        value.setValue((JElementValue) visit(ctx.elementValue()));
+        annotation.setValue(value);
+        return annotation;
+    }
+    
+    @Override
+    public JAnnotationValue.JPairCollection visitElementValuePairList(ElementValuePairListContext
+                                                                                  ctx) {
+        JAnnotationValue.JPairCollection collection = new JAnnotationValue.JPairCollection();
+        LinkedHashSet<JAnnotationValue.JElementPair> values = ctx.elementValuePair()
+                                                                 .stream()
+                                                                 .map(this::visitElementValuePair)
+                                                                 .collect(createLinkedSetCollector());
+        collection.setValues(values);
+        return collection;
+    }
+    
+    @Override
+    public JAnnotationValue.JElementPair visitElementValuePair(ElementValuePairContext ctx) {
+        JAnnotationValue.JElementPair pair = new JAnnotationValue.JElementPair();
+        pair.setIdentifier(visitIdentifier(ctx.identifier()));
+        pair.setValue((JElementValue) visit(ctx.elementValue()));
+        return pair;
+    }
+    
+    @Override
+    public JTypeName visitTypeName(TypeNameContext ctx) {
+        return new JTypeName(ctx.getText());
+    }
+    
+    private Set<JModifier> visitAnnotationTypeElementModifiers
+            (List<AnnotationTypeElementModifierContext> ctx) {
+        return ctx.stream()
+                  .map(v -> JModifier.fromJava(v.getText()))
+                  .collect(createLinkedSetCollector());
+    }
+    
+    @Override
+    public List<JStatement> visitBlockStatements(BlockStatementsContext ctx) {
+        List<JStatement> statements = new ArrayList<>();
+        for (BlockStatementContext statementCtx : ctx.blockStatement()) {
+            JStatement statement = (JStatement) visitBlockStatement(statementCtx);
+            statements.add(statement);
+        }
+        return statements;
+    }
+    
+    @Override
+    public JTypeName visitSimpleTypeName(SimpleTypeNameContext ctx) {
+        return new JTypeName(ctx.Identifier().getText());
+    }
+    
+    @Override
+    public JModifier visitConstantModifier(ConstantModifierContext ctx) {
+        return JModifier.fromJava(ctx.getText());
     }
 }

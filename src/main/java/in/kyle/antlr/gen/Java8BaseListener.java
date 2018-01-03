@@ -1444,13 +1444,37 @@ public class Java8BaseListener implements Java8Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterElementValue(Java8Parser.ElementValueContext ctx) { }
+	@Override public void enterElementValueExpression(Java8Parser.ElementValueExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitElementValue(Java8Parser.ElementValueContext ctx) { }
+	@Override public void exitElementValueExpression(Java8Parser.ElementValueExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterElementValueArray(Java8Parser.ElementValueArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElementValueArray(Java8Parser.ElementValueArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterElementValueAnnotation(Java8Parser.ElementValueAnnotationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitElementValueAnnotation(Java8Parser.ElementValueAnnotationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

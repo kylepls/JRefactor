@@ -150,10 +150,31 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitAnnotationBase(in.kyle.parser.unit.AnnotationBase object) {
         return visitChildren(object);
     }
+    public T visitJAnnotationBody(in.kyle.parser.unit.body.annotationtype.JAnnotationBody object) {
+        return visitChildren(object);
+    }
+    public T visitJAnnotationMember(in.kyle.parser.unit.body.annotationtype.JAnnotationMember object) {
+        return visitChildren(object);
+    }
+    public T visitJAnnotationTypeElement(in.kyle.parser.unit.body.annotationtype.JAnnotationTypeElement object) {
+        return visitChildren(object);
+    }
+    public T visitJElementValue(in.kyle.parser.unit.body.annotationtype.JElementValue object) {
+        return visitChildren(object);
+    }
     public T visitJClassBody(in.kyle.parser.unit.body.classtype.JClassBody object) {
         return visitChildren(object);
     }
+    public T visitJClassInitializer(in.kyle.parser.unit.body.classtype.JClassInitializer object) {
+        return visitChildren(object);
+    }
+    public T visitJClassInstanceInitializer(in.kyle.parser.unit.body.classtype.JClassInstanceInitializer object) {
+        return visitChildren(object);
+    }
     public T visitJClassMember(in.kyle.parser.unit.body.classtype.JClassMember object) {
+        return visitChildren(object);
+    }
+    public T visitJClassStaticInitializer(in.kyle.parser.unit.body.classtype.JClassStaticInitializer object) {
         return visitChildren(object);
     }
     public T visitJField(in.kyle.parser.unit.body.classtype.JField object) {
@@ -168,9 +189,6 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJEnumMember(in.kyle.parser.unit.body.enumtype.JEnumMember object) {
         return visitChildren(object);
     }
-    public T visitJInterface(in.kyle.parser.unit.body.interfacetype.JInterface object) {
-        return visitChildren(object);
-    }
     public T visitJInterfaceBody(in.kyle.parser.unit.body.interfacetype.JInterfaceBody object) {
         return visitChildren(object);
     }
@@ -181,6 +199,9 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJArgumentList(in.kyle.parser.unit.body.JArgumentList object) {
+        return visitChildren(object);
+    }
+    public T visitJConstructorDeclaration(in.kyle.parser.unit.body.JConstructorDeclaration object) {
         return visitChildren(object);
     }
     public T visitJMember(in.kyle.parser.unit.body.JMember object) {
@@ -211,6 +232,18 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJAnnotation(in.kyle.parser.unit.JAnnotation object) {
+        return visitChildren(object);
+    }
+    public T visitJElementPair(in.kyle.parser.unit.JAnnotationValue.JElementPair object) {
+        return visitChildren(object);
+    }
+    public T visitJPairCollection(in.kyle.parser.unit.JAnnotationValue.JPairCollection object) {
+        return visitChildren(object);
+    }
+    public T visitJSingleValue(in.kyle.parser.unit.JAnnotationValue.JSingleValue object) {
+        return visitChildren(object);
+    }
+    public T visitJAnnotationValue(in.kyle.parser.unit.JAnnotationValue object) {
         return visitChildren(object);
     }
     public T visitJCompilationUnit(in.kyle.parser.unit.JCompilationUnit object) {
@@ -261,10 +294,16 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitTypeable(in.kyle.parser.unit.Typeable object) {
         return visitChildren(object);
     }
-    public T visitJClass(in.kyle.parser.unit.types.JClass object) {
+    public T visitJAnnotationDeclaration(in.kyle.parser.unit.types.JAnnotationDeclaration object) {
         return visitChildren(object);
     }
-    public T visitJEnum(in.kyle.parser.unit.types.JEnum object) {
+    public T visitJClassDeclaration(in.kyle.parser.unit.types.JClassDeclaration object) {
+        return visitChildren(object);
+    }
+    public T visitJEnumDeclaration(in.kyle.parser.unit.types.JEnumDeclaration object) {
+        return visitChildren(object);
+    }
+    public T visitJInterfaceDeclaration(in.kyle.parser.unit.types.JInterfaceDeclaration object) {
         return visitChildren(object);
     }
 

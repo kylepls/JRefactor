@@ -1214,15 +1214,41 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitElementValuePair(Java8Parser.ElementValuePairContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link Java8Parser#elementValue}.
+	 * Enter a parse tree produced by the {@code elementValueExpression}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterElementValue(Java8Parser.ElementValueContext ctx);
+	void enterElementValueExpression(Java8Parser.ElementValueExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link Java8Parser#elementValue}.
+	 * Exit a parse tree produced by the {@code elementValueExpression}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitElementValue(Java8Parser.ElementValueContext ctx);
+	void exitElementValueExpression(Java8Parser.ElementValueExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code elementValueArray}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterElementValueArray(Java8Parser.ElementValueArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code elementValueArray}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitElementValueArray(Java8Parser.ElementValueArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code elementValueAnnotation}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterElementValueAnnotation(Java8Parser.ElementValueAnnotationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code elementValueAnnotation}
+	 * labeled alternative in {@link Java8Parser#elementValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitElementValueAnnotation(Java8Parser.ElementValueAnnotationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Java8Parser#elementValueArrayInitializer}.
 	 * @param ctx the parse tree
