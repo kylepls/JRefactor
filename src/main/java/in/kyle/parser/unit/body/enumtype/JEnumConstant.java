@@ -1,10 +1,7 @@
 package in.kyle.parser.unit.body.enumtype;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
 import in.kyle.parser.unit.AnnotationBase;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JIdentifier;
 import in.kyle.parser.unit.body.JArgumentList;
 import in.kyle.parser.unit.body.classtype.JClassBody;
@@ -25,11 +22,6 @@ public class JEnumConstant extends AnnotationBase {
     
     public JEnumConstant(JIdentifier name) {
         this.name = name;
-    }
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(super.getChildren(), name, argumentList, body);
     }
     
     @Override

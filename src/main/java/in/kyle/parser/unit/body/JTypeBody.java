@@ -1,9 +1,6 @@
 package in.kyle.parser.unit.body;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,18 +10,13 @@ public class JTypeBody<T extends JMember> implements JObject {
     
     @Getter(value = AccessLevel.NONE)
     @Delegate(excludes = JObject.class)
-    private final MemberList<T> memberList = new MemberList<>();
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(memberList.getMembers());
-    }
+    private final JMemberList<T> memberList = new JMemberList<>();
     
     @Override
     public void write(CodeWriter writer) {
         writer.appendLine(" {");
         writer.indent();
-        memberList.write(writer);
+        writer.append(memberList);
         writer.dedent();
         writer.appendLine("}");
     }

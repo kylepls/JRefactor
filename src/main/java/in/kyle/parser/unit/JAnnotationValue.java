@@ -1,10 +1,8 @@
 package in.kyle.parser.unit;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
 import in.kyle.parser.unit.body.annotationtype.JElementValue;
 import in.kyle.writer.CodeWriter;
@@ -15,7 +13,7 @@ public interface JAnnotationValue extends JObject {
     @Data
     class JPairCollection implements JAnnotationValue {
         
-        private Set<JElementPair> values = new LinkedHashSet<>();
+        private JObjectList<JElementPair> values = new JObjectList<>();
         
         public boolean addValue(JElementPair pair) {
             return values.add(pair);
@@ -36,10 +34,6 @@ public interface JAnnotationValue extends JObject {
             }
         }
     
-        @Override
-        public List<JObject> getChildren() {
-            return CollectionUtils.createList(values);
-        }
     }
     
     @Data
@@ -52,10 +46,6 @@ public interface JAnnotationValue extends JObject {
             writer.append(value);
         }
     
-        @Override
-        public List<JObject> getChildren() {
-            return CollectionUtils.createList(value);
-        }
     }
     
     @Data
@@ -69,9 +59,5 @@ public interface JAnnotationValue extends JObject {
             writer.append("{} = {}", identifier, value);
         }
     
-        @Override
-        public List<JObject> getChildren() {
-            return CollectionUtils.createList(identifier, value);
-        }
     }
 }

@@ -1,15 +1,14 @@
 package in.kyle.parser.unit;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import in.kyle.JObjectList;
+import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class ModifierSet {
+public class ModifierList implements JObject {
     
-    private Set<JModifier> modifiers = new LinkedHashSet<>();
+    private JObjectList<JModifier> modifiers = new JObjectList<>();
     
     public boolean addModifier(JModifier modifier) {
         return modifiers.add(modifier);
@@ -19,7 +18,8 @@ public class ModifierSet {
         return modifiers.remove(modifier);
     }
     
-    public void writeModifiers(CodeWriter writer) {
+    @Override
+    public void write(CodeWriter writer) {
         for (JModifier modifier : modifiers) {
             writer.append(modifier).append(" ");
         }

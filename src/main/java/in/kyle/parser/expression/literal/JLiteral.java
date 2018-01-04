@@ -1,9 +1,5 @@
 package in.kyle.parser.expression.literal;
 
-import java.util.Collections;
-import java.util.List;
-
-import in.kyle.parser.JObject;
 import in.kyle.parser.expression.JExpression;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
@@ -24,8 +20,4 @@ public abstract class JLiteral<T> implements JExpression {
         return value;
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return Collections.emptyList();
-    }
 }

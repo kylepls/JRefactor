@@ -1,5 +1,8 @@
 package in.kyle.scanner;
 public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements JavaVisitor<T> {
+    public T visitJObjectList(in.kyle.JObjectList object) {
+        return visitChildren(object);
+    }
     public T visitOperator(in.kyle.parser.expression.JAssignment.Operator object) {
         return visitChildren(object);
     }
@@ -9,13 +12,19 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJClassInstanceCreationExpression(in.kyle.parser.expression.JClassInstanceCreationExpression object) {
         return visitChildren(object);
     }
-    public T visitJConditionalExpression(in.kyle.parser.expression.JConditionalExpression object) {
-        return visitChildren(object);
-    }
     public T visitJExpression(in.kyle.parser.expression.JExpression object) {
         return visitChildren(object);
     }
+    public T visitJExpressionName(in.kyle.parser.expression.JExpressionName object) {
+        return visitChildren(object);
+    }
     public T visitJLamdaExpression(in.kyle.parser.expression.JLamdaExpression object) {
+        return visitChildren(object);
+    }
+    public T visitJIdentifierParameter(in.kyle.parser.expression.JLamdaParameters.JIdentifierParameter object) {
+        return visitChildren(object);
+    }
+    public T visitJLamdaParameters(in.kyle.parser.expression.JLamdaParameters object) {
         return visitChildren(object);
     }
     public T visitOperation(in.kyle.parser.expression.JLeftRightExpression.Operation object) {
@@ -30,6 +39,9 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJParenthesisExpression(in.kyle.parser.expression.JParenthesisExpression object) {
         return visitChildren(object);
     }
+    public T visitJTernaryExpression(in.kyle.parser.expression.JTernaryExpression object) {
+        return visitChildren(object);
+    }
     public T visitJTypeReferenceExpression(in.kyle.parser.expression.JTypeReferenceExpression object) {
         return visitChildren(object);
     }
@@ -39,13 +51,13 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJBooleanLiteral(in.kyle.parser.expression.literal.JBooleanLiteral object) {
         return visitChildren(object);
     }
-    public T visitJByteLiteral(in.kyle.parser.expression.literal.JByteLiteral object) {
-        return visitChildren(object);
-    }
-    public T visitJCharLiteral(in.kyle.parser.expression.literal.JCharLiteral object) {
+    public T visitJCharacterLiteral(in.kyle.parser.expression.literal.JCharacterLiteral object) {
         return visitChildren(object);
     }
     public T visitJDoubleLiteral(in.kyle.parser.expression.literal.JDoubleLiteral object) {
+        return visitChildren(object);
+    }
+    public T visitJFloatingLiteral(in.kyle.parser.expression.literal.JFloatingLiteral object) {
         return visitChildren(object);
     }
     public T visitJFloatLiteral(in.kyle.parser.expression.literal.JFloatLiteral object) {
@@ -61,9 +73,6 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJNumericLiteral(in.kyle.parser.expression.literal.JNumericLiteral object) {
-        return visitChildren(object);
-    }
-    public T visitJShortLiteral(in.kyle.parser.expression.literal.JShortLiteral object) {
         return visitChildren(object);
     }
     public T visitJStringLiteral(in.kyle.parser.expression.literal.JStringLiteral object) {
@@ -207,6 +216,9 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJMember(in.kyle.parser.unit.body.JMember object) {
         return visitChildren(object);
     }
+    public T visitJMemberList(in.kyle.parser.unit.body.JMemberList object) {
+        return visitChildren(object);
+    }
     public T visitJMethod(in.kyle.parser.unit.body.JMethod object) {
         return visitChildren(object);
     }
@@ -267,9 +279,6 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJThrowsList(in.kyle.parser.unit.JThrowsList object) {
         return visitChildren(object);
     }
-    public T visitJType(in.kyle.parser.unit.JType object) {
-        return visitChildren(object);
-    }
     public T visitJReferenceTypeArgument(in.kyle.parser.unit.JTypeArgument.JReferenceTypeArgument object) {
         return visitChildren(object);
     }
@@ -282,13 +291,22 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJTypeArgument(in.kyle.parser.unit.JTypeArgument object) {
         return visitChildren(object);
     }
+    public T visitJTypeDeclaration(in.kyle.parser.unit.JTypeDeclaration object) {
+        return visitChildren(object);
+    }
     public T visitJTypeName(in.kyle.parser.unit.JTypeName object) {
         return visitChildren(object);
     }
     public T visitJTypeParameter(in.kyle.parser.unit.JTypeParameter object) {
         return visitChildren(object);
     }
+    public T visitJTypeParameterList(in.kyle.parser.unit.JTypeParameterList object) {
+        return visitChildren(object);
+    }
     public T visitModifiable(in.kyle.parser.unit.Modifiable object) {
+        return visitChildren(object);
+    }
+    public T visitModifierList(in.kyle.parser.unit.ModifierList object) {
         return visitChildren(object);
     }
     public T visitTypeable(in.kyle.parser.unit.Typeable object) {

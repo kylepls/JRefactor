@@ -1,11 +1,8 @@
 package in.kyle.parser.unit.types;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
 import in.kyle.parser.statement.JStatement;
-import in.kyle.parser.unit.CollectionUtils;
-import in.kyle.parser.unit.JType;
+import in.kyle.parser.unit.JTypeDeclaration;
 import in.kyle.parser.unit.JTypeName;
 import in.kyle.parser.unit.JTypeParameterList;
 import in.kyle.parser.unit.body.annotationtype.JAnnotationMember;
@@ -19,7 +16,7 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 
 @Data
-public class JClassDeclaration extends JType<JClassBody>
+public class JClassDeclaration extends JTypeDeclaration<JClassBody>
         implements JStatement, JInterfaceMember, JAnnotationMember, JClassMember {
     
     @Delegate(excludes = JObject.class)
@@ -33,18 +30,10 @@ public class JClassDeclaration extends JType<JClassBody>
     private final SuperInterfaceList superInterfaceList = new SuperInterfaceList();
     
     @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(super.getChildren(),
-                                          extendsType,
-                                          superInterfaceList.getSuperInterfaces(),
-                                          getBody());
-    }
-    
-    @Override
     public void write(CodeWriter writer) {
-        writeModifiers(writer);
+        super.write(writer);
         writer.append("class ").append(getIdentifier());
-        writeTypeParameters(writer);
+        writer.append(typeParameterList);
         writeExtendsString(writer);
         superInterfaceList.write(writer);
         writer.append(getBody());

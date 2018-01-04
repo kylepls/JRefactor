@@ -1,9 +1,5 @@
 package in.kyle.parser.statement;
 
-import java.util.Collections;
-import java.util.List;
-
-import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 
 public class JEmptyStatement implements JStatement {
@@ -12,8 +8,4 @@ public class JEmptyStatement implements JStatement {
         writer.append(";");
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return Collections.emptyList();
-    }
 }

@@ -1,8 +1,5 @@
 package in.kyle.parser.unit;
 
-import java.util.Collections;
-import java.util.List;
-
 import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
@@ -27,12 +24,7 @@ public interface JTypeArgument extends JObject {
                 writer.append(" {} {}", boundType, getReferenceType());
             }
         }
-        
-        @Override
-        public List<JObject> getChildren() {
-            return super.getChildren();
-        }
-        
+    
         public enum Type implements JObject {
             EXTENDS,
             SUPER;
@@ -41,12 +33,7 @@ public interface JTypeArgument extends JObject {
             public void write(CodeWriter writer) {
                 writer.append(name().toLowerCase());
             }
-    
-            @Override
-            public List<JObject> getChildren() {
-                return Collections.emptyList();
-            }
-    
+        
             public static Type fromJava(String string) {
                 return valueOf(string.toUpperCase());
             }
@@ -63,10 +50,6 @@ public interface JTypeArgument extends JObject {
         public void write(CodeWriter writer) {
             writer.append(referenceType);
         }
-        
-        @Override
-        public List<JObject> getChildren() {
-            return CollectionUtils.createList(referenceType);
-        }
+    
     }
 }

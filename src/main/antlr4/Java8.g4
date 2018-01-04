@@ -1235,9 +1235,9 @@ lambdaExpression
 	;
 
 lambdaParameters
-	:	identifier
-	|	'(' formalParameterList? ')'
-	|	'(' inferredFormalParameterList ')'
+	:	identifier                          #lambdaIdentifierParameter
+	|	'(' formalParameterList? ')'        #lambdaParameterList
+	|	'(' inferredFormalParameterList ')' #lambdaInferedParameterList
 	;
 
 inferredFormalParameterList
@@ -1260,7 +1260,6 @@ assignment
 	:	leftHandSide assignmentOperator expression
 	;
 
-// added
 leftHandSide
 	:	expressionName
 	|	fieldAccess

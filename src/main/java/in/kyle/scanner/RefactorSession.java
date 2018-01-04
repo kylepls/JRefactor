@@ -1,7 +1,7 @@
 package in.kyle.scanner;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.Collection;
 
 import in.kyle.api.utils.Try;
 import in.kyle.parser.JObject;
@@ -21,7 +21,7 @@ public class RefactorSession {
             if (isChild(search, subject)) {
                 return search;
             } else {
-                List<JObject> children = search.getChildren();
+                Collection<JObject> children = JObjectUtils.getDirectChildren(search);
                 for (JObject child : children) {
                     JObject result = findParent(child, subject);
                     if (result != null) {
@@ -34,7 +34,7 @@ public class RefactorSession {
     }
     
     private <T extends JObject> T findField(JObject parent, T child) {
-        for (JObject field : parent.getChildren()) {
+        for (JObject field : JObjectUtils.getDirectChildren(parent)) {
             if (field == child) {
                 return (T) field;
             }
@@ -44,7 +44,7 @@ public class RefactorSession {
     
     public boolean isChild(JObject parent, JObject child) {
         if (parent != null) {
-            for (JObject jObject : parent.getChildren()) {
+            for (JObject jObject : JObjectUtils.getDirectChildren(parent)) {
                 if (jObject == child) {
                     return true;
                 }

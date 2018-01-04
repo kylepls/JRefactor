@@ -1,12 +1,7 @@
 package in.kyle.parser.statement.control;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import in.kyle.parser.JObject;
+import in.kyle.JObjectList;
 import in.kyle.parser.statement.JBlock;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
@@ -14,7 +9,7 @@ import lombok.Data;
 public class JTryStatement implements JControlStatement {
     
     private JBlock block;
-    private Set<JCatchClause> catchClauses = new LinkedHashSet<>();
+    private JObjectList<JCatchClause> catchClauses = new JObjectList<>();
     private JBlock finallyBlock;
     
     public boolean addCatchClause(JCatchClause catchClause) {
@@ -23,11 +18,6 @@ public class JTryStatement implements JControlStatement {
     
     public boolean removeCatchClause(JCatchClause catchClause) {
         return catchClauses.remove(catchClause);
-    }
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(block, catchClauses, finallyBlock);
     }
     
     @Override

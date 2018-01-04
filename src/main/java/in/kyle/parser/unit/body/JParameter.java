@@ -1,9 +1,5 @@
 package in.kyle.parser.unit.body;
 
-import java.util.List;
-
-import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JTypeName;
 import in.kyle.parser.unit.Modifiable;
 import in.kyle.writer.CodeWriter;
@@ -20,12 +16,8 @@ public class JParameter extends Modifiable {
     @Override
     public void write(CodeWriter writer) {
         writeAnnotations(writer);
-        writeModifiers(writer);
+        writer.append(getModifiers());
         writer.append("{} {}", name, type);
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(type);
-    }
 }

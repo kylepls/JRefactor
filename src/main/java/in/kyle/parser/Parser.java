@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
@@ -18,22 +19,27 @@ public class Parser {
     
     private static final JavaCompositionVisitor VISITOR = new JavaCompositionVisitor();
     
-    public static <T extends ParserRuleContext> T parse(InputStream is,
-                                                        Function<Java8Parser, T> result)
+    public static <T extends JObject> T parse(String string,
+                                              Function<Java8Parser, ? extends ParserRuleContext> 
+                                                      result)
+            throws IOException {
+        return parse(new ByteArrayInputStream(string.getBytes("UTF-8")), result);
+    }
+    
+    public static <T extends JObject> T parse(InputStream is,
+                                              Function<Java8Parser, ? extends ParserRuleContext> 
+                                                      result)
             throws IOException {
         ANTLRInputStream ais = new ANTLRInputStream(is);
         Java8Lexer lexer = new Java8Lexer(ais);
         TokenStream ts = new CommonTokenStream(lexer);
         Java8Parser parser = new Java8Parser(ts);
-        return result.apply(parser);
+        ParserRuleContext apply = result.apply(parser);
+        return (T) VISITOR.visit(apply);
     }
     
-    public static <T, R extends ParserRuleContext> T createTree(R r) {
-        return (T) VISITOR.visit(r);
-    }
     
     public static JCompilationUnit parseFile(InputStream is) throws IOException {
-        Java8Parser.CompilationUnitContext unitContext = parse(is, Java8Parser::compilationUnit);
-        return createTree(unitContext);
+        return parse(is, Java8Parser::compilationUnit);
     }
 }

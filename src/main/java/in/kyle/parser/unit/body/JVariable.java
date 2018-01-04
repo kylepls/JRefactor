@@ -1,8 +1,5 @@
 package in.kyle.parser.unit.body;
 
-import java.util.Collections;
-import java.util.List;
-
 import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
@@ -22,8 +19,4 @@ public class JVariable implements JObject {
         }
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return Collections.singletonList(initializer);
-    }
 }

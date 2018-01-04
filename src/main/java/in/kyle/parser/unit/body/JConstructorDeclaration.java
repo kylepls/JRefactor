@@ -1,10 +1,7 @@
 package in.kyle.parser.unit.body;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
 import in.kyle.parser.statement.JBlock;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JParameterList;
 import in.kyle.parser.unit.JThrowsList;
 import in.kyle.parser.unit.JTypeName;
@@ -26,13 +23,9 @@ public class JConstructorDeclaration extends Typeable implements JClassMember {
     
     @Override
     public void write(CodeWriter writer) {
-        writeModifiers(writer);
-        writeTypeParameters(writer);
+        writer.append(getModifiers());
+        writer.append(getTypeParameterList());
         writer.append("{}({}){} {}", identifier, parameterList, throwsList, body);
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(super.getChildren(), identifier, throwsList, body);
-    }
 }

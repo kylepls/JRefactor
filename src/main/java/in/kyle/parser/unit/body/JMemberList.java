@@ -1,16 +1,15 @@
 package in.kyle.parser.unit.body;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import in.kyle.JObjectList;
+import in.kyle.parser.JObject;
 import in.kyle.parser.unit.body.classtype.JField;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
 @Data
-public class MemberList<T extends JMember> {
+public class JMemberList<T extends JMember> implements JObject {
     
-    private Set<T> members = new LinkedHashSet<>();
+    private JObjectList<T> members = new JObjectList<>();
     
     public boolean addMember(T member) {
         return members.add(member);
@@ -20,6 +19,7 @@ public class MemberList<T extends JMember> {
         return members.remove(member);
     }
     
+    @Override
     public void write(CodeWriter writer) {
         for (T member : members) {
             if (member instanceof JField) {

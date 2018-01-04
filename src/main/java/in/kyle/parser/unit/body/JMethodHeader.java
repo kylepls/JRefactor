@@ -1,9 +1,6 @@
 package in.kyle.parser.unit.body;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.parser.unit.JIdentifier;
 import in.kyle.parser.unit.JParameterList;
 import in.kyle.parser.unit.JThrowsList;
@@ -28,18 +25,9 @@ public class JMethodHeader extends Typeable implements JObject {
     }
     
     @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(super.getChildren(),
-                                          name,
-                                          resultType,
-                                          parameterList,
-                                          throwsList);
-    }
-    
-    @Override
     public void write(CodeWriter writer) {
-        writeModifiers(writer);
-        writeTypeParameters(writer);
+        super.write(writer);
+        writer.append(getTypeParameterList());
         writer.append(resultType).append(" ");
         writer.append(name);
         parameterList.write(writer);

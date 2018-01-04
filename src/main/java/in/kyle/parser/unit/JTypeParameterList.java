@@ -1,22 +1,16 @@
 package in.kyle.parser.unit;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-public class JTypeParameterList {
+public class JTypeParameterList implements JObject {
     
-    private Set<JTypeParameter> typeParameters = new LinkedHashSet<>();
-    @Getter
-    @Setter
+    private JObjectList<JTypeParameter> typeParameters = new JObjectList<>();
     private boolean showTypeParametersEmpty = false;
     
     public boolean addTypeParameter(JTypeParameter parameter) {
@@ -27,8 +21,9 @@ public class JTypeParameterList {
         return typeParameters.remove(parameter);
     }
     
-    public void writeTypeParameters(CodeWriter writer) {
-        Set<JTypeParameter> typeParameters = getTypeParameters();
+    @Override
+    public void write(CodeWriter writer) {
+        JObjectList<JTypeParameter> typeParameters = getTypeParameters();
         if (!typeParameters.isEmpty()) {
             writer.append("<");
             for (Iterator<JTypeParameter> iterator =
@@ -43,9 +38,5 @@ public class JTypeParameterList {
         } else if (showTypeParametersEmpty) {
             writer.append("<>");
         }
-    }
-    
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(typeParameters);
     }
 }

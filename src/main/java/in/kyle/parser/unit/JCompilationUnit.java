@@ -1,11 +1,7 @@
 package in.kyle.parser.unit;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
-import in.kyle.parser.unit.types.JClassDeclaration;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
 
@@ -13,8 +9,8 @@ import lombok.Data;
 public class JCompilationUnit implements JObject {
     
     private JPackage packageName;
-    private Set<JImport> imports = new LinkedHashSet<>();
-    private Set<JClassDeclaration> types = new LinkedHashSet<>();
+    private JObjectList<JImport> imports = new JObjectList<>();
+    private JObjectList<JTypeDeclaration> types = new JObjectList<>();
     
     public boolean addImport(JImport jImport) {
         return imports.add(jImport);
@@ -24,17 +20,12 @@ public class JCompilationUnit implements JObject {
         return imports.remove(jImport);
     }
     
-    public boolean addType(JClassDeclaration jClassDeclaration) {
-        return types.add(jClassDeclaration);
+    public boolean addType(JTypeDeclaration declaration) {
+        return types.add(declaration);
     }
     
-    public boolean removeType(JClassDeclaration jClassDeclaration) {
-        return types.remove(jClassDeclaration);
-    }
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(packageName, imports, types);
+    public boolean removeType(JTypeDeclaration declaration) {
+        return types.remove(declaration);
     }
     
     @Override
@@ -48,7 +39,7 @@ public class JCompilationUnit implements JObject {
         
         writer.appendLine();
         
-        for (JClassDeclaration type : types) {
+        for (JTypeDeclaration type : types) {
             writer.appendLine(type);
         }
     }

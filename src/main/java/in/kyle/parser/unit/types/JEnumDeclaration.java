@@ -1,10 +1,7 @@
 package in.kyle.parser.unit.types;
 
-import java.util.List;
-
 import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
-import in.kyle.parser.unit.JType;
+import in.kyle.parser.unit.JTypeDeclaration;
 import in.kyle.parser.unit.body.enumtype.JEnumBody;
 import in.kyle.writer.CodeWriter;
 import lombok.AccessLevel;
@@ -13,7 +10,7 @@ import lombok.Getter;
 import lombok.experimental.Delegate;
 
 @Data
-public class JEnumDeclaration extends JType<JEnumBody> {
+public class JEnumDeclaration extends JTypeDeclaration<JEnumBody> {
     
     @Getter(value = AccessLevel.NONE)
     @Delegate(excludes = JObject.class)
@@ -21,14 +18,10 @@ public class JEnumDeclaration extends JType<JEnumBody> {
     
     @Override
     public void write(CodeWriter writer) {
-        writeModifiers(writer);
+        super.write(writer);
         writer.append("enum ").append(getIdentifier());
         superInterfaceList.write(writer);
         writer.append(getBody());
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(super.getChildren(), superInterfaceList);
-    }
 }

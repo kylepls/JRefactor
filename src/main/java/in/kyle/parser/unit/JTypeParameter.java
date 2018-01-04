@@ -1,8 +1,6 @@
 package in.kyle.parser.unit;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
@@ -11,7 +9,7 @@ import lombok.Data;
 public class JTypeParameter implements JObject {
     
     private JIdentifier name;
-    private List<JTypeName> bounds = new ArrayList<>(0);
+    private JObjectList<JTypeName> bounds = new JObjectList<>();
     
     public JTypeParameter(JIdentifier name) {
         this.name = name;
@@ -49,8 +47,4 @@ public class JTypeParameter implements JObject {
         }
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(bounds);
-    }
 }

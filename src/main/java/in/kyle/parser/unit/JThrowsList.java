@@ -1,10 +1,8 @@
 package in.kyle.parser.unit;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
 import in.kyle.writer.CodeWriter;
 import lombok.Data;
@@ -12,7 +10,7 @@ import lombok.Data;
 @Data
 public class JThrowsList implements JObject {
     
-    private Set<JTypeName> throwsTypes = new LinkedHashSet<>();
+    private JObjectList<JTypeName> throwsTypes = new JObjectList<>();
     
     public boolean addThrowsType(JTypeName typeName) {
         return throwsTypes.add(typeName);
@@ -36,8 +34,4 @@ public class JThrowsList implements JObject {
         }
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(throwsTypes);
-    }
 }

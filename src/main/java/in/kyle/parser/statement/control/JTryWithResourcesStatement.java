@@ -1,10 +1,8 @@
 package in.kyle.parser.statement.control;
 
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
-import in.kyle.parser.JObject;
 import in.kyle.parser.statement.JBlock;
 import in.kyle.writer.CodeWriter;
 
@@ -27,8 +25,4 @@ public class JTryWithResourcesStatement implements JControlStatement {
         
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return null;
-    }
 }

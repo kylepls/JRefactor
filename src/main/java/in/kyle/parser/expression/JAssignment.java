@@ -1,10 +1,6 @@
 package in.kyle.parser.expression;
 
-import java.util.Collections;
-import java.util.List;
-
 import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,11 +16,6 @@ public class JAssignment implements JExpression {
     @Override
     public void write(CodeWriter writer) {
         writer.append("{} {} {}", left, operator, right);
-    }
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(left, operator, right);
     }
     
     @AllArgsConstructor
@@ -44,19 +35,21 @@ public class JAssignment implements JExpression {
         
         @Getter
         private final String javaString;
-    
+        
         @Override
         public void write(CodeWriter writer) {
             writer.append(javaString);
         }
         
         public static Operator fromJava(String string) {
-            return valueOf(string.toUpperCase());
+            for (Operator operator : values()) {
+                if (operator.getJavaString().equals(string)) {
+                    return operator;
+                }
+            }
+            throw new IllegalArgumentException(
+                    "No enum constant for " + Operator.class + "." + string);
         }
         
-        @Override
-        public List<JObject> getChildren() {
-            return Collections.emptyList();
-        }
     }
 }

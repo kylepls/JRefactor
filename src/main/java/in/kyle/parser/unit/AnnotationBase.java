@@ -1,16 +1,12 @@
 package in.kyle.parser.unit;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import in.kyle.parser.JObject;
+import in.kyle.JObjectList;
 import lombok.Data;
 
 @Data
 public abstract class AnnotationBase implements JAnnotatable {
     
-    private Set<JAnnotation> annotations = new LinkedHashSet<>();
+    private JObjectList<JAnnotation> annotations = new JObjectList<>();
     
     @Override
     public boolean addAnnotation(JAnnotation annotation) {
@@ -22,8 +18,4 @@ public abstract class AnnotationBase implements JAnnotatable {
         return annotations.remove(annotation);
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(annotations);
-    }
 }

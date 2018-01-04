@@ -1,9 +1,5 @@
 package in.kyle.parser.expression;
 
-import java.util.List;
-
-import in.kyle.parser.JObject;
-import in.kyle.parser.unit.CollectionUtils;
 import in.kyle.writer.CodeWriter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,11 +14,6 @@ public class JUnaryExpression implements JExpression {
     @Override
     public void write(CodeWriter writer) {
         writer.append(operator.writerString, expression);
-    }
-    
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(expression);
     }
     
     @AllArgsConstructor

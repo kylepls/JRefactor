@@ -1,10 +1,8 @@
 package in.kyle.parser.unit;
 
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
+import in.kyle.JObjectList;
 import in.kyle.parser.JObject;
 import in.kyle.parser.unit.body.JParameter;
 import in.kyle.writer.CodeWriter;
@@ -13,7 +11,7 @@ import lombok.Data;
 @Data
 public class JParameterList implements JObject {
     
-    private Set<JParameter> parameters = new LinkedHashSet<>();
+    private JObjectList<JParameter> parameters = new JObjectList<>();
     
     public boolean addParameter(JParameter parameter) {
         return parameters.add(parameter);
@@ -36,8 +34,4 @@ public class JParameterList implements JObject {
         writer.append(")");
     }
     
-    @Override
-    public List<JObject> getChildren() {
-        return CollectionUtils.createList(parameters);
-    }
 }
