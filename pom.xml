@@ -4,9 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>in.kyle.test</groupId>
-    <artifactId>ObfuscateTest</artifactId>
+    <groupId>in.kyle.refactor</groupId>
+    <artifactId>JRefactor</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>parser</module>
+        <module>refactor</module>
+        <module>writer</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -21,6 +27,7 @@
     </repositories>
 
     <dependencies>
+        <!-- Compiled Dependencies -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
@@ -31,12 +38,14 @@
             <artifactId>Java-Utils</artifactId>
             <version>1.1.0</version>
         </dependency>
+        <!-- Provided Dependencies -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.18</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
