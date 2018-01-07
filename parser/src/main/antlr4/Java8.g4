@@ -141,14 +141,22 @@ typeVariable
 	;
 
 arrayType
-	:	primitiveType dims
-	|	classOrInterfaceType dims
-	|	typeVariable dims
+	:	arrayTypeName arrayDimension+
 	;
 
+arrayTypeName
+    :   primitiveType
+    |   classOrInterfaceType
+    |   typeVariable
+    ;
+
 dims
-	:	annotation* '[' ']' (annotation* '[' ']')*
+	:	arrayDimension+
 	;
+
+arrayDimension
+    :   '[' ']'
+    ;
 
 // added
 typeParameter
@@ -341,7 +349,7 @@ variableDeclarator
 	;
 
 variableDeclaratorId
-	:	identifier dims?
+	:	identifier arrayDimension*
 	;
 
 variableInitializer
@@ -404,9 +412,9 @@ unannTypeVariable
 	;
 
 unannArrayType
-	:	unannPrimitiveType dims
-	|	unannClassOrInterfaceType dims
-	|	unannTypeVariable dims
+	:	unannPrimitiveType arrayDimension+
+	|	unannClassOrInterfaceType arrayDimension+
+	|	unannTypeVariable arrayDimension+
 	;
 
 // added
@@ -441,7 +449,7 @@ result
 
 // added
 methodDeclarator
-	:	identifier '(' formalParameterList? ')' dims?
+	:	identifier '(' formalParameterList? ')' 
 	;
 	
 // added
@@ -654,7 +662,7 @@ annotationTypeMemberDeclaration
 
 // added
 annotationTypeElementDeclaration
-	:	annotation* annotationTypeElementModifier* unannType identifier '(' ')' dims? defaultValue? ';'
+	:	annotation* annotationTypeElementModifier* unannType identifier '(' ')' arrayDimension* defaultValue? ';'
 	;
 
 // added
@@ -1297,8 +1305,12 @@ assignmentOperator
 	
 // added
 conditionalExpression
-	:	conditionalOrExpression                                             #ig1
-	|	conditionalOrExpression '?' expression ':' conditionalExpression    #conditionalTernary
+	:	conditionalOrExpression 
+	|	conditionalTernary
+	;
+
+conditionalTernary
+	:	conditionalOrExpression '?' expression ':' conditionalExpression 
 	;
 
 // added

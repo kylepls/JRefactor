@@ -9,11 +9,17 @@ import lombok.Data;
 @AllArgsConstructor
 public class JTypeName implements JObject {
     
+    public static JTypeName VOID = new JTypeName("void");
+    
     private String name;
     
     @Override
     public void write(CodeWriter writer) {
         writer.append(name);
+    }
+    
+    public static JTypeName fromClass(Class<?> clazz) {
+        return new JTypeName(clazz.getName().replace("$", "."));
     }
     
 }

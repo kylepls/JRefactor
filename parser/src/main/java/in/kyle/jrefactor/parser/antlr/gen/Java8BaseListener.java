@@ -1,4 +1,4 @@
-// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/src/main/antlr4\Java8.g4 by ANTLR 4.7
+// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/parser/src/main/antlr4\Java8.g4 by ANTLR 4.7
 package in.kyle.jrefactor.parser.antlr.gen;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -268,6 +268,18 @@ public class Java8BaseListener implements Java8Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArrayTypeName(Java8Parser.ArrayTypeNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayTypeName(Java8Parser.ArrayTypeNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDims(Java8Parser.DimsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -275,6 +287,18 @@ public class Java8BaseListener implements Java8Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDims(Java8Parser.DimsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArrayDimension(Java8Parser.ArrayDimensionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayDimension(Java8Parser.ArrayDimensionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -2536,6 +2560,42 @@ public class Java8BaseListener implements Java8Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMethodNameLocation(Java8Parser.MethodNameLocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodNameLocation(Java8Parser.MethodNameLocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMethodAreaLocation(Java8Parser.MethodAreaLocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodAreaLocation(Java8Parser.MethodAreaLocationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMethodArea(Java8Parser.MethodAreaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodArea(Java8Parser.MethodAreaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMethodInvocation_lf_primary(Java8Parser.MethodInvocation_lf_primaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -2788,13 +2848,13 @@ public class Java8BaseListener implements Java8Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIg1(Java8Parser.Ig1Context ctx) { }
+	@Override public void enterConditionalExpression(Java8Parser.ConditionalExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIg1(Java8Parser.Ig1Context ctx) { }
+	@Override public void exitConditionalExpression(Java8Parser.ConditionalExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

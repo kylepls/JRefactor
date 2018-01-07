@@ -78,9 +78,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JPackage visitPackageDeclaration(PackageDeclarationContext ctx) {
         String name = ctx.packageName().getText();
-        JPackage jPackage = new JPackage();
-        jPackage.setName(name);
-        return jPackage;
+        return new JPackage(name);
     }
     
     @Override
@@ -401,10 +399,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JVariable visitVariableDeclarator(VariableDeclaratorContext ctx) {
-        String name = ctx.variableDeclaratorId().getText();
-        
         JVariable variable = new JVariable();
-        variable.setName(name);
+        variable.setIdentifier(visitVariableDeclaratorId(ctx.variableDeclaratorId()));
         
         if (ctx.variableInitializer() != null) {
             variable.setInitializer((JExpression) visit(ctx.variableInitializer()));
@@ -569,9 +565,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JMethod visitMethodDeclaration(Java8Parser.MethodDeclarationContext ctx) {
-        JMethod method = new JMethod();
-        method.setHeader(visitMethodHeader(ctx.methodHeader()));
-        method.setBody(visitBlock(ctx.methodBody().block()));
+        JMethodHeader header = visitMethodHeader(ctx.methodHeader());
+        JBlock block = visitBlock(ctx.methodBody().block());
+        JMethod method = new JMethod(header, block);
         
         JObjectList<JModifier> modifiers = getMethodModifiers(ctx.methodModifier());
         method.getHeader().setModifiers(modifiers);
@@ -629,10 +625,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JLambdaExpression visitLambdaExpression(LambdaExpressionContext ctx) {
-        JLambdaExpression expression = new JLambdaExpression();
-        expression.setParameters((JLambdaParameters) visit(ctx.lambdaParameters()));
-        expression.setBody(visitLambdaBody(ctx.lambdaBody()));
-        return expression;
+        JLambdaParameters parameters = (JLambdaParameters) visit(ctx.lambdaParameters());
+        JLambdaBody body = visitLambdaBody(ctx.lambdaBody());
+        return new JLambdaExpression(parameters, body);
     }
     
     @Override
@@ -704,7 +699,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JParameter visitFormalParameter(FormalParameterContext ctx) {
         String name = ctx.variableDeclaratorId().getText();
         JTypeName type = new JTypeName(ctx.unannType().getText());
-        JParameter parameter = new JParameter(name, type);
+        JParameter parameter = new JParameter(type, new JIdentifier(name));
         parameter.setType(type);
         return parameter;
     }
@@ -713,7 +708,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JParameter visitLastFormalParameter(Java8Parser.LastFormalParameterContext ctx) {
         String name = ctx.variableDeclaratorId().getText();
         JTypeName type = new JTypeName(ctx.unannType().getText());
-        JParameter parameter = new JParameter(name, type);
+        JParameter parameter = new JParameter(type, new JIdentifier(name));
         parameter.setType(type);
         return parameter;
     }
@@ -852,6 +847,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
                 ctx.bracketPair().stream().map(RuleContext::getText).collect(Collectors.joining());
         String typeName = ctx.primaryClassTypeAlternates().getText();
         return new JTypeReferenceExpression(new JTypeName(typeName + brackets));
+    }
+    
+    @Override
+    public JArrayTypeName visitArrayType(ArrayTypeContext ctx) {
+        return new JArrayTypeName(ctx.arrayTypeName().getText(), ctx.arrayDimension().size());
     }
     
     @Override

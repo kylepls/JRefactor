@@ -13,7 +13,11 @@ public class JInterfaceMethod implements JInterfaceMember {
     
     @Override
     public void write(CodeWriter writer) {
-        writer.append(header).append(body);
+        writer.append(header);
+        if (body != null) {
+            writer.append(" default {}", body);
+        } else {
+            writer.append(";");
+        }
     }
-    
 }

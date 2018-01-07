@@ -1,4 +1,4 @@
-// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/src/main/antlr4\Java8.g4 by ANTLR 4.7
+// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/parser/src/main/antlr4\Java8.g4 by ANTLR 4.7
 package in.kyle.jrefactor.parser.antlr.gen;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -143,11 +143,23 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayType(Java8Parser.ArrayTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Java8Parser#arrayTypeName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayTypeName(Java8Parser.ArrayTypeNameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Java8Parser#dims}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitDims(Java8Parser.DimsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#arrayDimension}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayDimension(Java8Parser.ArrayDimensionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Java8Parser#typeParameter}.
 	 * @param ctx the parse tree
@@ -1293,6 +1305,26 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodInvocation(Java8Parser.MethodInvocationContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code methodNameLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodNameLocation(Java8Parser.MethodNameLocationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code methodAreaLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodAreaLocation(Java8Parser.MethodAreaLocationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Java8Parser#methodArea}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodArea(Java8Parser.MethodAreaContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Java8Parser#methodInvocation_lf_primary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1422,15 +1454,13 @@ public interface Java8Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignmentOperator(Java8Parser.AssignmentOperatorContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ig1}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Visit a parse tree produced by {@link Java8Parser#conditionalExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIg1(Java8Parser.Ig1Context ctx);
+	T visitConditionalExpression(Java8Parser.ConditionalExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code conditionalTernary}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Visit a parse tree produced by {@link Java8Parser#conditionalTernary}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

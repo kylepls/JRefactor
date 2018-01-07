@@ -1,21 +1,10 @@
 package in.kyle.jrefactor.refactor;
-
-
-import in.kyle.jrefactor.parser.JObjectList;
-import in.kyle.jrefactor.parser.expression.lambda.JIdentifierParameter;
-import in.kyle.jrefactor.parser.expression.lambda.JLambdaExpression;
-import in.kyle.jrefactor.parser.expression.lambda.JLambdaParameters;
-
 public interface JavaVisitor<T> {
-    T visitJObjectList(JObjectList object);
     T visitOperator(in.kyle.jrefactor.parser.expression.JAssignment.Operator object);
     T visitJAssignment(in.kyle.jrefactor.parser.expression.JAssignment object);
     T visitJClassInstanceCreationExpression(in.kyle.jrefactor.parser.expression.JClassInstanceCreationExpression object);
     T visitJExpression(in.kyle.jrefactor.parser.expression.JExpression object);
     T visitJExpressionName(in.kyle.jrefactor.parser.expression.JExpressionName object);
-    T visitJLamdaExpression(JLambdaExpression object);
-    T visitJIdentifierParameter(JIdentifierParameter object);
-    T visitJLamdaParameters(JLambdaParameters object);
     T visitOperation(in.kyle.jrefactor.parser.expression.JLeftRightExpression.Operation object);
     T visitJLeftRightExpression(in.kyle.jrefactor.parser.expression.JLeftRightExpression object);
     T visitJMethodInvocation(in.kyle.jrefactor.parser.expression.JMethodInvocation object);
@@ -23,6 +12,11 @@ public interface JavaVisitor<T> {
     T visitJTernaryExpression(in.kyle.jrefactor.parser.expression.JTernaryExpression object);
     T visitJTypeReferenceExpression(in.kyle.jrefactor.parser.expression.JTypeReferenceExpression object);
     T visitJUnaryExpression(in.kyle.jrefactor.parser.expression.JUnaryExpression object);
+    T visitJIdentifierParameter(in.kyle.jrefactor.parser.expression.lambda.JIdentifierParameter object);
+    T visitJInferredParameters(in.kyle.jrefactor.parser.expression.lambda.JInferredParameters object);
+    T visitJLambdaBody(in.kyle.jrefactor.parser.expression.lambda.JLambdaBody object);
+    T visitJLambdaExpression(in.kyle.jrefactor.parser.expression.lambda.JLambdaExpression object);
+    T visitJLambdaParameters(in.kyle.jrefactor.parser.expression.lambda.JLambdaParameters object);
     T visitJBooleanLiteral(in.kyle.jrefactor.parser.expression.literal.JBooleanLiteral object);
     T visitJCharacterLiteral(in.kyle.jrefactor.parser.expression.literal.JCharacterLiteral object);
     T visitJDoubleLiteral(in.kyle.jrefactor.parser.expression.literal.JDoubleLiteral object);
@@ -34,6 +28,7 @@ public interface JavaVisitor<T> {
     T visitJNumericLiteral(in.kyle.jrefactor.parser.expression.literal.JNumericLiteral object);
     T visitJStringLiteral(in.kyle.jrefactor.parser.expression.literal.JStringLiteral object);
     T visitJObject(in.kyle.jrefactor.parser.JObject object);
+    T visitJObjectList(in.kyle.jrefactor.parser.JObjectList object);
     T visitJBreakStatement(in.kyle.jrefactor.parser.statement.control.JBreakStatement object);
     T visitJCatchClause(in.kyle.jrefactor.parser.statement.control.JCatchClause object);
     T visitJContinueStatement(in.kyle.jrefactor.parser.statement.control.JContinueStatement object);
@@ -93,6 +88,7 @@ public interface JavaVisitor<T> {
     T visitJPairCollection(in.kyle.jrefactor.parser.unit.JAnnotationValue.JPairCollection object);
     T visitJSingleValue(in.kyle.jrefactor.parser.unit.JAnnotationValue.JSingleValue object);
     T visitJAnnotationValue(in.kyle.jrefactor.parser.unit.JAnnotationValue object);
+    T visitJArrayTypeName(in.kyle.jrefactor.parser.unit.JArrayTypeName object);
     T visitJCompilationUnit(in.kyle.jrefactor.parser.unit.JCompilationUnit object);
     T visitJIdentifier(in.kyle.jrefactor.parser.unit.JIdentifier object);
     T visitJImport(in.kyle.jrefactor.parser.unit.JImport object);

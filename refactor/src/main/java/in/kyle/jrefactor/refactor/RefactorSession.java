@@ -1,10 +1,11 @@
 package in.kyle.jrefactor.refactor;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 
 import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.parser.JObject;
+import in.kyle.jrefactor.parser.unit.JIdentifier;
+import in.kyle.jrefactor.refactor.symbol.SymbolTable;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -12,45 +13,16 @@ public class RefactorSession {
     
     private JObject root;
     
+    public void rename(JIdentifier identifier, String newName) {
+        SymbolTable table = new SymbolTable(root);
+        table.compute();
+        for (JIdentifier jIdentifier : table.getUses(identifier)) {
+            jIdentifier.setName(newName);
+        }
+    }
+    
     public JObject findParent(JObject subject) {
-        return findParent(root, subject);
-    }
-    
-    private JObject findParent(JObject search, JObject subject) {
-        if (search != null) {
-            if (isChild(search, subject)) {
-                return search;
-            } else {
-                Collection<JObject> children = JObjectUtils.getDirectChildren(search);
-                for (JObject child : children) {
-                    JObject result = findParent(child, subject);
-                    if (result != null) {
-                        return result;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    
-    private <T extends JObject> T findField(JObject parent, T child) {
-        for (JObject field : JObjectUtils.getDirectChildren(parent)) {
-            if (field == child) {
-                return (T) field;
-            }
-        }
-        throw new RuntimeException("Field not found");
-    }
-    
-    public boolean isChild(JObject parent, JObject child) {
-        if (parent != null) {
-            for (JObject jObject : JObjectUtils.getDirectChildren(parent)) {
-                if (jObject == child) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return JObjectUtils.findParent(root, subject);
     }
     
     public <T extends JObject> void replace(T subject, T replacement) {

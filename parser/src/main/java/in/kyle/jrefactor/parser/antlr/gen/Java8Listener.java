@@ -1,4 +1,4 @@
-// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/src/main/antlr4\Java8.g4 by ANTLR 4.7
+// Generated from C:/Users/Kyle/Desktop/Projects/Java/ObfuscateTest/parser/src/main/antlr4\Java8.g4 by ANTLR 4.7
 package in.kyle.jrefactor.parser.antlr.gen;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -230,6 +230,16 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitArrayType(Java8Parser.ArrayTypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Java8Parser#arrayTypeName}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayTypeName(Java8Parser.ArrayTypeNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Java8Parser#arrayTypeName}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayTypeName(Java8Parser.ArrayTypeNameContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Java8Parser#dims}.
 	 * @param ctx the parse tree
 	 */
@@ -239,6 +249,16 @@ public interface Java8Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDims(Java8Parser.DimsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Java8Parser#arrayDimension}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayDimension(Java8Parser.ArrayDimensionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Java8Parser#arrayDimension}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayDimension(Java8Parser.ArrayDimensionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Java8Parser#typeParameter}.
 	 * @param ctx the parse tree
@@ -2152,6 +2172,40 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitMethodInvocation(Java8Parser.MethodInvocationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code methodNameLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodNameLocation(Java8Parser.MethodNameLocationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code methodNameLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodNameLocation(Java8Parser.MethodNameLocationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code methodAreaLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodAreaLocation(Java8Parser.MethodAreaLocationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code methodAreaLocation}
+	 * labeled alternative in {@link Java8Parser#methodLocation}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodAreaLocation(Java8Parser.MethodAreaLocationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Java8Parser#methodArea}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodArea(Java8Parser.MethodAreaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Java8Parser#methodArea}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodArea(Java8Parser.MethodAreaContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Java8Parser#methodInvocation_lf_primary}.
 	 * @param ctx the parse tree
 	 */
@@ -2368,26 +2422,22 @@ public interface Java8Listener extends ParseTreeListener {
 	 */
 	void exitAssignmentOperator(Java8Parser.AssignmentOperatorContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ig1}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Enter a parse tree produced by {@link Java8Parser#conditionalExpression}.
 	 * @param ctx the parse tree
 	 */
-	void enterIg1(Java8Parser.Ig1Context ctx);
+	void enterConditionalExpression(Java8Parser.ConditionalExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ig1}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Exit a parse tree produced by {@link Java8Parser#conditionalExpression}.
 	 * @param ctx the parse tree
 	 */
-	void exitIg1(Java8Parser.Ig1Context ctx);
+	void exitConditionalExpression(Java8Parser.ConditionalExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code conditionalTernary}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Enter a parse tree produced by {@link Java8Parser#conditionalTernary}.
 	 * @param ctx the parse tree
 	 */
 	void enterConditionalTernary(Java8Parser.ConditionalTernaryContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code conditionalTernary}
-	 * labeled alternative in {@link Java8Parser#conditionalExpression}.
+	 * Exit a parse tree produced by {@link Java8Parser#conditionalTernary}.
 	 * @param ctx the parse tree
 	 */
 	void exitConditionalTernary(Java8Parser.ConditionalTernaryContext ctx);

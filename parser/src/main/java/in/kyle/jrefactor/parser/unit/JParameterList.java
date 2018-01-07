@@ -13,6 +13,14 @@ public class JParameterList implements JLambdaParameters {
     
     private JObjectList<JParameter> parameters = new JObjectList<>();
     
+    public boolean addParameter(JParameter parameter) {
+        return parameters.add(parameter);
+    }
+    
+    public boolean removeParameter(JParameter parameter) {
+        return parameters.remove(parameter);
+    }
+    
     @Override
     public void write(CodeWriter writer) {
         writer.append("(");

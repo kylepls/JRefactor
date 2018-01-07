@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
 
+import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.parser.antlr.JavaCompositionVisitor;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Lexer;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
+import in.kyle.jrefactor.parser.statement.JBlock;
 import in.kyle.jrefactor.parser.unit.JCompilationUnit;
 
 public class Parser {
@@ -36,6 +38,10 @@ public class Parser {
         Java8Parser parser = new Java8Parser(ts);
         ParserRuleContext apply = result.apply(parser);
         return (T) VISITOR.visit(apply);
+    }
+    
+    public static JBlock parseBlock(String block) {
+        return Try.to(() -> new JBlock(parse(block, Java8Parser::blockStatements)));
     }
     
     

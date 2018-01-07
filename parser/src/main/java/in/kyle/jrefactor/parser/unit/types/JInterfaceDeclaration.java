@@ -25,6 +25,7 @@ public class JInterfaceDeclaration extends JTypeDeclaration<JInterfaceBody>
     
     @Override
     public void write(CodeWriter writer) {
-        
+        super.write(writer);
+        writer.append("interface {} {}", getIdentifier(), getBody());
     }
 }

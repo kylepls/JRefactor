@@ -14,7 +14,7 @@ import lombok.experimental.Delegate;
 public class JMethodHeader extends Typeable implements JObject {
     
     private JIdentifier name;
-    private JTypeName resultType;
+    private JTypeName resultType = JTypeName.VOID;
     @Delegate(excludes = JObject.class)
     private JParameterList parameterList = new JParameterList();
     @Delegate(excludes = JObject.class)

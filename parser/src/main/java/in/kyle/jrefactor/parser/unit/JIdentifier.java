@@ -17,5 +17,4 @@ public class JIdentifier implements JObject {
     public void write(CodeWriter writer) {
         writer.append(name);
     }
-    
 }

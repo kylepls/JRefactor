@@ -1,15 +1,5 @@
 package in.kyle.jrefactor.refactor;
-
-
-import in.kyle.jrefactor.parser.JObjectList;
-import in.kyle.jrefactor.parser.expression.lambda.JIdentifierParameter;
-import in.kyle.jrefactor.parser.expression.lambda.JLambdaExpression;
-import in.kyle.jrefactor.parser.expression.lambda.JLambdaParameters;
-
 public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements JavaVisitor<T> {
-    public T visitJObjectList(JObjectList object) {
-        return visitChildren(object);
-    }
     public T visitOperator(in.kyle.jrefactor.parser.expression.JAssignment.Operator object) {
         return visitChildren(object);
     }
@@ -23,15 +13,6 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJExpressionName(in.kyle.jrefactor.parser.expression.JExpressionName object) {
-        return visitChildren(object);
-    }
-    public T visitJLamdaExpression(JLambdaExpression object) {
-        return visitChildren(object);
-    }
-    public T visitJIdentifierParameter(JIdentifierParameter object) {
-        return visitChildren(object);
-    }
-    public T visitJLamdaParameters(JLambdaParameters object) {
         return visitChildren(object);
     }
     public T visitOperation(in.kyle.jrefactor.parser.expression.JLeftRightExpression.Operation object) {
@@ -53,6 +34,21 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJUnaryExpression(in.kyle.jrefactor.parser.expression.JUnaryExpression object) {
+        return visitChildren(object);
+    }
+    public T visitJIdentifierParameter(in.kyle.jrefactor.parser.expression.lambda.JIdentifierParameter object) {
+        return visitChildren(object);
+    }
+    public T visitJInferredParameters(in.kyle.jrefactor.parser.expression.lambda.JInferredParameters object) {
+        return visitChildren(object);
+    }
+    public T visitJLambdaBody(in.kyle.jrefactor.parser.expression.lambda.JLambdaBody object) {
+        return visitChildren(object);
+    }
+    public T visitJLambdaExpression(in.kyle.jrefactor.parser.expression.lambda.JLambdaExpression object) {
+        return visitChildren(object);
+    }
+    public T visitJLambdaParameters(in.kyle.jrefactor.parser.expression.lambda.JLambdaParameters object) {
         return visitChildren(object);
     }
     public T visitJBooleanLiteral(in.kyle.jrefactor.parser.expression.literal.JBooleanLiteral object) {
@@ -86,6 +82,9 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJObject(in.kyle.jrefactor.parser.JObject object) {
+        return visitChildren(object);
+    }
+    public T visitJObjectList(in.kyle.jrefactor.parser.JObjectList object) {
         return visitChildren(object);
     }
     public T visitJBreakStatement(in.kyle.jrefactor.parser.statement.control.JBreakStatement object) {
@@ -263,6 +262,9 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
         return visitChildren(object);
     }
     public T visitJAnnotationValue(in.kyle.jrefactor.parser.unit.JAnnotationValue object) {
+        return visitChildren(object);
+    }
+    public T visitJArrayTypeName(in.kyle.jrefactor.parser.unit.JArrayTypeName object) {
         return visitChildren(object);
     }
     public T visitJCompilationUnit(in.kyle.jrefactor.parser.unit.JCompilationUnit object) {
