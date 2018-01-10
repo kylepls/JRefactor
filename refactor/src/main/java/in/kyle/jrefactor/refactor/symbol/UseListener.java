@@ -5,7 +5,6 @@ import java.util.List;
 
 import in.kyle.jrefactor.parser.statement.JBlock;
 import in.kyle.jrefactor.parser.unit.JIdentifier;
-import in.kyle.jrefactor.refactor.JavaBaseListener;
 import lombok.Data;
 
 @Data

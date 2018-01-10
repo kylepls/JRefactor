@@ -8,7 +8,6 @@ import in.kyle.jrefactor.parser.unit.body.JParameter;
 import in.kyle.jrefactor.parser.unit.body.JVariable;
 import in.kyle.jrefactor.parser.unit.types.classtype.JField;
 import in.kyle.jrefactor.refactor.JObjectUtils;
-import in.kyle.jrefactor.refactor.JavaBaseListener;
 import lombok.Data;
 
 @Data

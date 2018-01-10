@@ -1,8 +1,8 @@
-writer_interface(members, name) ::= <<
+writer_interface(names, name) ::= <<
 package in.kyle.jrefactor.writer;
 
 public interface CodeWriter {
-    <members:{each | void write(<each> object);
+    <names:{each | void write(<each> object);
     }>
 }
 >>

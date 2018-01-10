@@ -31,102 +31,35 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.webguys</groupId>
-                    <artifactId>string-template-maven-plugin</artifactId>
-                    <version>1.3.6</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/src/main/template/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-                <executions>
-                    <execution>
-                        <id>compile-templates</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <includes>
-                                <include>**/gen/**</include>
-                            </includes>
-                        </configuration>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>com.webguys</groupId>
                 <artifactId>string-template-maven-plugin</artifactId>
                 <configuration>
                     <templates>
-                        <template>
-                            <directory>${project.basedir}/src/main/template/string-template
-                            </directory>
+                        <template combine.children="append">
                             <name>writer_interface</name>
                             <target>
                                 ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/writer/CodeWriter.java
                             </target>
                             <controller>
-                                <path>${project.basedir}/src/main/template/java</path>
-                                <className>in.kyle.jrefactor.writer.gen.WriterInterfaceGen</className>
-                                <method>getProperties</method>
+                                <className>in.kyle.jrefactor.writer.gen.JObjectNames
+                                </className>
+                                <method>getClassNames</method>
                             </controller>
                         </template>
                     </templates>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>render</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>auto-clean</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                            <filesets>
-                                <fileset>
-                                    <directory>${project.build.outputDirectory}/in/kyle/jrefactor/writer/</directory>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

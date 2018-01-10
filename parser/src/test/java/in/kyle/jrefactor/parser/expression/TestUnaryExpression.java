@@ -42,7 +42,6 @@ public class TestUnaryExpression {
             javaString = "i" + operator.getJavaString();
         }
         
-        
         System.out.println(javaString);
         JUnaryExpression expression = Parser.parse(javaString, Java8Parser::expression);
         Verify.that(expression).isNotNull();

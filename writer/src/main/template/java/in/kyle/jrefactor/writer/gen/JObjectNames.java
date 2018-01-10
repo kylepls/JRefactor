@@ -14,27 +14,23 @@ import java.util.zip.ZipFile;
 
 import in.kyle.jrefactor.parser.JObject;
 
-public class WriterInterfaceGen {
+// due to the location of this class, it is unlikely that it will be able to be inherited
+public class JObjectNames {
     
-    private File root;
-    
-    public Map<String, Object> getProperties() throws IOException {
-        Map<String, Object> result = new HashMap<>();
-        List<String> members = findClasses().stream()
-                                            .filter(JObject.class::isAssignableFrom)
-                                            .map(clazz -> clazz.getName().replace("$", "."))
-                                            .collect(Collectors.toList());
-        result.put("members", members);
-        return result;
+    private static List<String> getJObjectClassNames() throws IOException {
+        return findClasses().stream()
+                            .filter(JObject.class::isAssignableFrom)
+                            .map(clazz -> clazz.getName().replace("$", "."))
+                            .collect(Collectors.toList());
     }
     
-    private List<Class<?>> findClasses() throws IOException {
+    private static List<Class<?>> findClasses() throws IOException {
         URL location = JObject.class.getProtectionDomain().getCodeSource().getLocation();
-        root = new File(location.getFile());
+        File root = new File(location.getFile());
         return findClasses(root);
     }
     
-    private List<Class<?>> findClasses(File file) throws IOException {
+    private static List<Class<?>> findClasses(File file) throws IOException {
         return getClassesInFile(file).stream().map(name -> {
             try {
                 return Class.forName(name);
@@ -44,7 +40,7 @@ public class WriterInterfaceGen {
         }).collect(Collectors.toList());
     }
     
-    private List<String> getClassesInFile(File file) throws IOException {
+    private static List<String> getClassesInFile(File file) throws IOException {
         List<String> classNames = new ArrayList<>();
         ZipFile zip = new ZipFile(file);
         Enumeration<? extends ZipEntry> s = zip.entries();
@@ -53,11 +49,16 @@ public class WriterInterfaceGen {
             if (entry.getName().endsWith(".class")) {
                 String path = entry.getName().replace("/", ".");
                 path = path.substring(0, path.length() - ".class".length());
-                System.out.println(entry.getName());
                 classNames.add(path);
             }
         }
         zip.close();
         return classNames;
+    }
+    
+    public Map<String, Object> getClassNames() throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        result.put("names", getJObjectClassNames());
+        return result;
     }
 }
