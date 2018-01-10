@@ -11,10 +11,11 @@ import in.kyle.jrefactor.parser.unit.body.JVariable;
 import in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer;
 import in.kyle.jrefactor.parser.unit.types.JClassDeclaration;
 import in.kyle.jrefactor.writer.AbstractWriter;
+import in.kyle.jrefactor.writer.BaseWriter;
 
 public class TestGeneration {
     
-    private static AbstractWriter writer = new AbstractWriter();
+    private static AbstractWriter writer = new BaseWriter();
     
     public static void main(String[] args) throws IOException {
         JCompilationUnit unit = loadFile();
@@ -43,7 +44,7 @@ public class TestGeneration {
     }
     
     private static void printFile(JCompilationUnit unit) {
-        writer.append(unit);
+        writer.write(unit);
         System.out.println(writer.toString());
         writer.clear();
     }

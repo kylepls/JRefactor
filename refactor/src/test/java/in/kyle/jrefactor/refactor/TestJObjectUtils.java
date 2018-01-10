@@ -19,10 +19,6 @@ public class TestJObjectUtils {
         @Data
         class A implements JObject {
             private JObjectList<JLiteral> list = new JObjectList<>();
-            
-            @Override
-            public void write(CodeWriter writer) {
-            }
         }
         A a = new A();
         a.list.add(new JIntegerLiteral(1));
@@ -37,10 +33,6 @@ public class TestJObjectUtils {
         @ToString
         class A implements JObject {
             private JObject test = new JIntegerLiteral(1);
-            
-            @Override
-            public void write(CodeWriter writer) {
-            }
         }
         A testObject = new A();
         Collection<JObject> values = JObjectUtils.getDirectChildren(testObject);
@@ -53,10 +45,6 @@ public class TestJObjectUtils {
         @ToString
         class A implements JObject {
             private JObject value = new JIntegerLiteral(1);
-            
-            @Override
-            public void write(CodeWriter writer) {
-            }
         }
         JObjectList<JObject> list = new JObjectList<>();
         list.add(new A());

@@ -10,6 +10,7 @@ import in.kyle.jrefactor.parser.expression.literal.JLiteral;
 import in.kyle.jrefactor.parser.expression.literal.JNumericLiteral;
 import in.kyle.jrefactor.parser.expression.literal.JStringLiteral;
 import in.kyle.jrefactor.writer.AbstractWriter;
+import in.kyle.jrefactor.writer.BaseWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final AbstractWriter writer = new AbstractWriter();
+    private final AbstractWriter writer = new BaseWriter();
     private final RefactorSession session;
     
     @Getter
@@ -69,7 +70,7 @@ public class LiteralOptimizer extends JavaBaseVisitor {
     
     private String objToString(JObject object) {
         writer.clear();
-        writer.append(object);
+        writer.write(object);
         return writer.toString();
     }
     
