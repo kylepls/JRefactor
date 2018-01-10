@@ -1,6 +1,5 @@
 package in.kyle.jrefactor.parser.unit;
 
-import in.kyle.jrefactor.CodeWriter;
 import in.kyle.jrefactor.parser.JObject;
 import in.kyle.jrefactor.parser.expression.JExpression;
 import lombok.AllArgsConstructor;
@@ -18,23 +17,10 @@ public interface JTypeArgument extends JObject {
             this.boundType = boundType;
         }
     
-        @Override
-        public void write(CodeWriter writer) {
-            writer.append("?");
-            if (getReferenceType() != null) {
-                writer.append(" {} {}", boundType, getReferenceType());
-            }
-        }
-    
         public enum Type implements JObject {
             EXTENDS,
             SUPER;
             
-            @Override
-            public void write(CodeWriter writer) {
-                writer.append(name().toLowerCase());
-            }
-        
             public static Type fromJava(String string) {
                 return valueOf(string.toUpperCase());
             }
@@ -46,11 +32,6 @@ public interface JTypeArgument extends JObject {
     class JReferenceTypeArgument implements JTypeArgument, JExpression {
         
         private JTypeName referenceType;
-    
-        @Override
-        public void write(CodeWriter writer) {
-            writer.append(referenceType);
-        }
     
     }
 }

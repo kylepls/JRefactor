@@ -1,12 +1,15 @@
 package in.kyle.jrefactor.parser.unit;
 
-import in.kyle.jrefactor.parser.unit.body.classtype.JClassMember;
 import in.kyle.jrefactor.parser.unit.body.JTypeBody;
+import in.kyle.jrefactor.parser.unit.types.classtype.JClassMember;
 import lombok.Data;
 
 @Data
-public abstract class JTypeDeclaration<T extends JTypeBody> extends Modifiable implements
-                                                                               JClassMember {
+public abstract class JTypeDeclaration<T extends JTypeBody>
+        implements JClassMember, JModifiable, JAnnotatable {
+    
+    private JAnnotationList annotations = new JAnnotationList();
+    private JModifierList modifiers = new JModifierList();
     
     private JIdentifier identifier;
     private T body;

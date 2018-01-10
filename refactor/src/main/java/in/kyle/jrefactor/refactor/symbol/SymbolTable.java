@@ -18,7 +18,7 @@ public class SymbolTable {
     
     public void compute() {
         scopes.clear();
-        new IdentifierVisitor(this, root).visit(root);
+        new IdentifierListener(this, root).enter(root);
     }
     
     public JBlock getDeclaringScope(JIdentifier identifier) {
@@ -44,23 +44,4 @@ public class SymbolTable {
         listener.enter(declaringScope);
         return listener.getIdentifiers();
     }
-    
-    /*
-        class Main {
-            int i = 0;
-            void test(int i) { // rename to j
-                i++;
-            }
-        }
-        
-        ->
-        
-        class Main {
-            int i = 0;
-            void test(int j) {
-                j++;
-            }
-        }
-            
-     */
 }

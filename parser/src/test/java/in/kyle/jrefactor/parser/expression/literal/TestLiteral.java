@@ -2,8 +2,6 @@ package in.kyle.jrefactor.parser.expression.literal;
 
 import org.junit.Test;
 
-import java.io.IOException;
-
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
@@ -11,14 +9,14 @@ import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
 public class TestLiteral {
     
     @Test
-    public void testBooleanLiteral() throws IOException {
+    public void testBooleanLiteral() {
         String literalString = "false";
         JBooleanLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual(Boolean.parseBoolean(literalString));
     }
     
     @Test
-    public void testLongLiteral() throws IOException {
+    public void testLongLiteral() {
         String literalString = "1L";
         JLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue())
@@ -26,35 +24,35 @@ public class TestLiteral {
     }
     
     @Test
-    public void testIntegerLiteral() throws IOException {
+    public void testIntegerLiteral() {
         String literalString = "100";
         JIntegerLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual(Integer.parseInt(literalString));
     }
     
     @Test
-    public void testDoubleLiteral() throws IOException {
+    public void testDoubleLiteral() {
         String literalString = "100.0D";
         JDoubleLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual(Double.parseDouble(literalString));
     }
     
     @Test
-    public void testCharacterLiteral() throws IOException {
+    public void testCharacterLiteral() {
         String literalString = "'a'";
         JCharacterLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual('a');
     }
     
     @Test
-    public void testStringLiteral() throws IOException {
+    public void testStringLiteral() {
         String literalString = "\"asdf\"";
         JStringLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual("asdf");
     }
     
     @Test
-    public void testFloatLiteral() throws IOException {
+    public void testFloatLiteral() {
         String literalString = "1.0F";
         JFloatLiteral literal = Parser.parse(literalString, Java8Parser::literal);
         Verify.that(literal.getValue()).isEqual(Float.parseFloat(literalString));

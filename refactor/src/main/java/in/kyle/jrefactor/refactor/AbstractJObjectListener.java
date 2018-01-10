@@ -74,7 +74,7 @@ class AbstractJObjectListener {
     }
     
     @Data
-    static class MethodPair {
+    private static class MethodPair {
         private final Method enter;
         private final Method exit;
     }

@@ -1,4 +1,11 @@
 package in.kyle.jrefactor.refactor;
+
+import in.kyle.jrefactor.parser.unit.JAnnotationList;
+import in.kyle.jrefactor.parser.unit.JAnnotatable;
+import in.kyle.jrefactor.parser.unit.JAnnotation;
+import in.kyle.jrefactor.parser.unit.JAnnotationValue;
+import in.kyle.jrefactor.parser.unit.JModifierList;
+
 public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements JavaVisitor<T> {
     public T visitOperator(in.kyle.jrefactor.parser.expression.JAssignment.Operator object) {
         return visitChildren(object);
@@ -162,55 +169,55 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJStatement(in.kyle.jrefactor.parser.statement.JStatement object) {
         return visitChildren(object);
     }
-    public T visitAnnotationBase(in.kyle.jrefactor.parser.unit.AnnotationBase object) {
+    public T visitAnnotationBase(JAnnotationList object) {
         return visitChildren(object);
     }
-    public T visitJAnnotationBody(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationBody object) {
+    public T visitJAnnotationBody(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationBody object) {
         return visitChildren(object);
     }
-    public T visitJAnnotationMember(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationMember object) {
+    public T visitJAnnotationMember(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationMember object) {
         return visitChildren(object);
     }
-    public T visitJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationTypeElement object) {
+    public T visitJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationTypeElement object) {
         return visitChildren(object);
     }
-    public T visitJElementValue(in.kyle.jrefactor.parser.unit.body.annotationtype.JElementValue object) {
+    public T visitJElementValue(in.kyle.jrefactor.parser.unit.types.annotationtype.JElementValue object) {
         return visitChildren(object);
     }
-    public T visitJClassBody(in.kyle.jrefactor.parser.unit.body.classtype.JClassBody object) {
+    public T visitJClassBody(in.kyle.jrefactor.parser.unit.types.classtype.JClassBody object) {
         return visitChildren(object);
     }
-    public T visitJClassInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInitializer object) {
+    public T visitJClassInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer object) {
         return visitChildren(object);
     }
-    public T visitJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInstanceInitializer object) {
+    public T visitJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInstanceInitializer object) {
         return visitChildren(object);
     }
-    public T visitJClassMember(in.kyle.jrefactor.parser.unit.body.classtype.JClassMember object) {
+    public T visitJClassMember(in.kyle.jrefactor.parser.unit.types.classtype.JClassMember object) {
         return visitChildren(object);
     }
-    public T visitJClassStaticInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassStaticInitializer object) {
+    public T visitJClassStaticInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassStaticInitializer object) {
         return visitChildren(object);
     }
-    public T visitJField(in.kyle.jrefactor.parser.unit.body.classtype.JField object) {
+    public T visitJField(in.kyle.jrefactor.parser.unit.types.classtype.JField object) {
         return visitChildren(object);
     }
-    public T visitJEnumBody(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumBody object) {
+    public T visitJEnumBody(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumBody object) {
         return visitChildren(object);
     }
-    public T visitJEnumConstant(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumConstant object) {
+    public T visitJEnumConstant(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumConstant object) {
         return visitChildren(object);
     }
-    public T visitJEnumMember(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumMember object) {
+    public T visitJEnumMember(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumMember object) {
         return visitChildren(object);
     }
-    public T visitJInterfaceBody(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceBody object) {
+    public T visitJInterfaceBody(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceBody object) {
         return visitChildren(object);
     }
-    public T visitJInterfaceMember(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMember object) {
+    public T visitJInterfaceMember(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMember object) {
         return visitChildren(object);
     }
-    public T visitJInterfaceMethod(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMethod object) {
+    public T visitJInterfaceMethod(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMethod object) {
         return visitChildren(object);
     }
     public T visitJArgumentList(in.kyle.jrefactor.parser.unit.body.JArgumentList object) {
@@ -246,22 +253,22 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitVariableHolder(in.kyle.jrefactor.parser.unit.body.VariableHolder object) {
         return visitChildren(object);
     }
-    public T visitJAnnotatable(in.kyle.jrefactor.parser.unit.JAnnotatable object) {
+    public T visitJAnnotatable(JAnnotatable object) {
         return visitChildren(object);
     }
-    public T visitJAnnotation(in.kyle.jrefactor.parser.unit.JAnnotation object) {
+    public T visitJAnnotation(JAnnotation object) {
         return visitChildren(object);
     }
-    public T visitJElementPair(in.kyle.jrefactor.parser.unit.JAnnotationValue.JElementPair object) {
+    public T visitJElementPair(JAnnotationValue.JElementPair object) {
         return visitChildren(object);
     }
-    public T visitJPairCollection(in.kyle.jrefactor.parser.unit.JAnnotationValue.JPairCollection object) {
+    public T visitJPairCollection(JAnnotationValue.JPairCollection object) {
         return visitChildren(object);
     }
-    public T visitJSingleValue(in.kyle.jrefactor.parser.unit.JAnnotationValue.JSingleValue object) {
+    public T visitJSingleValue(JAnnotationValue.JSingleValue object) {
         return visitChildren(object);
     }
-    public T visitJAnnotationValue(in.kyle.jrefactor.parser.unit.JAnnotationValue object) {
+    public T visitJAnnotationValue(JAnnotationValue object) {
         return visitChildren(object);
     }
     public T visitJArrayTypeName(in.kyle.jrefactor.parser.unit.JArrayTypeName object) {
@@ -312,10 +319,10 @@ public class JavaBaseVisitor<T> extends AbstractJObjectVisitor<T> implements Jav
     public T visitJTypeParameterList(in.kyle.jrefactor.parser.unit.JTypeParameterList object) {
         return visitChildren(object);
     }
-    public T visitModifiable(in.kyle.jrefactor.parser.unit.Modifiable object) {
+    public T visitModifiable(Modifiable object) {
         return visitChildren(object);
     }
-    public T visitModifierList(in.kyle.jrefactor.parser.unit.ModifierList object) {
+    public T visitModifierList(JModifierList object) {
         return visitChildren(object);
     }
     public T visitTypeable(in.kyle.jrefactor.parser.unit.Typeable object) {

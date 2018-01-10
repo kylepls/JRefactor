@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -53,7 +52,7 @@ public class TestLeftRightExpression {
     }
     
     @Test
-    public void testExpression() throws IOException {
+    public void testExpression() {
         String javaString = StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
         System.out.println(javaString);
         JLeftRightExpression expression = Parser.parse(javaString, Java8Parser::expression);

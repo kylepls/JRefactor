@@ -1,24 +1,23 @@
 package in.kyle.jrefactor.parser.unit.body;
 
+import in.kyle.jrefactor.parser.unit.JAnnotatable;
+import in.kyle.jrefactor.parser.unit.JAnnotationList;
 import in.kyle.jrefactor.parser.unit.JIdentifier;
+import in.kyle.jrefactor.parser.unit.JModifiable;
+import in.kyle.jrefactor.parser.unit.JModifierList;
 import in.kyle.jrefactor.parser.unit.JTypeName;
-import in.kyle.jrefactor.parser.unit.Modifiable;
-import in.kyle.jrefactor.CodeWriter;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
 @Data
-public class JParameter extends Modifiable {
+public class JParameter implements JModifiable, JAnnotatable {
     
     private JTypeName type;
     private JIdentifier identifier;
+    private JModifierList modifiers = new JModifierList();
+    private JAnnotationList annotations = new JAnnotationList();
     
-    @Override
-    public void write(CodeWriter writer) {
-        writeAnnotations(writer);
-        writer.append(getModifiers());
-        writer.append("{} {}", type, identifier);
+    public JParameter(JTypeName type, JIdentifier identifier) {
+        this.type = type;
+        this.identifier = identifier;
     }
-    
 }

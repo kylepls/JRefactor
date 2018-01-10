@@ -4,11 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import in.kyle.api.utils.StringUtils;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
@@ -36,8 +34,15 @@ public class TestUnaryExpression {
     }
     
     @Test
-    public void testUnary() throws IOException {
-        String javaString = StringUtils.replaceVariables(operator.getWriterString(), "i");
+    public void testUnary() {
+        String javaString;
+        if (operator.isBeforeOperator()) {
+            javaString = operator.getJavaString() + "i";
+        } else {
+            javaString = "i" + operator.getJavaString();
+        }
+        
+        
         System.out.println(javaString);
         JUnaryExpression expression = Parser.parse(javaString, Java8Parser::expression);
         Verify.that(expression).isNotNull();

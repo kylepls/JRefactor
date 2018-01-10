@@ -2,7 +2,6 @@ package in.kyle.jrefactor.parser.statement.control;
 
 import in.kyle.jrefactor.parser.expression.JExpression;
 import in.kyle.jrefactor.parser.statement.JStatement;
-import in.kyle.jrefactor.CodeWriter;
 import lombok.Data;
 
 @Data
@@ -12,9 +11,4 @@ public class JIfThenElseStatement implements JControlStatement {
     private JStatement ifCondition;
     private JStatement elseCondition;
     
-    @Override
-    public void write(CodeWriter writer) {
-        writer.appendLine("if ({}) {}", expression, ifCondition);
-        writer.appendLine("else {}", elseCondition);
-    }
 }

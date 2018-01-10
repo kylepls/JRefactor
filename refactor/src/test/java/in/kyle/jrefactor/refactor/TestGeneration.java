@@ -7,14 +7,14 @@ import in.kyle.jrefactor.parser.Parser;
 import in.kyle.jrefactor.parser.statement.JLocalVariableDeclaration;
 import in.kyle.jrefactor.parser.unit.JCompilationUnit;
 import in.kyle.jrefactor.parser.unit.JIdentifier;
-import in.kyle.jrefactor.parser.unit.body.JMethod;
 import in.kyle.jrefactor.parser.unit.body.JVariable;
+import in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer;
 import in.kyle.jrefactor.parser.unit.types.JClassDeclaration;
-import in.kyle.jrefactor.writer.BasicWriter;
+import in.kyle.jrefactor.writer.AbstractWriter;
 
 public class TestGeneration {
     
-    private static BasicWriter writer = new BasicWriter();
+    private static AbstractWriter writer = new AbstractWriter();
     
     public static void main(String[] args) throws IOException {
         JCompilationUnit unit = loadFile();
@@ -27,9 +27,10 @@ public class TestGeneration {
     
     private static void renameVariable(JCompilationUnit unit, RefactorSession session) {
         JClassDeclaration type = (JClassDeclaration) unit.getTypes().get(0);
-        JMethod method = (JMethod) type.getBody().getMembers().get(0);
+        
+        JClassInitializer initializer = (JClassInitializer) type.getBody().getMembers().get(0);
         JLocalVariableDeclaration declaration =
-                (JLocalVariableDeclaration) method.getBody().getStatements().get(0);
+                (JLocalVariableDeclaration) initializer.getBlock().getStatements().get(0);
         JVariable variable = declaration.getVariables().get(0);
         
         JIdentifier identifier = variable.getIdentifier();

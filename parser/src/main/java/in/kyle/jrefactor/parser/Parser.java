@@ -14,7 +14,6 @@ import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.parser.antlr.JavaCompositionVisitor;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Lexer;
 import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.parser.statement.JBlock;
 import in.kyle.jrefactor.parser.unit.JCompilationUnit;
 
 public class Parser {
@@ -23,9 +22,8 @@ public class Parser {
     
     public static <T extends JObject> T parse(String string,
                                               Function<Java8Parser, ? extends ParserRuleContext> 
-                                                      result)
-            throws IOException {
-        return parse(new ByteArrayInputStream(string.getBytes("UTF-8")), result);
+                                                      result) {
+        return Try.to(() -> parse(new ByteArrayInputStream(string.getBytes("UTF-8")), result));
     }
     
     public static <T extends JObject> T parse(InputStream is,
@@ -39,11 +37,6 @@ public class Parser {
         ParserRuleContext apply = result.apply(parser);
         return (T) VISITOR.visit(apply);
     }
-    
-    public static JBlock parseBlock(String block) {
-        return Try.to(() -> new JBlock(parse(block, Java8Parser::blockStatements)));
-    }
-    
     
     public static JCompilationUnit parseFile(InputStream is) throws IOException {
         return parse(is, Java8Parser::compilationUnit);

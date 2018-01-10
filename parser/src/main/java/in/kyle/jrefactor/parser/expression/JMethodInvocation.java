@@ -1,18 +1,21 @@
 package in.kyle.jrefactor.parser.expression;
 
-import in.kyle.jrefactor.CodeWriter;
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.unit.JTypeParameterList;
-import lombok.experimental.Delegate;
+import java.util.Optional;
 
+import in.kyle.jrefactor.parser.unit.JIdentifier;
+import in.kyle.jrefactor.parser.unit.JTypeArgumentList;
+import in.kyle.jrefactor.parser.unit.body.JArgumentList;
+import lombok.Data;
+
+@Data
 public class JMethodInvocation implements JExpression {
     
-    @Delegate(excludes = JObject.class)
-    private final JTypeParameterList typeParameterList = new JTypeParameterList();
+    private JTypeArgumentList typeArguments = new JTypeArgumentList();
+    private JArgumentList arguments = new JArgumentList();
+    private Optional<String> methodArea = Optional.empty(); // TODO: 1/7/2018  
+    private JIdentifier identifier;
     
-    @Override
-    public void write(CodeWriter writer) {
-        
+    public JMethodInvocation(JIdentifier identifier) {
+        this.identifier = identifier;
     }
-    
 }

@@ -1,13 +1,12 @@
 package in.kyle.jrefactor.parser.unit;
 
-import in.kyle.jrefactor.parser.JObject;
 import lombok.Data;
-import lombok.experimental.Delegate;
 
 @Data
-public abstract class Typeable extends Modifiable {
+public abstract class Typeable implements JModifiable, JAnnotatable {
     
-    @Delegate(excludes = JObject.class)
-    private final JTypeParameterList typeParameterList = new JTypeParameterList();
+    private JModifierList modifiers = new JModifierList();
+    private JAnnotationList annotations = new JAnnotationList();
+    private JTypeParameterList typeParameters = new JTypeParameterList();
     
 }

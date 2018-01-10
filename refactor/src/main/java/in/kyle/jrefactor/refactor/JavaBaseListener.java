@@ -1,4 +1,11 @@
 package in.kyle.jrefactor.refactor;
+
+import in.kyle.jrefactor.parser.unit.JAnnotationList;
+import in.kyle.jrefactor.parser.unit.JAnnotatable;
+import in.kyle.jrefactor.parser.unit.JAnnotation;
+import in.kyle.jrefactor.parser.unit.JAnnotationValue;
+import in.kyle.jrefactor.parser.unit.JModifierList;
+
 public class JavaBaseListener extends AbstractJObjectListener implements JavaListener {
     public void enterOperator(in.kyle.jrefactor.parser.expression.JAssignment.Operator object) {super.enterChildren(object);}
     public void exitOperator(in.kyle.jrefactor.parser.expression.JAssignment.Operator object) {}
@@ -108,40 +115,40 @@ public class JavaBaseListener extends AbstractJObjectListener implements JavaLis
     public void exitJLocalVariableDeclaration(in.kyle.jrefactor.parser.statement.JLocalVariableDeclaration object) {}
     public void enterJStatement(in.kyle.jrefactor.parser.statement.JStatement object) {super.enterChildren(object);}
     public void exitJStatement(in.kyle.jrefactor.parser.statement.JStatement object) {}
-    public void enterAnnotationBase(in.kyle.jrefactor.parser.unit.AnnotationBase object) {super.enterChildren(object);}
-    public void exitAnnotationBase(in.kyle.jrefactor.parser.unit.AnnotationBase object) {}
-    public void enterJAnnotationBody(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationBody object) {super.enterChildren(object);}
-    public void exitJAnnotationBody(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationBody object) {}
-    public void enterJAnnotationMember(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationMember object) {super.enterChildren(object);}
-    public void exitJAnnotationMember(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationMember object) {}
-    public void enterJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationTypeElement object) {super.enterChildren(object);}
-    public void exitJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.body.annotationtype.JAnnotationTypeElement object) {}
-    public void enterJElementValue(in.kyle.jrefactor.parser.unit.body.annotationtype.JElementValue object) {super.enterChildren(object);}
-    public void exitJElementValue(in.kyle.jrefactor.parser.unit.body.annotationtype.JElementValue object) {}
-    public void enterJClassBody(in.kyle.jrefactor.parser.unit.body.classtype.JClassBody object) {super.enterChildren(object);}
-    public void exitJClassBody(in.kyle.jrefactor.parser.unit.body.classtype.JClassBody object) {}
-    public void enterJClassInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInitializer object) {super.enterChildren(object);}
-    public void exitJClassInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInitializer object) {}
-    public void enterJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInstanceInitializer object) {super.enterChildren(object);}
-    public void exitJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassInstanceInitializer object) {}
-    public void enterJClassMember(in.kyle.jrefactor.parser.unit.body.classtype.JClassMember object) {super.enterChildren(object);}
-    public void exitJClassMember(in.kyle.jrefactor.parser.unit.body.classtype.JClassMember object) {}
-    public void enterJClassStaticInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassStaticInitializer object) {super.enterChildren(object);}
-    public void exitJClassStaticInitializer(in.kyle.jrefactor.parser.unit.body.classtype.JClassStaticInitializer object) {}
-    public void enterJField(in.kyle.jrefactor.parser.unit.body.classtype.JField object) {super.enterChildren(object);}
-    public void exitJField(in.kyle.jrefactor.parser.unit.body.classtype.JField object) {}
-    public void enterJEnumBody(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumBody object) {super.enterChildren(object);}
-    public void exitJEnumBody(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumBody object) {}
-    public void enterJEnumConstant(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumConstant object) {super.enterChildren(object);}
-    public void exitJEnumConstant(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumConstant object) {}
-    public void enterJEnumMember(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumMember object) {super.enterChildren(object);}
-    public void exitJEnumMember(in.kyle.jrefactor.parser.unit.body.enumtype.JEnumMember object) {}
-    public void enterJInterfaceBody(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceBody object) {super.enterChildren(object);}
-    public void exitJInterfaceBody(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceBody object) {}
-    public void enterJInterfaceMember(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMember object) {super.enterChildren(object);}
-    public void exitJInterfaceMember(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMember object) {}
-    public void enterJInterfaceMethod(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMethod object) {super.enterChildren(object);}
-    public void exitJInterfaceMethod(in.kyle.jrefactor.parser.unit.body.interfacetype.JInterfaceMethod object) {}
+    public void enterAnnotationBase(JAnnotationList object) {super.enterChildren(object);}
+    public void exitAnnotationBase(JAnnotationList object) {}
+    public void enterJAnnotationBody(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationBody object) {super.enterChildren(object);}
+    public void exitJAnnotationBody(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationBody object) {}
+    public void enterJAnnotationMember(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationMember object) {super.enterChildren(object);}
+    public void exitJAnnotationMember(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationMember object) {}
+    public void enterJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationTypeElement object) {super.enterChildren(object);}
+    public void exitJAnnotationTypeElement(in.kyle.jrefactor.parser.unit.types.annotationtype.JAnnotationTypeElement object) {}
+    public void enterJElementValue(in.kyle.jrefactor.parser.unit.types.annotationtype.JElementValue object) {super.enterChildren(object);}
+    public void exitJElementValue(in.kyle.jrefactor.parser.unit.types.annotationtype.JElementValue object) {}
+    public void enterJClassBody(in.kyle.jrefactor.parser.unit.types.classtype.JClassBody object) {super.enterChildren(object);}
+    public void exitJClassBody(in.kyle.jrefactor.parser.unit.types.classtype.JClassBody object) {}
+    public void enterJClassInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer object) {super.enterChildren(object);}
+    public void exitJClassInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer object) {}
+    public void enterJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInstanceInitializer object) {super.enterChildren(object);}
+    public void exitJClassInstanceInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassInstanceInitializer object) {}
+    public void enterJClassMember(in.kyle.jrefactor.parser.unit.types.classtype.JClassMember object) {super.enterChildren(object);}
+    public void exitJClassMember(in.kyle.jrefactor.parser.unit.types.classtype.JClassMember object) {}
+    public void enterJClassStaticInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassStaticInitializer object) {super.enterChildren(object);}
+    public void exitJClassStaticInitializer(in.kyle.jrefactor.parser.unit.types.classtype.JClassStaticInitializer object) {}
+    public void enterJField(in.kyle.jrefactor.parser.unit.types.classtype.JField object) {super.enterChildren(object);}
+    public void exitJField(in.kyle.jrefactor.parser.unit.types.classtype.JField object) {}
+    public void enterJEnumBody(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumBody object) {super.enterChildren(object);}
+    public void exitJEnumBody(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumBody object) {}
+    public void enterJEnumConstant(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumConstant object) {super.enterChildren(object);}
+    public void exitJEnumConstant(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumConstant object) {}
+    public void enterJEnumMember(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumMember object) {super.enterChildren(object);}
+    public void exitJEnumMember(in.kyle.jrefactor.parser.unit.types.enumtype.JEnumMember object) {}
+    public void enterJInterfaceBody(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceBody object) {super.enterChildren(object);}
+    public void exitJInterfaceBody(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceBody object) {}
+    public void enterJInterfaceMember(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMember object) {super.enterChildren(object);}
+    public void exitJInterfaceMember(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMember object) {}
+    public void enterJInterfaceMethod(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMethod object) {super.enterChildren(object);}
+    public void exitJInterfaceMethod(in.kyle.jrefactor.parser.unit.types.interfacetype.JInterfaceMethod object) {}
     public void enterJArgumentList(in.kyle.jrefactor.parser.unit.body.JArgumentList object) {super.enterChildren(object);}
     public void exitJArgumentList(in.kyle.jrefactor.parser.unit.body.JArgumentList object) {}
     public void enterJConstructorDeclaration(in.kyle.jrefactor.parser.unit.body.JConstructorDeclaration object) {super.enterChildren(object);}
@@ -164,18 +171,18 @@ public class JavaBaseListener extends AbstractJObjectListener implements JavaLis
     public void exitJVariableInitializer(in.kyle.jrefactor.parser.unit.body.JVariableInitializer object) {}
     public void enterVariableHolder(in.kyle.jrefactor.parser.unit.body.VariableHolder object) {super.enterChildren(object);}
     public void exitVariableHolder(in.kyle.jrefactor.parser.unit.body.VariableHolder object) {}
-    public void enterJAnnotatable(in.kyle.jrefactor.parser.unit.JAnnotatable object) {super.enterChildren(object);}
-    public void exitJAnnotatable(in.kyle.jrefactor.parser.unit.JAnnotatable object) {}
-    public void enterJAnnotation(in.kyle.jrefactor.parser.unit.JAnnotation object) {super.enterChildren(object);}
-    public void exitJAnnotation(in.kyle.jrefactor.parser.unit.JAnnotation object) {}
-    public void enterJElementPair(in.kyle.jrefactor.parser.unit.JAnnotationValue.JElementPair object) {super.enterChildren(object);}
-    public void exitJElementPair(in.kyle.jrefactor.parser.unit.JAnnotationValue.JElementPair object) {}
-    public void enterJPairCollection(in.kyle.jrefactor.parser.unit.JAnnotationValue.JPairCollection object) {super.enterChildren(object);}
-    public void exitJPairCollection(in.kyle.jrefactor.parser.unit.JAnnotationValue.JPairCollection object) {}
-    public void enterJSingleValue(in.kyle.jrefactor.parser.unit.JAnnotationValue.JSingleValue object) {super.enterChildren(object);}
-    public void exitJSingleValue(in.kyle.jrefactor.parser.unit.JAnnotationValue.JSingleValue object) {}
-    public void enterJAnnotationValue(in.kyle.jrefactor.parser.unit.JAnnotationValue object) {super.enterChildren(object);}
-    public void exitJAnnotationValue(in.kyle.jrefactor.parser.unit.JAnnotationValue object) {}
+    public void enterJAnnotatable(JAnnotatable object) {super.enterChildren(object);}
+    public void exitJAnnotatable(JAnnotatable object) {}
+    public void enterJAnnotation(JAnnotation object) {super.enterChildren(object);}
+    public void exitJAnnotation(JAnnotation object) {}
+    public void enterJElementPair(JAnnotationValue.JElementPair object) {super.enterChildren(object);}
+    public void exitJElementPair(JAnnotationValue.JElementPair object) {}
+    public void enterJPairCollection(JAnnotationValue.JPairCollection object) {super.enterChildren(object);}
+    public void exitJPairCollection(JAnnotationValue.JPairCollection object) {}
+    public void enterJSingleValue(JAnnotationValue.JSingleValue object) {super.enterChildren(object);}
+    public void exitJSingleValue(JAnnotationValue.JSingleValue object) {}
+    public void enterJAnnotationValue(JAnnotationValue object) {super.enterChildren(object);}
+    public void exitJAnnotationValue(JAnnotationValue object) {}
     public void enterJArrayTypeName(in.kyle.jrefactor.parser.unit.JArrayTypeName object) {super.enterChildren(object);}
     public void exitJArrayTypeName(in.kyle.jrefactor.parser.unit.JArrayTypeName object) {}
     public void enterJCompilationUnit(in.kyle.jrefactor.parser.unit.JCompilationUnit object) {super.enterChildren(object);}
@@ -208,10 +215,10 @@ public class JavaBaseListener extends AbstractJObjectListener implements JavaLis
     public void exitJTypeParameter(in.kyle.jrefactor.parser.unit.JTypeParameter object) {}
     public void enterJTypeParameterList(in.kyle.jrefactor.parser.unit.JTypeParameterList object) {super.enterChildren(object);}
     public void exitJTypeParameterList(in.kyle.jrefactor.parser.unit.JTypeParameterList object) {}
-    public void enterModifiable(in.kyle.jrefactor.parser.unit.Modifiable object) {super.enterChildren(object);}
-    public void exitModifiable(in.kyle.jrefactor.parser.unit.Modifiable object) {}
-    public void enterModifierList(in.kyle.jrefactor.parser.unit.ModifierList object) {super.enterChildren(object);}
-    public void exitModifierList(in.kyle.jrefactor.parser.unit.ModifierList object) {}
+    public void enterModifiable(Modifiable object) {super.enterChildren(object);}
+    public void exitModifiable(Modifiable object) {}
+    public void enterModifierList(JModifierList object) {super.enterChildren(object);}
+    public void exitModifierList(JModifierList object) {}
     public void enterTypeable(in.kyle.jrefactor.parser.unit.Typeable object) {super.enterChildren(object);}
     public void exitTypeable(in.kyle.jrefactor.parser.unit.Typeable object) {}
     public void enterJAnnotationDeclaration(in.kyle.jrefactor.parser.unit.types.JAnnotationDeclaration object) {super.enterChildren(object);}

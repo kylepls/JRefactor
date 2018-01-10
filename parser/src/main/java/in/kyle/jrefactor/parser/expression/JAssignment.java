@@ -1,7 +1,6 @@
 package in.kyle.jrefactor.parser.expression;
 
 import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.CodeWriter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -9,17 +8,12 @@ import lombok.Getter;
 @Data
 public class JAssignment implements JExpression {
     
-    private Operator operator;
+    private JAssignmentOperator operator;
     private JExpression left;
     private JExpression right;
     
-    @Override
-    public void write(CodeWriter writer) {
-        writer.append("{} {} {}", left, operator, right);
-    }
-    
     @AllArgsConstructor
-    public enum Operator implements JObject {
+    public enum JAssignmentOperator implements JObject {
         EQUAL("="),
         MULTIPLY("*="),
         DIVIDE("/="),
@@ -36,19 +30,14 @@ public class JAssignment implements JExpression {
         @Getter
         private final String javaString;
         
-        @Override
-        public void write(CodeWriter writer) {
-            writer.append(javaString);
-        }
-        
-        public static Operator fromJava(String string) {
-            for (Operator operator : values()) {
+        public static JAssignmentOperator fromJava(String string) {
+            for (JAssignmentOperator operator : values()) {
                 if (operator.getJavaString().equals(string)) {
                     return operator;
                 }
             }
             throw new IllegalArgumentException(
-                    "No enum constant for " + Operator.class + "." + string);
+                    "No enum constant for " + JAssignmentOperator.class + "." + string);
         }
         
     }
