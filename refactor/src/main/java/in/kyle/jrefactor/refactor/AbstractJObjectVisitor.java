@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.parser.JObject;
+import in.kyle.jrefactor.tree.JObject;
 
 class AbstractJObjectVisitor<T> {
     

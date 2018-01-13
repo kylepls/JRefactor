@@ -2,6 +2,7 @@ package in.kyle.jrefactor.writer.gen;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -12,7 +13,8 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import in.kyle.jrefactor.parser.JObject;
+import in.kyle.jrefactor.tree.JObject;
+import lombok.Data;
 
 // due to the location of this class, it is unlikely that it will be able to be inherited
 public class JObjectNames {
@@ -20,6 +22,7 @@ public class JObjectNames {
     private static List<String> getJObjectClassNames() throws IOException {
         return findClasses().stream()
                             .filter(JObject.class::isAssignableFrom)
+                            .filter(clazz-> !Modifier.isAbstract(clazz.getModifiers()))
                             .map(clazz -> clazz.getName().replace("$", "."))
                             .collect(Collectors.toList());
     }
@@ -58,7 +61,24 @@ public class JObjectNames {
     
     public Map<String, Object> getClassNames() throws IOException {
         Map<String, Object> result = new HashMap<>();
-        result.put("names", getJObjectClassNames());
+        List<String> jObjectClassNames = getJObjectClassNames();
+        List<NamePair> namePairs = makeNamePairs(jObjectClassNames);
+        result.put("names", namePairs);
         return result;
+    }
+    
+    private List<NamePair> makeNamePairs(List<String> jObjectClassNames) {
+        return jObjectClassNames.stream().map(this::makeNamePair).collect(Collectors.toList());
+    }
+    
+    private NamePair makeNamePair(String name) {
+        String simpleName = name.substring(name.lastIndexOf(".") + 1);
+        return new NamePair(simpleName, name);
+    }
+    
+    @Data
+    private static class NamePair {
+        private final String simpleName;
+        private final String name;
     }
 }

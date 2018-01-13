@@ -10,8 +10,9 @@ import java.util.Collection;
 import in.kyle.api.utils.StringUtils;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.parser.expression.JLeftRightExpression.Operation;
+import in.kyle.jrefactor.tree.expression.JExpressionName;
+import in.kyle.jrefactor.tree.expression.JLeftRightExpression;
+import in.kyle.jrefactor.tree.expression.JLeftRightExpression.Operation;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -55,7 +56,7 @@ public class TestLeftRightExpression {
     public void testExpression() {
         String javaString = StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
         System.out.println(javaString);
-        JLeftRightExpression expression = Parser.parse(javaString, Java8Parser::expression);
+        JLeftRightExpression expression = Parser.parse(javaString, JLeftRightExpression.class);
         Verify.that(expression.getLeft()).isInstanceOf(JExpressionName.class);
         Verify.that(expression.getRight()).isNotNull();
     }

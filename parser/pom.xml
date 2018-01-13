@@ -11,23 +11,44 @@
 
     <artifactId>parser</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>tree</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    
     <build>
         <plugins>
             <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.webguys</groupId>
+                <artifactId>string-template-maven-plugin</artifactId>
                 <configuration>
-                    <visitor>true</visitor>
+                    <templates>
+                        <template combine.children="append">
+                            <name>AbstractParseMapper</name>
+                            <target>
+                                ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/parser/AbstractParseMapper.java
+                            </target>
+                            <controller>
+                                <className>in.kyle.jrefactor.parser.gen.JObjectNames
+                                </className>
+                                <method>getClassNames</method>
+                            </controller>
+                        </template>
+                    </templates>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>antlr</id>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

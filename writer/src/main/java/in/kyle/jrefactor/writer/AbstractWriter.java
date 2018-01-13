@@ -1,43 +1,69 @@
 package in.kyle.jrefactor.writer;
 
-import in.kyle.jrefactor.parser.JObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public abstract class AbstractWriter implements CodeWriter {
+import in.kyle.api.utils.Try;
+import in.kyle.jrefactor.tree.JObject;
+
+public abstract class AbstractWriter extends CodeWriter {
+    
+    private static final String BASE_CLASS = "in.kyle.jrefactor.writer.CodeWriter";
+    
+    private static final Map<Class<?>, Method> METHODS;
+    
+    static {
+        Class<?> CLAZZ = Try.to(() -> Class.forName(BASE_CLASS));
+        METHODS = Arrays.stream(CLAZZ.getDeclaredMethods())
+                        .filter(method -> Modifier.isProtected(method.getModifiers()))
+                        .filter(method -> method.getParameterCount() == 1)
+                        .collect(Collectors.toMap(method -> method.getParameterTypes()[0],
+                                                  method -> method));
+    }
     
     private final StringBuilder buffer = new StringBuilder();
     private final StringBuilder currentIndent = new StringBuilder();
     private String indentString = "    ";
     private boolean newLine = false;
     
-    public void setIndentAmount(int amount) {
-        indentString = createIndentString(amount);
-    }
-    
-    public void indent() {
-        currentIndent.append(indentString);
-    }
-    
-    public void dedent() {
-        currentIndent.setLength(currentIndent.length() - indentString.length());
-    }
-    
-    protected void append(Object object) {
-        if (newLine) {
-            appendIndent();
-            newLine = false;
-        }
-        if (object instanceof JObject) {
-            write((JObject) object);
-        } else {
-            buffer.append(object.toString());
+    @Override
+    public void write(JObject object) {
+        beginWrite();
+        if (object != null) {
+            Method method = METHODS.get(object.getClass());
+            if (method == null) {
+                throw new RuntimeException("No such writer for " + object);
+            } else {
+                Try.to(() -> method.invoke(this, object));
+            }
         }
     }
     
     protected void writeString(String string) {
-        append(string);
+        beginWrite();
+        buffer.append(string);
     }
     
-    public void newLine() {
+    private void beginWrite() {
+        if (newLine) {
+            appendIndent();
+            newLine = false;
+        }
+    }
+    
+    
+    protected void indent() {
+        currentIndent.append(indentString);
+    }
+    
+    protected void dedent() {
+        currentIndent.setLength(currentIndent.length() - indentString.length());
+    }
+    
+    protected void newLine() {
         buffer.append("\n");
         newLine = true;
     }
@@ -48,14 +74,6 @@ public abstract class AbstractWriter implements CodeWriter {
     
     public void clear() {
         buffer.setLength(0);
-    }
-    
-    private String createIndentString(int amount) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < amount; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
     }
     
     @Override

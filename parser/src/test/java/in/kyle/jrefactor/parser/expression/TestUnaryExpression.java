@@ -9,10 +9,10 @@ import java.util.Collection;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
+import in.kyle.jrefactor.tree.expression.JUnaryExpression;
 import lombok.AllArgsConstructor;
 
-import static in.kyle.jrefactor.parser.expression.JUnaryExpression.Operator;
+import static in.kyle.jrefactor.tree.expression.JUnaryExpression.Operator;
 
 @AllArgsConstructor
 @RunWith(Parameterized.class)
@@ -43,7 +43,7 @@ public class TestUnaryExpression {
         }
         
         System.out.println(javaString);
-        JUnaryExpression expression = Parser.parse(javaString, Java8Parser::expression);
+        JUnaryExpression expression = Parser.parse(javaString, JUnaryExpression.class);
         Verify.that(expression).isNotNull();
         Verify.that(expression.getExpression()).isNotNull();
         Verify.that(expression.getOperator()).isEqual(operator);

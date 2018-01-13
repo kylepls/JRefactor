@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import in.kyle.jrefactor.parser.JObject;
+import in.kyle.jrefactor.tree.JObject;
 import lombok.Data;
 
 // due to the location of this class, it is unlikely that it will be able to be inherited

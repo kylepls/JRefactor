@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>in.kyle.refactor</groupId>
-            <artifactId>parser</artifactId>
+            <artifactId>tree</artifactId>
             <version>${parent.version}</version>
         </dependency>
         <dependency>

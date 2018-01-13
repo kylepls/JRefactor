@@ -4,8 +4,8 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.parser.unit.JTypeName;
+import in.kyle.jrefactor.tree.expression.JTypeReferenceExpression;
+import in.kyle.jrefactor.tree.unit.JTypeName;
 
 public class TestTypeReference {
     
@@ -13,7 +13,7 @@ public class TestTypeReference {
     public void testSimpleReference() {
         String javaString = "tEsT.class";
         JTypeReferenceExpression expression =
-                Parser.parse(javaString, Java8Parser::primaryClassType);
+                Parser.parse(javaString, JTypeReferenceExpression.class);
         Verify.that(expression.getReference()).isNotNull();
         JTypeName reference = expression.getReference();
         Verify.that(reference.getName()).isEqual("tEsT");

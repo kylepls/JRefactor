@@ -2,15 +2,15 @@ package in.kyle.jrefactor.refactor;
 
 import java.util.Arrays;
 
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.expression.JLeftRightExpression;
-import in.kyle.jrefactor.parser.expression.JParenthesisExpression;
-import in.kyle.jrefactor.parser.expression.literal.JIntegerLiteral;
-import in.kyle.jrefactor.parser.expression.literal.JLiteral;
-import in.kyle.jrefactor.parser.expression.literal.JNumericLiteral;
-import in.kyle.jrefactor.parser.expression.literal.JStringLiteral;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.expression.JLeftRightExpression;
+import in.kyle.jrefactor.tree.expression.JParenthesisExpression;
+import in.kyle.jrefactor.tree.expression.literal.JIntegerLiteral;
+import in.kyle.jrefactor.tree.expression.literal.JLiteral;
+import in.kyle.jrefactor.tree.expression.literal.JNumericLiteral;
+import in.kyle.jrefactor.tree.expression.literal.JStringLiteral;
 import in.kyle.jrefactor.writer.AbstractWriter;
-import in.kyle.jrefactor.writer.BaseWriter;
+import in.kyle.jrefactor.writer.SimpleWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final AbstractWriter writer = new BaseWriter();
+    private final AbstractWriter writer = new SimpleWriter();
     private final RefactorSession session;
     
     @Getter

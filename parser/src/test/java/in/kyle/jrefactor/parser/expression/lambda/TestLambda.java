@@ -4,17 +4,19 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.parser.expression.literal.JBooleanLiteral;
-import in.kyle.jrefactor.parser.statement.JBlock;
-import in.kyle.jrefactor.parser.unit.JParameterList;
+import in.kyle.jrefactor.tree.expression.lambda.JIdentifierParameter;
+import in.kyle.jrefactor.tree.expression.lambda.JInferredParameters;
+import in.kyle.jrefactor.tree.expression.lambda.JLambdaExpression;
+import in.kyle.jrefactor.tree.expression.literal.JBooleanLiteral;
+import in.kyle.jrefactor.tree.statement.JBlock;
+import in.kyle.jrefactor.tree.unit.JParameterList;
 
 public class TestLambda {
     
     @Test
     public void testLambdaNoParameters() {
         String lambda = "()->{}";
-        JLambdaExpression expression = Parser.parse(lambda, Java8Parser::lambdaExpression);
+        JLambdaExpression expression = Parser.parse(lambda, JLambdaExpression.class);
         Verify.that(expression.getParameters()).isNotNull();
         Verify.that(expression.getParameters()).isInstanceOf(JParameterList.class);
         Verify.that(expression.getBody()).isNotNull();
@@ -24,7 +26,7 @@ public class TestLambda {
     @Test
     public void testLambdaIdentifier() {
         String lambda = "a->{}";
-        JLambdaExpression expression = Parser.parse(lambda, Java8Parser::lambdaExpression);
+        JLambdaExpression expression = Parser.parse(lambda, JLambdaExpression.class);
         Verify.that(expression.getParameters()).isNotNull();
         Verify.that(expression.getParameters()).isInstanceOf(JIdentifierParameter.class);
         JIdentifierParameter parameter = (JIdentifierParameter) expression.getParameters();
@@ -36,7 +38,7 @@ public class TestLambda {
     @Test
     public void testLambdaInferredParameters() {
         String lambda = "(a, b, c)->{}";
-        JLambdaExpression expression = Parser.parse(lambda, Java8Parser::lambdaExpression);
+        JLambdaExpression expression = Parser.parse(lambda, JLambdaExpression.class);
         Verify.that(expression.getParameters()).isNotNull();
         Verify.that(expression.getParameters()).isInstanceOf(JInferredParameters.class);
         JInferredParameters parameters = (JInferredParameters) expression.getParameters();
@@ -50,7 +52,7 @@ public class TestLambda {
     @Test
     public void testLambdaExpressionBlock() {
         String lambda = "()->true";
-        JLambdaExpression expression = Parser.parse(lambda, Java8Parser::lambdaExpression);
+        JLambdaExpression expression = Parser.parse(lambda, JLambdaExpression.class);
         Verify.that(expression.getParameters()).isNotNull();
         Verify.that(expression.getParameters()).isInstanceOf(JParameterList.class);
         Verify.that(expression.getBody()).isNotNull();

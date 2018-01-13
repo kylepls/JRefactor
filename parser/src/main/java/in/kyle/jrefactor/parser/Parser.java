@@ -8,37 +8,37 @@ import org.antlr.v4.runtime.TokenStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Function;
 
-import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.parser.antlr.JavaCompositionVisitor;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Lexer;
-import in.kyle.jrefactor.parser.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.parser.unit.JCompilationUnit;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.antlr.gen.Java8Lexer;
+import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
+import in.kyle.jrefactor.tree.unit.JCompilationUnit;
 
 public class Parser {
     
     private static final JavaCompositionVisitor VISITOR = new JavaCompositionVisitor();
+    private static final BaseMapper MAPPER = new BaseMapper();
     
-    public static <T extends JObject> T parse(String string,
-                                              Function<Java8Parser, ? extends ParserRuleContext> 
-                                                      result) {
-        return Try.to(() -> parse(new ByteArrayInputStream(string.getBytes("UTF-8")), result));
+    public static <T extends JObject> T parse(String string, Class<T> clazz) {
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(string.getBytes("UTF-8"));
+            return parseInternal(bais, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
-    public static <T extends JObject> T parse(InputStream is,
-                                              Function<Java8Parser, ? extends ParserRuleContext> 
-                                                      result)
+    public static JCompilationUnit parseFile(InputStream is) throws IOException {
+        return parseInternal(is, JCompilationUnit.class);
+    }
+    
+    private static <T extends JObject> T parseInternal(InputStream is, Class<T> clazz)
             throws IOException {
         ANTLRInputStream ais = new ANTLRInputStream(is);
         Java8Lexer lexer = new Java8Lexer(ais);
         TokenStream ts = new CommonTokenStream(lexer);
         Java8Parser parser = new Java8Parser(ts);
-        ParserRuleContext apply = result.apply(parser);
-        return (T) VISITOR.visit(apply);
-    }
-    
-    public static JCompilationUnit parseFile(InputStream is) throws IOException {
-        return parse(is, Java8Parser::compilationUnit);
+        ParserRuleContext context = MAPPER.parsePart(parser, clazz);
+        return (T) VISITOR.visit(context);
     }
 }

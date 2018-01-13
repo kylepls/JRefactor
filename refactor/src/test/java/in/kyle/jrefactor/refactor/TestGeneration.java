@@ -4,18 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.parser.statement.JLocalVariableDeclaration;
-import in.kyle.jrefactor.parser.unit.JCompilationUnit;
-import in.kyle.jrefactor.parser.unit.JIdentifier;
-import in.kyle.jrefactor.parser.unit.body.JVariable;
-import in.kyle.jrefactor.parser.unit.types.classtype.JClassInitializer;
-import in.kyle.jrefactor.parser.unit.types.JClassDeclaration;
+import in.kyle.jrefactor.tree.statement.JLocalVariableDeclaration;
+import in.kyle.jrefactor.tree.unit.JCompilationUnit;
+import in.kyle.jrefactor.tree.unit.JIdentifier;
+import in.kyle.jrefactor.tree.unit.body.JVariable;
+import in.kyle.jrefactor.tree.unit.types.JClassDeclaration;
+import in.kyle.jrefactor.tree.unit.types.classtype.JClassInitializer;
 import in.kyle.jrefactor.writer.AbstractWriter;
-import in.kyle.jrefactor.writer.BaseWriter;
+import in.kyle.jrefactor.writer.SimpleWriter;
 
 public class TestGeneration {
     
-    private static AbstractWriter writer = new BaseWriter();
+    private static AbstractWriter writer = new SimpleWriter();
     
     public static void main(String[] args) throws IOException {
         JCompilationUnit unit = loadFile();
@@ -29,7 +29,7 @@ public class TestGeneration {
     private static void renameVariable(JCompilationUnit unit, RefactorSession session) {
         JClassDeclaration type = (JClassDeclaration) unit.getTypes().get(0);
         
-        JClassInitializer initializer = (JClassInitializer) type.getBody().getMembers().get(0);
+        JClassInitializer initializer = (JClassInitializer) type.getBody().get(0);
         JLocalVariableDeclaration declaration =
                 (JLocalVariableDeclaration) initializer.getBlock().getStatements().get(0);
         JVariable variable = declaration.getVariables().get(0);

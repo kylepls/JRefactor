@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.statement.JBlock;
-import in.kyle.jrefactor.parser.unit.JIdentifier;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.statement.JBlock;
+import in.kyle.jrefactor.tree.unit.JIdentifier;
 import in.kyle.jrefactor.refactor.JObjectUtils;
 import lombok.AllArgsConstructor;
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.parser.JObject;
+import in.kyle.jrefactor.tree.JObject;
 import lombok.Data;
 
 class AbstractJObjectListener {

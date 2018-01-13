@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.JObjectList;
-import in.kyle.jrefactor.parser.statement.JBlock;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.JObjectList;
+import in.kyle.jrefactor.tree.statement.JBlock;
 
 public final class JObjectUtils {
     

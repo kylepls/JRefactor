@@ -5,10 +5,10 @@ import org.junit.Test;
 import java.util.Collection;
 
 import in.kyle.api.verify.Verify;
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.JObjectList;
-import in.kyle.jrefactor.parser.expression.literal.JIntegerLiteral;
-import in.kyle.jrefactor.parser.expression.literal.JLiteral;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.JObjectList;
+import in.kyle.jrefactor.tree.expression.literal.JIntegerLiteral;
+import in.kyle.jrefactor.tree.expression.literal.JLiteral;
 import lombok.Data;
 import lombok.ToString;
 

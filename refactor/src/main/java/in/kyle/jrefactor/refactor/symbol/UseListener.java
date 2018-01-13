@@ -3,8 +3,9 @@ package in.kyle.jrefactor.refactor.symbol;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.kyle.jrefactor.parser.statement.JBlock;
-import in.kyle.jrefactor.parser.unit.JIdentifier;
+import in.kyle.jrefactor.tree.statement.JBlock;
+import in.kyle.jrefactor.tree.unit.JIdentifier;
+import in.kyle.jrefactor.refactor.JavaBaseListener;
 import lombok.Data;
 
 @Data

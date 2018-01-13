@@ -1,13 +1,14 @@
 package in.kyle.jrefactor.refactor.symbol;
 
-import in.kyle.jrefactor.parser.JObject;
-import in.kyle.jrefactor.parser.statement.JBlock;
-import in.kyle.jrefactor.parser.statement.JLocalVariableDeclaration;
-import in.kyle.jrefactor.parser.unit.body.JMethod;
-import in.kyle.jrefactor.parser.unit.body.JParameter;
-import in.kyle.jrefactor.parser.unit.body.JVariable;
-import in.kyle.jrefactor.parser.unit.types.classtype.JField;
+import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.statement.JBlock;
+import in.kyle.jrefactor.tree.statement.JLocalVariableDeclaration;
+import in.kyle.jrefactor.tree.unit.body.JMethod;
+import in.kyle.jrefactor.tree.unit.body.JParameter;
+import in.kyle.jrefactor.tree.unit.body.JVariable;
+import in.kyle.jrefactor.tree.unit.types.classtype.JField;
 import in.kyle.jrefactor.refactor.JObjectUtils;
+import in.kyle.jrefactor.refactor.JavaBaseListener;
 import lombok.Data;
 
 @Data

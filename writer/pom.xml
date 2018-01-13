@@ -45,7 +45,7 @@
                 <configuration>
                     <templates>
                         <template combine.children="append">
-                            <name>writer_interface</name>
+                            <name>CodeWriter</name>
                             <target>
                                 ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/writer/CodeWriter.java
                             </target>
