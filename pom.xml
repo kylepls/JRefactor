@@ -13,7 +13,7 @@
         <module>refactor</module>
         <module>writer</module>
         <module>parser</module>
-        <module>AST</module>
+        <module>ast-plugin</module>
     </modules>
 
     <properties>

@@ -16,7 +16,7 @@
         <plugins>
             <plugin>
                 <groupId>in.kyle.refactor</groupId>
-                <artifactId>ast</artifactId>
+                <artifactId>ast-plugin</artifactId>
                 <version>${parent.version}</version>
                 <configuration>
                     <packageName>in.kyle.jrefactor.tree</packageName>

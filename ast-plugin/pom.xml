@@ -11,7 +11,7 @@
 
     <packaging>maven-plugin</packaging>
 
-    <artifactId>ast</artifactId>
+    <artifactId>ast-plugin</artifactId>
     <name>AST Builder</name>
     <description>Generates class files from an AST template</description>
 

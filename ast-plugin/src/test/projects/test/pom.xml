@@ -9,10 +9,8 @@
         <plugins>
             <plugin>
                 <groupId>in.kyle.refactor</groupId>
-                <artifactId>ast</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <configuration>
-                </configuration>
+                <artifactId>ast-plugin</artifactId>
+                <version>LATEST</version>
             </plugin>
         </plugins>
     </build>
