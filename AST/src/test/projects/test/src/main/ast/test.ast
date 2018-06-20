@@ -1,0 +1,8 @@
+AnEnum {
+    HELLO
+    WORLD
+}
+
+AClass {
+    String field
+}

@@ -1,0 +1,191 @@
+Modifier {
+    PUBLIC
+    PRIVATE
+    PROTECTED
+    FINAL
+    STATIC
+    STRICTFP
+    VOLATILE
+    ABSTRACT
+    SYNCHRONIZED
+    TRANSIENT
+    NATIVE
+}
+
+TypeName {
+    String type
+}
+
+Identifier {
+    String name
+}
+
+TypeArgument {
+    TypeArgumentWildcard {
+        inside WildcardType {
+            EXTENDS
+            SUPER
+        }
+        WildcardType type
+    }
+    
+    TypeArgumentReference {
+        TypeName type
+    }
+}
+
+Expression {
+    ExpressionAssignment {
+        inside AssignmentOperator {
+            EQUAL, "="
+            MULTIPLY, "*="
+            DIVIDE, "/="
+            MODULUS, "%="
+            ADD, "+="
+            SUBTRACT, "-="
+            SHIFT_LEFT, "<<="
+            SHIFT_RIGHT, ">>="
+            ALIGN_RIGHT, ">>>="
+            BINARY_AND, "&="
+            BINARY_EXCLUSIVE_OR, "^="
+            BINARY_INCLUSIVE_OR, "|="
+        }
+        
+        AssignmentOperator operator
+        Expression left
+        Expression right
+    }
+    
+    ExpressionClassInstanceCreation {
+        TypeName type
+        Optional<JClassBody> body
+        List<Argument> arguments
+        List<TypeArgument> typeArguments
+    }
+    
+    ExpressionMethodInvocation {
+        Identifier identifier
+        List<Argument> arguments
+        List<TypeArgument> typeArguments
+        Optional<String> methodArea
+    }
+    
+    ExpressionParenthesis {
+        Expression expression
+    }
+    
+    ExpressionTernary {
+        Expression left
+        Expression condition
+        Expression right
+    }
+    
+    ExpressionUnary {
+        Operator operator
+        Expression expression
+    }
+    
+    ExpressionLeftRight {
+        inside LeftRightOperator {
+            ADD, "+"
+            SUBTRACT, "-"
+            MULTIPLY, "*"
+            DIVIDE, "/"
+            MODULUS, "%"
+            CONDITIONAL_AND, "&&"
+            CONDITIONAL_OR, "||"
+            CONDITIONAL_LESS_THAN, "<"
+            CONDITIONAL_GREATER_THAN, ">"
+            CONDITIONAL_LESS_THAN_EQUAL, "<="
+            CONDITIONAL_GREATER_EQUAL, ">="
+            INSTANCE_OF, "instanceof"
+            EQUAL, "=="
+            NOT_EQUAL, "!="
+            BINARY_SHIFT_LEFT, "<<"
+            BINARY_SHIFT_RIGHT, ">>"
+            BINARY_ALLIGN_RIGHT, ">>>"
+            BINARY_INCLUSIVE_OR, "|"
+            BINARY_EXCLUSIVE_OR, "^"
+            BINARY_AND, "&"
+        }
+        
+        LeftRightOperator operator
+        Expression left
+        Expression right
+    }
+    
+    ExpressionMethodInvocation {
+        List<TypeArgument> arguments
+        Identifier identifier
+    }
+}
+
+Statement {
+    Block {
+        List<Statement> statements
+    }
+    
+    StatementEmpty {
+    }
+    
+    StatementLabeled {
+        Identifier identifier
+        Statement statement
+    }
+    
+    StatementAssert {
+        Expression assertion
+        Optional<JExpression> message
+    }
+    
+    StatementLabeled {
+        Identifier identifier
+        Statement statement
+    }
+    
+    StatementLocalVariableDeclaration {
+        List<Annotation> annotations
+        Set<Modifier> modifiers
+    }
+}
+
+Annotation {
+    TypeName type
+    List<AnnotationValue> values
+}
+
+AnnotationValue {
+    ValuePair {
+        Identifier identifier
+        String tempValue
+    }
+}
+
+Modifiable {
+    Set<Modifier> modifiers
+
+    Annotatable {
+    
+        Set<Annotation> annotations 
+        
+        Parameter {
+            TypeName type
+        }
+        
+        Identifiable {
+            Identifier identifier
+            
+            Class {
+                List<Method> methods
+            }
+            
+            Method {
+                TypeName returns
+                List<Parameter> parameters
+                List<TypeName> throwsTypes
+            }
+        }
+    }
+}
+
+

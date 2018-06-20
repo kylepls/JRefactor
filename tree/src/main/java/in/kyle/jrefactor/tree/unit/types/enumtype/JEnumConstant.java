@@ -14,10 +14,10 @@ public class JEnumConstant implements JAnnotatable {
     
     private JAnnotationList annotations = new JAnnotationList();
     private JArgumentList argumentList = new JArgumentList();
-    private JIdentifier name;
+    private JIdentifier identifier;
     private Optional<JClassBody> body = Optional.empty();
     
-    public JEnumConstant(JIdentifier name) {
-        this.name = name;
+    public JEnumConstant(JIdentifier identifier) {
+        this.identifier = identifier;
     }
 }
