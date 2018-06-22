@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.github.kylepls</groupId>
             <artifactId>VerifyThat</artifactId>
-            <version>83bb59d616</version>
+            <version>1.3.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -34,7 +34,7 @@
                 <configuration>
                     <templates>
                         <template combine.children="append">
-                            <name>AbstractParseMapper</name>
+                            <identifier>AbstractParseMapper</identifier>
                             <target>
                                 ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/parser/AbstractParseMapper.java
                             </target>

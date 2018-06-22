@@ -1,0 +1,1 @@
+<type><if(generic)>\<<generic>><endif> <name><if(value)> = <value><endif>

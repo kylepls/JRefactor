@@ -14,9 +14,13 @@ Modifier {
 
 TypeName {
     String type
+    
+    ArrayTypeName {
+        int dimensions
+    }
 }
 
-Identifier {
+Identifier is LambdaParameter {
     String name
 }
 
@@ -34,7 +38,38 @@ TypeArgument {
     }
 }
 
-Expression {
+LambdaParameter {
+    LambdaParameterInferred {
+        List<Identifier> parameter
+    }
+}
+
+LambdaBody {
+}
+
+Expression is VariableInitializer {
+
+    ExpressionLambda {
+        List<LambdaParameter> parameters
+        LambdaBody body
+    }
+    
+    ExpressionLiteral<T> {
+        T value
+        
+        LiteralBoolean<Boolean> {}
+        LiteralCharacter<Character> {}
+        StringLiteral<String> {}
+        NumericLiteral<T> {
+            FloatingLiteral<T> {
+                LiteralDouble<Double> {}
+                LiteralFloat<Float> {}
+            }
+            IntegerLiteral<Integer> {}
+            LongLiteral<Long> {}
+        }
+    }
+    
     ExpressionAssignment {
         inside AssignmentOperator {
             EQUAL, "="
@@ -63,6 +98,10 @@ Expression {
         List<TypeArgument> typeArguments
     }
     
+    ExpressionName {
+        Identifier identifier
+    }
+    
     ExpressionMethodInvocation {
         Identifier identifier
         List<Argument> arguments
@@ -78,6 +117,10 @@ Expression {
         Expression left
         Expression condition
         Expression right
+    }
+    
+    ExperssionTypeReference {
+        TypeName reference
     }
     
     ExpressionUnary {
@@ -120,12 +163,97 @@ Expression {
     }
 }
 
+StatementElse {
+    Optional<Statement> condition
+    Expression expression
+}
+
 Statement {
+    StatementControl {
+        StatementControlLoop {
+            StatementFor {
+                JStatement statement
+                StatementBasicFor {
+                    Optional<JExpression> init
+                    Optional<JExpression> condition
+                    Optional<JExpression> update
+                    JStatement statement
+                }
+                
+                StatementEnhancedFor {
+                    Parameter variable
+                    Statement statement
+                }
+            }
+            
+            StatementWhile {
+                
+                Expression expression
+                Statement statement
+            
+                StatementDoWhile {}
+            }
+        }
+        
+        IdentifiableStatement {
+            Optional<JIdentifier> identifier
+            
+            StatementBreak {}
+            StatementContinue {}
+        }
+        
+        StatementReturn {
+            Optional<JExpression> expression
+        }
+        
+        StatementSwitch {
+            Expression expression
+        }
+        
+        StatementSynchronized {
+            Expression expression
+            Block block
+        }
+        
+        StatementThrow {
+            Expression expression
+        }
+        
+        StatementTry {
+            Block block
+            List<CatchClause> catchClauses
+            Optional<JBlock> finallyBlock
+        }
+        
+        StatementTryWithResources {
+        }
+        
+        StatementIf {
+            Statement statement
+            Expression expression
+            List<StatementElse> elseStatements
+        }
+        
+        StatementCatch {
+            MultiParameter parameters
+            Block block
+        }
+    }
+    
+    StatementAssert {
+        Expression assertion
+        Optional<Expression> message
+    }
+    
     Block {
         List<Statement> statements
     }
     
     StatementEmpty {
+    }
+    
+    StatementExpression {
+        Expression expression
     }
     
     StatementLabeled {
@@ -161,6 +289,78 @@ AnnotationValue {
     }
 }
 
+Unit {
+    BodyMember {
+        BodyElementInstantiable {
+            ConstructorDeclaration is ClassMember {
+                TypeName identifier
+                List<Parameter> parameters
+                List<TypeName> throws
+                Block body
+            }
+        }
+        TypeMember {
+            AnnotationMember {
+                AnnotationField {
+                    List<Annotation> annotations
+                }
+            }
+            
+            EnumMember {
+                ClassMember {
+                    ClassInitializer {
+                        JBlock block
+                        
+                        ClassInstanceInitializer {}
+                        ClassStaticInitializer {}
+                    }
+                    
+                    Method {
+                        MethodHeader header
+                        Block body
+                    }
+                }
+            }
+            
+            InterfaceMember {
+                
+            }
+        }
+    }
+    
+    TypeBody<T> {
+        List<T> members
+        
+        ClassBody<ClassMember> {}
+        AnnotationBody<AnnotationMember> {}
+        EnumBody<EnumMember> {
+            List<EnumConstant> constants
+        }
+        InterfaceBody<InterfaceMember> {}
+    }
+    
+    Type<T> is Identifiable {
+        T body
+        
+        AnnotationType<AnnotationBody> {}
+        
+        TypeSuperInterface<T> {
+            List<TypeName> superInterfaces
+            
+            ClassType<ClassBody> {}
+            EnumType<EnumBody> {}
+            InterfaceType<InterfaceBody> {}
+        }
+    }
+}
+
+Variable {
+    Identifier name
+    Optional<VariableInitializer> initializer
+}
+
+VariableInitializer {}
+
 Modifiable {
     Set<Modifier> modifiers
 
@@ -168,18 +368,34 @@ Modifiable {
     
         Set<Annotation> annotations 
         
+        Field is BodyElementInstantiable {
+            TypeName type
+            List<Variable> variables
+        }
+        
         Parameter {
             TypeName type
+            String name
+        }
+        
+        MultiParameter {
+            List<TypeName> types
+            String name
         }
         
         Identifiable {
             Identifier identifier
             
-            Class {
+            EnumConstant is EnumMember {
+                List<Expression> arguments
+                Optional<ClassBody> body
+            }
+            
+            Class is BodyElement {
                 List<Method> methods
             }
             
-            Method {
+            MethodHeader is InterfaceMember {
                 TypeName returns
                 List<Parameter> parameters
                 List<TypeName> throwsTypes
@@ -188,4 +404,16 @@ Modifiable {
     }
 }
 
+Import {
+    String packageName
+    String name
+    boolean onDemand
+    
+    StaticImport {}
+}
 
+CompilationUnit {
+    Optional<Package> packageName
+    List<Import> imports
+    List<Type> types
+}

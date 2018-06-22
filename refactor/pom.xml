@@ -40,7 +40,7 @@
                 <configuration>
                     <templates>
                         <template combine.children="append">
-                            <name>JavaVisitor</name>
+                            <identifier>JavaVisitor</identifier>
                             <target>
                                 ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaVisitor.java
                             </target>
@@ -57,7 +57,7 @@
                             <controller combine.self="append">
                                 <path>${project.basedir}/src/main/template/java</path>
                             </controller>
-                            <name>JavaListener</name>
+                            <identifier>JavaListener</identifier>
                             <target>
                                 ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaListener.java
                             </target>
@@ -73,7 +73,7 @@
                             <controller combine.self="append">
                                 <path>${project.basedir}/src/main/template/java</path>
                             </controller>
-                            <name>JavaBaseListener</name>
+                            <identifier>JavaBaseListener</identifier>
                             <target>
                                 ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaBaseListener.java
                             </target>
@@ -89,7 +89,7 @@
                             <controller combine.self="append">
                                 <path>${project.basedir}/src/main/template/java</path>
                             </controller>
-                            <name>JavaBaseVisitor</name>
+                            <identifier>JavaBaseVisitor</identifier>
                             <target>
                                 ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaBaseVisitor.java
                             </target>

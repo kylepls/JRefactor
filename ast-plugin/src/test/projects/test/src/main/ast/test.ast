@@ -1,8 +1,13 @@
+Set = "new ArrayList<>()"
+
 AnEnum {
-    HELLO
-    WORLD
+    HELLO, "hello"
+    WORLD, "world"
 }
 
-AClass {
+AClass<T> {
     String field
+    Set<String> strings
+    
+    InnerClass<Double> {} 
 }

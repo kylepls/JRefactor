@@ -633,7 +633,7 @@ public class SimpleWriter extends AbstractWriter {
     @Override
     protected void writeJEnumConstant(JEnumConstant object) {
         write(object.getAnnotations());
-        write(object.getName());
+        write(object.getIdentifier());
         writeString("(");
         write(object.getArgumentList());
         writeString(")");

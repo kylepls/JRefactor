@@ -19,7 +19,7 @@ public abstract class AbstractParseMapper {
     new
      HashMap\<Class\<?>, Function\<Java8Parser, ParserRuleContext\>>() {
         {
-            <names: { each | put(<each.name>.class, parser->parse<each.simpleName>(parser));
+            <names: { each | put(<each.identifier>.class, parser->parse<each.simpleName>(parser));
             }>
         }
     };

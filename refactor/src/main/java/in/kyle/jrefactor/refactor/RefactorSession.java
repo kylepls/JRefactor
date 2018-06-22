@@ -3,9 +3,9 @@ package in.kyle.jrefactor.refactor;
 import java.lang.reflect.Field;
 
 import in.kyle.api.utils.Try;
+import in.kyle.jrefactor.refactor.symbol.SymbolTable;
 import in.kyle.jrefactor.tree.JObject;
 import in.kyle.jrefactor.tree.unit.JIdentifier;
-import in.kyle.jrefactor.refactor.symbol.SymbolTable;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

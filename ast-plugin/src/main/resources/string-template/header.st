@@ -1,0 +1,1 @@
+public <type.javaName> <name><if(genericDefine)>\<<genericDefine>><endif><if(extends)> extends <extends><if(genericSuper)>\<<genericSuper>><endif><endif><if(implements)> implements <implements :{implement | <implement>}; separator=", "><endif>

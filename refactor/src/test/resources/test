@@ -1,6 +1,7 @@
 class Main {
 
     {
+        Class c = Main.class;
         int i = 0;
         int j = 1;
         {

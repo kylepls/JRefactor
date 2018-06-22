@@ -64,7 +64,7 @@ class AbstractJObjectListener {
         Try.to(() -> method.invoke(AbstractJObjectListener.this, args));
     }
     
-    // probably need a better method name
+    // probably need a better method identifier
     public void enterChildren(JObject object) {
         if (object != null) {
             for (JObject child : JObjectUtils.getDirectChildren(object)) {
