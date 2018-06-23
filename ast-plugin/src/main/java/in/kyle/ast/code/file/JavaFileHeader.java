@@ -1,6 +1,7 @@
 package in.kyle.ast.code.file;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,51 +20,53 @@ public class JavaFileHeader implements WritableElement {
     private JavaFileType type;
     private JavaFile superType;
     
-    public void addImplementingType(String type) {
-        implementingTypes.add(type);
+    public JavaFileHeader(String name, JavaFileType type) {
+        this.name = name;
+        this.type = type;
     }
     
     @Override
     public String write() {
-        String extendsString = computeExtendsString();
-        Collection<String> implementing = computeImplementing();
+        String extendsString = getExtendingType();
+        Collection<String> implementing = computeImplementing(extendsString != null);
         Object[] kv = new Object[]{"extends", extendsString, "implements", implementing};
         return Formatter.fromTemplate("header", this, kv);
     }
     
-    private String computeExtendsString() {
-        if (isExtendingType()) {
-            return superType.getName();
+    private Collection<String> computeImplementing(boolean isExtendingType) {
+        if (type != JavaFileType.INTERFACE) {
+            Collection<String> implementing = new HashSet<>(implementingTypes);
+            boolean notExtendingType = !isExtendingType;
+            if (notExtendingType && hasSuperType()) {
+                String superString = superType.getName();
+                if (genericSuper != null) {
+                    superString += "<" + genericSuper + ">";
+                }
+                implementing.add(superString);
+            }
+            return implementing;
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
     
-    private Collection<String> computeImplementing() {
-        Collection<String> implementing = new HashSet<>(implementingTypes);
-        if (!isExtendingType() && hasSuperType()) {
-            String superString = superType.getName();
-            if (genericSuper != null) {
-                superString += "<" + genericSuper + ">";
-            }
-            implementing.add(superString);
-        }
-        return implementing;
-    }
-    
-    private boolean isExtendingType() {
+    private String getExtendingType() {
         if (hasSuperType()) {
-            if (superType.getHeader().getType() == JavaFileType.CLASS &&
-                type != JavaFileType.INTERFACE) {
+            if (superType() == JavaFileType.CLASS && type != JavaFileType.INTERFACE) {
                 // Class extending a class
-                return true;
-            } else if (superType.getHeader().getType() == JavaFileType.INTERFACE &&
-                       type == JavaFileType.INTERFACE) {
+                return superType.getName();
+            } else if (superType() == JavaFileType.INTERFACE && type == JavaFileType.INTERFACE) {
                 // interface extending interface
-                return true;
+                return superType.getName();
             }
+        } else if (type == JavaFileType.INTERFACE && implementingTypes.size() != 0) {
+            return implementingTypes.iterator().next();
         }
-        return false;
+        return null;
+    }
+    
+    private JavaFileType superType() {
+        return superType.getType();
     }
     
     private boolean hasSuperType() {

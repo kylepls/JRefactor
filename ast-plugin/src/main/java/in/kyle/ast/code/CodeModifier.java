@@ -2,39 +2,91 @@ package in.kyle.ast.code;
 
 import org.stringtemplate.v4.ST;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 import in.kyle.api.utils.Try;
 import in.kyle.ast.code.file.Field;
 import in.kyle.ast.util.ResourceUtils;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter(AccessLevel.PACKAGE)
 public class CodeModifier {
     
     private final Map<String, String> fieldDefaults = new HashMap<>();
-    private final Map<String, String> importMappings = new HashMap<>();
+    private final Map<String, Set<String>> importMappings = new HashMap<>();
     private final Map<String, String> fieldMethods = new HashMap<>();
     private final List<String> enumMethods = new ArrayList<>();
     
+    private final Map<String, String> oldFiles = new HashMap<>();
+    
+    private String packagePrefix = "";
+    private String filePrefix = "";
+    
     {
-        importMappings.put("List", "java.util.List");
-        importMappings.put("Set", "java.util.Set");
-        
-        String collectionMethods =
-                Try.to(() -> ResourceUtils.loadResource("string-template/collectionMethods.st"));
-        fieldMethods.put("List", collectionMethods);
-        fieldMethods.put("Set", collectionMethods);
+        addDefaultValues();
+    }
+    
+    public void addFieldDefault(String type, String defaultValue) {
+        fieldDefaults.put(type, defaultValue);
+    }
+    
+    public void processFiles(FileSet files) {
+        files.getFiles().forEach(this::preProcess);
+        files.getFiles().forEach(this::process);
+    }
+    
+    void preProcess(JavaFile file) {
+        updatePackageName(file);
+        updateFileName(file);
+        importMappings.put(file.getName(), createFileImport(file));
     }
     
     void process(JavaFile file) {
+        updateTypeNames(file);
         addImports(file);
         setFieldDefaults(file);
         addFieldMethods(file);
         addEnumMethods(file);
+    }
+    
+    void updatePackageName(JavaFile file) {
+        if (!packagePrefix.isEmpty()) {
+            if (file.getPackageName() != null) {
+                file.setPackageName(packagePrefix + "." + file.getPackageName());
+            } else {
+                file.setPackageName(packagePrefix);
+            }
+        }
+    }
+    
+    void updateFileName(JavaFile file) {
+        String oldName = file.getName();
+        file.setName(filePrefix + file.getName());
+        oldFiles.put(oldName, file.getName());
+    }
+    
+    void updateTypeNames(JavaFile file) {
+        Map<Consumer<String>, String> rewritableTypes = file.getRewritableTypes();
+        for (Map.Entry<Consumer<String>, String> rewritableType : rewritableTypes.entrySet()) {
+            String type = rewritableType.getValue();
+            if (oldFiles.containsKey(type)) {
+                Consumer<String> processor = rewritableType.getKey();
+                processor.accept(oldFiles.get(type));
+            }
+        }
+    }
+    
+    private Set<String> createFileImport(JavaFile file) {
+        String importString = "";
+        if (file.getPackageName() != null) {
+            importString += file.getPackageName() + ".";
+        }
+        importString += file.getName();
+        return Collections.singleton(importString);
     }
     
     private void addEnumMethods(JavaFile file) {
@@ -87,9 +139,20 @@ public class CodeModifier {
     }
     
     private void addImport(JavaFile file, String type) {
-        String importName = importMappings.get(type);
-        if (importName != null) {
-            file.getImports().add(importName);
+        Set<String> imports = importMappings.get(type);
+        if (imports != null) {
+            file.getImports().addAll(imports);
         }
+    }
+    
+    private void addDefaultValues() {
+        importMappings.put("List", new HashSet<>(Arrays.asList("java.util.List", "java.util.ArrayList")));
+        importMappings.put("Set", new HashSet<>(Arrays.asList("java.util.Set", "java.util.HashSet")));
+        importMappings.put("Optional", Collections.singleton("java.util.Optional"));
+        
+        String collectionMethods =
+                Try.to(() -> ResourceUtils.loadResource("string-template/collectionMethods.st"));
+        fieldMethods.put("List", collectionMethods);
+        fieldMethods.put("Set", collectionMethods);
     }
 }

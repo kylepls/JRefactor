@@ -13,8 +13,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
 
+import in.kyle.ast.antlr.AstFile;
 import in.kyle.ast.antlr.AstGenerator;
-import in.kyle.ast.code.FileTree;
+import in.kyle.ast.code.CodeModifier;
+import in.kyle.ast.code.FileSet;
 
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES, goal = "generate-sources")
 @Mojo(name = "generate-ast", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
@@ -29,6 +31,9 @@ public class GenerationMojo extends AbstractMojo {
     
     @Parameter(name = "packageName")
     private String packageName = "";
+    
+    @Parameter(name = "filePrefix")
+    private String filePrefix = "";
     
     @Override
     public void execute() throws MojoExecutionException {
@@ -50,20 +55,15 @@ public class GenerationMojo extends AbstractMojo {
     
     private void generateSourcesForFile(File file) throws IOException {
         InputStream stream = Files.newInputStream(file.toPath());
-        FileTree tree = AstGenerator.generateAstFromStream(stream);
-        FileTree root = new FileTree();
-        String filepath = targetDirectory.getAbsolutePath();
-        String filePackage = getFilePackage();
-        root.addChildren(filepath + File.separator + filePackage, tree);
-        getLog().info("Generating " + root.getFiles().size() + " files");
-        root.write(filepath);
-    }
-    
-    private String getFilePackage() {
-        String filePackage = packageName.replace(".", File.separator);
-        if (!filePackage.isEmpty()) {
-            filePackage += File.separator;
-        }
-        return filePackage;
+        AstFile astFile = AstGenerator.generateAstFromStream(stream);
+        FileSet files = astFile.getFiles();
+        
+        CodeModifier modifier = astFile.getModifier();
+        modifier.setPackagePrefix(packageName);
+        modifier.setFilePrefix(filePrefix);
+        modifier.processFiles(files);
+        
+        getLog().info("Generating " + files.getFileCount() + " files");
+        files.write(targetDirectory);
     }
 }

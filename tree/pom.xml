@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tree</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     
     <build>
         <plugins>
@@ -20,6 +20,7 @@
                 <version>${parent.version}</version>
                 <configuration>
                     <packageName>in.kyle.jrefactor.tree</packageName>
+                    <filePrefix>J</filePrefix>
                 </configuration>
             </plugin>
             <plugin>

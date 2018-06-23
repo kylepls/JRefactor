@@ -1,3 +1,7 @@
+Set = "new HashSet<>()"
+List = "new ArrayList<>()"
+Optional = "Optional.empty()"
+    
 Modifier {
     PUBLIC
     PRIVATE
@@ -26,11 +30,12 @@ Identifier is LambdaParameter {
 
 TypeArgument {
     TypeArgumentWildcard {
+        WildcardType type
+        
         inside WildcardType {
             EXTENDS
             SUPER
         }
-        WildcardType type
     }
     
     TypeArgumentReference {
@@ -71,6 +76,10 @@ Expression is VariableInitializer {
     }
     
     ExpressionAssignment {
+        AssignmentOperator operator
+        Expression left
+        Expression right
+        
         inside AssignmentOperator {
             EQUAL, "="
             MULTIPLY, "*="
@@ -85,16 +94,12 @@ Expression is VariableInitializer {
             BINARY_EXCLUSIVE_OR, "^="
             BINARY_INCLUSIVE_OR, "|="
         }
-        
-        AssignmentOperator operator
-        Expression left
-        Expression right
     }
     
     ExpressionClassInstanceCreation {
         TypeName type
-        Optional<JClassBody> body
-        List<Argument> arguments
+        Optional<ClassBody> body
+        List<Expression> arguments
         List<TypeArgument> typeArguments
     }
     
@@ -104,7 +109,7 @@ Expression is VariableInitializer {
     
     ExpressionMethodInvocation {
         Identifier identifier
-        List<Argument> arguments
+        List<Expression> arguments
         List<TypeArgument> typeArguments
         Optional<String> methodArea
     }
@@ -119,16 +124,27 @@ Expression is VariableInitializer {
         Expression right
     }
     
-    ExperssionTypeReference {
+    ExpressionTypeReference {
         TypeName reference
     }
     
     ExpressionUnary {
         Operator operator
         Expression expression
+        
+        inside Operator {
+            PRE_INCREMENT, "++", "++%s"
+            PRE_DECREMENT, "--", "--%s"
+            POST_INCREMENT, "++", "%s++"
+            POST_DECREMENT, "--", "%s--"
+        }
     }
     
     ExpressionLeftRight {
+        LeftRightOperator operator
+        Expression left
+        Expression right
+        
         inside LeftRightOperator {
             ADD, "+"
             SUBTRACT, "-"
@@ -151,10 +167,6 @@ Expression is VariableInitializer {
             BINARY_EXCLUSIVE_OR, "^"
             BINARY_AND, "&"
         }
-        
-        LeftRightOperator operator
-        Expression left
-        Expression right
     }
     
     ExpressionMethodInvocation {
@@ -172,12 +184,12 @@ Statement {
     StatementControl {
         StatementControlLoop {
             StatementFor {
-                JStatement statement
+                Statement statement
                 StatementBasicFor {
-                    Optional<JExpression> init
-                    Optional<JExpression> condition
-                    Optional<JExpression> update
-                    JStatement statement
+                    Optional<Expression> init
+                    Optional<Expression> condition
+                    Optional<Expression> update
+                    Statement statement
                 }
                 
                 StatementEnhancedFor {
@@ -196,14 +208,14 @@ Statement {
         }
         
         IdentifiableStatement {
-            Optional<JIdentifier> identifier
+            Optional<Identifier> identifier
             
-            StatementBreak {}
-            StatementContinue {}
+            StatementBreak { }
+            StatementContinue { }
         }
         
         StatementReturn {
-            Optional<JExpression> expression
+            Optional<Expression> expression
         }
         
         StatementSwitch {
@@ -222,7 +234,7 @@ Statement {
         StatementTry {
             Block block
             List<CatchClause> catchClauses
-            Optional<JBlock> finallyBlock
+            Optional<Block> finallyBlock
         }
         
         StatementTryWithResources {
@@ -263,7 +275,7 @@ Statement {
     
     StatementAssert {
         Expression assertion
-        Optional<JExpression> message
+        Optional<Expression> message
     }
     
     StatementLabeled {
@@ -295,7 +307,7 @@ Unit {
             ConstructorDeclaration is ClassMember {
                 TypeName identifier
                 List<Parameter> parameters
-                List<TypeName> throws
+                List<TypeName> throwsTypes
                 Block body
             }
         }
@@ -309,7 +321,7 @@ Unit {
             EnumMember {
                 ClassMember {
                     ClassInitializer {
-                        JBlock block
+                        Block block
                         
                         ClassInstanceInitializer {}
                         ClassStaticInitializer {}
@@ -339,19 +351,6 @@ Unit {
         InterfaceBody<InterfaceMember> {}
     }
     
-    Type<T> is Identifiable {
-        T body
-        
-        AnnotationType<AnnotationBody> {}
-        
-        TypeSuperInterface<T> {
-            List<TypeName> superInterfaces
-            
-            ClassType<ClassBody> {}
-            EnumType<EnumBody> {}
-            InterfaceType<InterfaceBody> {}
-        }
-    }
 }
 
 Variable {
@@ -364,6 +363,13 @@ VariableInitializer {}
 Modifiable {
     Set<Modifier> modifiers
 
+    CatchClause {
+        Identifier identifier
+        List<TypeName> catchTypes
+        Identifier variable
+        Block block
+    }
+    
     Annotatable {
     
         Set<Annotation> annotations 
@@ -391,7 +397,7 @@ Modifiable {
                 Optional<ClassBody> body
             }
             
-            Class is BodyElement {
+            Class {
                 List<Method> methods
             }
             
@@ -399,6 +405,19 @@ Modifiable {
                 TypeName returns
                 List<Parameter> parameters
                 List<TypeName> throwsTypes
+            }
+            Type<T> is Unit {
+                T body
+                
+                AnnotationType<AnnotationBody> {}
+                
+                TypeSuperInterface<T> {
+                    List<TypeName> superInterfaces
+                    
+                    ClassType<ClassBody> {}
+                    EnumType<EnumBody> {}
+                    InterfaceType<InterfaceBody> {}
+                }
             }
         }
     }
@@ -408,8 +427,7 @@ Import {
     String packageName
     String name
     boolean onDemand
-    
-    StaticImport {}
+    boolean isStatic
 }
 
 CompilationUnit {

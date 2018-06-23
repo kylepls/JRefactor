@@ -6,12 +6,12 @@
 @Data
 <endif><if(isEnum)>import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-<endif><endif>
+<endif><endif><if(isEnum)>@AllArgsConstructor<endif>
 <header> {
     <enumStrings ; separator=",\n"><if(enumStrings)>;<endif>
-<if(stringFields)>    <stringFields : { field | private <field>;}; separator="\n">
-<endif><if(methods)>   <methods ; separator="\n">
+    <stringFields : { field | private <field>;}; separator="\n"><if(stringFields)>
 <endif>
-<if(innerClassStrings)>    <innerClassStrings ; separator="\n\n"><endif>
+    <methods ; separator="\n"><if(methods)>
+<endif>
+    <innerClassStrings ; separator="\n\n">
 }

@@ -3,10 +3,12 @@ package in.kyle.ast.code;
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import in.kyle.ast.code.file.EnumElement;
@@ -30,36 +32,18 @@ public class JavaFile implements WritableElement {
     private String packageName;
     private boolean innerClass;
     
-    public JavaFile(String name) {
-        this.header = new JavaFileHeader();
-        this.header.setName(name);
-        setType(JavaFileType.CLASS);
+    public JavaFile(String name, JavaFileType type) {
+        this.header = new JavaFileHeader(name, type);
     }
     
     public void addInnerClass(JavaFile file) {
         innerClasses.add(file);
+        imports.add("lombok.AllArgsConstructor");
         file.setInnerClass(true);
     }
     
-    private void writeFieldMethods(StringBuilder builder,
-                                   Map.Entry<String, String> field,
-                                   String methods) {
-        //        String key = field.getKey();
-        //        String diamondType = key.substring(key.indexOf("<") + 1, key.lastIndexOf(">"));
-        //        String fieldName = field.getValue();
-        //        String singularName = fieldName.substring(0, fieldName.length() - 1);
-        //        methods = Formatter.format(methods,
-        //                                   "diamond_type",
-        //                                   diamondType,
-        //                                   "field_name",
-        //                                   fieldName,
-        //                                   "singular_name",
-        //                                   singularName,
-        //                                   "singular_name_upper",
-        //                                   singularName.substring(0, 1).toUpperCase() +
-        //                                   singularName.substring(1, singularName.length()));
-        //        methods = methods.replaceAll("^", "    ");
-        //        builder.append(methods);
+    public void addField(Field field) {
+        fields.add(field);
     }
     
     @Override
@@ -85,6 +69,28 @@ public class JavaFile implements WritableElement {
             }
         }
         return fields;
+    }
+    
+    public Map<Consumer<String>, String> getRewritableTypes() {
+        Map<Consumer<String>, String> rewritable = new HashMap<>();
+        addIfNonNull(rewritable, header::setGenericSuper, getGenericSuper());
+        for (Field field : fields) {
+            addIfNonNull(rewritable, field::setType, field.getType());
+            addIfNonNull(rewritable, field::setGeneric, field.getGeneric());
+        }
+        for (String implementing : getImplementingTypes()) {
+            addIfNonNull(rewritable, s -> {
+                getImplementingTypes().remove(implementing);
+                getImplementingTypes().add(s);
+            }, implementing);
+        }
+        return rewritable;
+    }
+    
+    private <K, V> void addIfNonNull(Map<K, V> map, K k, V v) {
+        if (k != null) {
+            map.put(k, v);
+        }
     }
     
     private List<String> computeEnumStrings() {

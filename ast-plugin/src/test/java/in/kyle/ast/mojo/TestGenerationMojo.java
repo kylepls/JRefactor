@@ -10,7 +10,7 @@ import java.io.IOException;
 import io.takari.maven.testing.TestMavenRuntime;
 import io.takari.maven.testing.TestResources;
 
-public class GenerationMojoTest {
+public class TestGenerationMojo {
     
     @Rule
     public final TestResources resources = new TestResources();
