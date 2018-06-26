@@ -12,7 +12,7 @@ import java.io.InputStream;
 import in.kyle.jrefactor.tree.JObject;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Lexer;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.tree.unit.JCompilationUnit;
+import in.kyle.jrefactor.tree.object.JCompilationUnit;
 
 public class Parser {
     

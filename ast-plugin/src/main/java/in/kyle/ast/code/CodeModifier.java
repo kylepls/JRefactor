@@ -1,5 +1,6 @@
 package in.kyle.ast.code;
 
+import org.apache.commons.lang3.StringUtils;
 import org.stringtemplate.v4.ST;
 
 import java.util.*;
@@ -101,13 +102,13 @@ public class CodeModifier {
             if (fieldMethods.containsKey(type)) {
                 String templateString = fieldMethods.get(type);
                 ST temp = new ST(templateString);
-                String singularName = field.getName().substring(field.getName().length() - 1);
-                String singularNameUpper =
-                        singularName.substring(0, 1).toUpperCase() + singularName.substring(1);
+                String name = field.getName();
+                String singularName = name.substring(0, name.length() - 1);
                 temp.add("singular_name", singularName);
-                temp.add("singular_name_upper", singularNameUpper);
+                temp.add("singular_name_upper", StringUtils.capitalize(singularName));
                 temp.add("generic_type", field.getGeneric());
-                temp.add("field_name", field.getName());
+                temp.add("field_name", name);
+                temp.add("field_name_upper", StringUtils.capitalize(name));
                 String render = temp.render();
                 file.getMethods().add(render);
             }
@@ -146,8 +147,10 @@ public class CodeModifier {
     }
     
     private void addDefaultValues() {
-        importMappings.put("List", new HashSet<>(Arrays.asList("java.util.List", "java.util.ArrayList")));
-        importMappings.put("Set", new HashSet<>(Arrays.asList("java.util.Set", "java.util.HashSet")));
+        importMappings.put("List",
+                           new HashSet<>(Arrays.asList("java.util.List", "java.util.ArrayList")));
+        importMappings.put("Set",
+                           new HashSet<>(Arrays.asList("java.util.Set", "java.util.HashSet")));
         importMappings.put("Optional", Collections.singleton("java.util.Optional"));
         
         String collectionMethods =

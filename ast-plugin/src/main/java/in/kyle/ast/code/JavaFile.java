@@ -2,12 +2,7 @@ package in.kyle.ast.code;
 
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -16,6 +11,7 @@ import in.kyle.ast.code.file.Field;
 import in.kyle.ast.code.file.JavaFileHeader;
 import in.kyle.ast.code.file.WritableElement;
 import in.kyle.ast.util.Formatter;
+import in.kyle.ast.util.Formatter.KV;
 import lombok.Data;
 import lombok.experimental.Delegate;
 
@@ -38,7 +34,6 @@ public class JavaFile implements WritableElement {
     
     public void addInnerClass(JavaFile file) {
         innerClasses.add(file);
-        imports.add("lombok.AllArgsConstructor");
         file.setInnerClass(true);
     }
     
@@ -53,10 +48,14 @@ public class JavaFile implements WritableElement {
         if (getType() == JavaFileType.ENUM) {
             stringFields.addAll(computeEnumFields());
         }
-        Object[] kv = {"isEnum", getType() == JavaFileType.ENUM, "isClass",
-                       getType() == JavaFileType.CLASS, "stringFields", stringFields, "enumStrings",
-                       computeEnumStrings(), "innerClassStrings", computeInnerClassStrings()};
-        return Formatter.fromTemplate("file", this, kv);
+        
+        List<KV<String, Object>> kvs = new ArrayList<>();
+        kvs.add(KV.of("isEnum", getType() == JavaFileType.ENUM));
+        kvs.add(KV.of("isClass", getType() == JavaFileType.CLASS));
+        kvs.add(KV.of("stringFields", stringFields));
+        kvs.add(KV.of("enumStrings", computeEnumStrings()));
+        kvs.add(KV.of("innerClassStrings", computeInnerClassStrings()));
+        return Formatter.fromTemplate("file", this, kvs);
     }
     
     private List<String> computeEnumFields() {

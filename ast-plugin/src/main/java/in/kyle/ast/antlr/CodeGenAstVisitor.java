@@ -95,6 +95,10 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
             Collection<JavaFile> javaFiles = visitObject(objectCtx, file);
             subObjects.addAll(javaFiles);
         }
+    
+        for (AstParser.Enum_elementContext enumCtx : ctx.enum_element()) {
+            subObjects.add(visitEnum_element(enumCtx));
+        }
         
         for (AstParser.Inside_objectContext insideCtx : ctx.inside_object()) {
             JavaFile innerEnum = visitEnum_element(insideCtx.enum_element());

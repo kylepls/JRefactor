@@ -14,6 +14,7 @@
         <module>writer</module>
         <module>parser</module>
         <module>ast-plugin</module>
+        <module>st-generator-plugin</module>
     </modules>
 
     <properties>
@@ -23,6 +24,7 @@
         <antlr.version>4.7.1</antlr.version>
         <lombok.version>1.16.18</lombok.version>
         <junit.version>4.12</junit.version>
+        <maven.version>3.5.3</maven.version>
     </properties>
 
     <repositories>
@@ -66,104 +68,68 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>3.0.20</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-component-annotations</artifactId>
+                <version>1.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model</artifactId>
+                <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>18.0</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>${maven.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <build>
         <pluginManagement>
-            <!-- String template plugin very out of date, this fixes it -->
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.7</version>
-                    <executions>
-                        <execution>
-                            <id>add-source</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>add-source</goal>
-                            </goals>
-                            <configuration>
-                                <sources>
-                                    <source>${basedir}/src/main/template/java</source>
-                                </sources>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
                     <configuration>
-                        <sources>
-                            <source>${project.build.outputDirectory}/generated-sources
-                                /string-template</source>
-                        </sources>
+                        <rules>
+                            <dependencyConvergence/>
+                        </rules>
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
-                    <executions>
-                        <execution>
-                            <id>compile-templates</id>
-                            <phase>generate-sources</phase>
-                            <configuration>
-                                <includes>
-                                    <include>**/gen/**</include>
-                                </includes>
-                                <excludes>
-                                    <exclude>**/*.tokens</exclude>
-                                    <exclude>**/*.interp</exclude>
-                                </excludes>
-                            </configuration>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>com.webguys</groupId>
-                    <artifactId>string-template-maven-plugin</artifactId>
-                    <version>1.3.6</version>
-                    <configuration>
-                        <templates>
-                            <template>
-                                <directory>${project.basedir}/src/main/template/string-template
-                                </directory>
-                                <controller>
-                                    <path>${project.basedir}/src/main/template/java</path>
-                                </controller>
-                            </template>
-                        </templates>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>render</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <executions>
-                        <execution>
-                            <id>remove-output-files</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>clean</goal>
-                            </goals>
-                            <configuration>
-                                <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                                <filesets>
-                                    <fileset>
-                                        <directory>${project.build.outputDirectory}</directory>
-                                        <includes>
-                                            <include>**/gen/**</include>
-                                        </includes>
-                                    </fileset>
-                                </filesets>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <version>3.7.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

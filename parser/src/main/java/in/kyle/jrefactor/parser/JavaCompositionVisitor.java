@@ -7,75 +7,64 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.JObjectList;
+import in.kyle.jrefactor.tree.JModifier;
 import in.kyle.jrefactor.tree.antlr.gen.Java8BaseVisitor;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Parser.*;
-import in.kyle.jrefactor.tree.expression.*;
-import in.kyle.jrefactor.tree.expression.JUnaryExpression.Operator;
-import in.kyle.jrefactor.tree.expression.lambda.JIdentifierParameter;
-import in.kyle.jrefactor.tree.expression.lambda.JInferredParameters;
-import in.kyle.jrefactor.tree.expression.lambda.JLambdaBody;
-import in.kyle.jrefactor.tree.expression.lambda.JLambdaExpression;
-import in.kyle.jrefactor.tree.expression.lambda.JLambdaParameters;
-import in.kyle.jrefactor.tree.expression.literal.*;
-import in.kyle.jrefactor.tree.statement.*;
-import in.kyle.jrefactor.tree.statement.control.*;
-import in.kyle.jrefactor.tree.statement.control.loops.JDoWhileStatement;
-import in.kyle.jrefactor.tree.statement.control.loops.JEnhancedForStatement;
-import in.kyle.jrefactor.tree.statement.control.loops.JWhileStatement;
-import in.kyle.jrefactor.tree.unit.*;
-import in.kyle.jrefactor.tree.unit.body.*;
-import in.kyle.jrefactor.tree.unit.types.JAnnotationDeclaration;
-import in.kyle.jrefactor.tree.unit.types.JClassDeclaration;
-import in.kyle.jrefactor.tree.unit.types.JEnumDeclaration;
-import in.kyle.jrefactor.tree.unit.types.JInterfaceDeclaration;
-import in.kyle.jrefactor.tree.unit.types.JSuperInterfaceList;
-import in.kyle.jrefactor.tree.unit.types.annotationtype.JAnnotationBody;
-import in.kyle.jrefactor.tree.unit.types.annotationtype.JAnnotationMember;
-import in.kyle.jrefactor.tree.unit.types.annotationtype.JAnnotationTypeElement;
-import in.kyle.jrefactor.tree.unit.types.annotationtype.JElementValue;
-import in.kyle.jrefactor.tree.unit.types.classtype.JClassBody;
-import in.kyle.jrefactor.tree.unit.types.classtype.JClassInstanceInitializer;
-import in.kyle.jrefactor.tree.unit.types.classtype.JClassMember;
-import in.kyle.jrefactor.tree.unit.types.classtype.JClassStaticInitializer;
-import in.kyle.jrefactor.tree.unit.types.classtype.JField;
-import in.kyle.jrefactor.tree.unit.types.enumtype.JEnumBody;
-import in.kyle.jrefactor.tree.unit.types.enumtype.JEnumConstant;
-import in.kyle.jrefactor.tree.unit.types.interfacetype.JInterfaceBody;
-import in.kyle.jrefactor.tree.unit.types.interfacetype.JInterfaceMember;
-import in.kyle.jrefactor.tree.unit.types.interfacetype.JInterfaceMethod;
+import in.kyle.jrefactor.tree.obj.*;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionName;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionUnary;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JNumericLiteral;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JStringLiteral;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.JFloatingLiteral;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.JIntegerLiteral;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.JLongLiteral;
+import in.kyle.jrefactor.tree.obj.modifiable.JCatchClause;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JParameter;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JClass;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JEnumConstant;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JMethodHeader;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
+import in.kyle.jrefactor.tree.obj.statement.JBlock;
+import in.kyle.jrefactor.tree.obj.typename.JArrayTypeName;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.bodyelementinstantiable.JConstructorDeclaration;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JAnnotationMember;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JInterfaceMember;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.JClassMember;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
+        .classinitializer.JClassInstanceInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
+        .classinitializer.JClassStaticInitializer;
+import in.kyle.jrefactor.tree.obj.unit.typebody.JAnnotationBody;
+import in.kyle.jrefactor.tree.obj.unit.typebody.JClassBody;
+import in.kyle.jrefactor.tree.obj.unit.typebody.JEnumBody;
+import in.kyle.jrefactor.tree.obj.unit.typebody.JInterfaceBody;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
-    
-    private static <T extends JObject> Collector<T, ?, JObjectList<T>> createListCollector() {
-        return Collectors.toCollection(JObjectList::new);
-    }
     
     @Override
     public JCompilationUnit visitCompilationUnit(Java8Parser.CompilationUnitContext ctx) {
         JCompilationUnit unit = new JCompilationUnit();
         if (ctx.packageDeclaration() != null) {
-            JPackage jPackage = visitPackageDeclaration(ctx.packageDeclaration());
-            unit.setPackageName(Optional.of(jPackage));
+            String packageName = visitPackageDeclaration(ctx.packageDeclaration());
+            unit.setPackageName(Optional.of(packageName));
         }
-        JObjectList<JImport> imports = visitImports(ctx.importDeclaration());
-        JObjectList<JTypeDeclaration> types = visitTypeDeclarations(ctx.typeDeclaration());
+        List<JImport> imports = visitImports(ctx.importDeclaration());
+        List<JType> types = visitTypeDeclarations(ctx.typeDeclaration());
         
-        unit.setImports(imports);
+        unit.setImportss(imports);
         unit.setTypes(types);
         
         return unit;
     }
     
     @Override
-    public JPackage visitPackageDeclaration(PackageDeclarationContext ctx) {
-        String name = ctx.packageName().getText();
-        return new JPackage(name);
+    public String visitPackageDeclaration(PackageDeclarationContext ctx) {
+        return ctx.packageName().getText();
     }
     
     @Override
@@ -83,7 +72,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JImport jImport = new JImport();
         jImport.setName(ctx.packageOrTypeName().getText());
         if (ctx.import_static() != null) {
-            jImport.setStatik(true);
+            jImport.setStatic(true);
         }
         if (ctx.import_wildcard() != null) {
             jImport.setOnDemand(true);
@@ -92,10 +81,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JClassDeclaration visitClassDeclaration(ClassDeclarationContext ctx) {
-        JAnnotationList annotations = visitAnnotations(ctx.annotation());
+    public JClass visitClassDeclaration(ClassDeclarationContext ctx) {
+        List<JAnnotation> annotations = visitAnnotations(ctx.annotation());
         
-        JClassDeclaration jClassDeclaration = new JClassDeclaration();
+        JClass jClassDeclaration = new JClass();
         jClassDeclaration.setAnnotations(annotations);
         jClassDeclaration.setModifiers(visitModifiers(ctx.modifier()));
         jClassDeclaration.setIdentifier(visitIdentifier(ctx.identifier()));
@@ -133,19 +122,14 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JSuperInterfaceList visitSuperinterfaces(SuperinterfacesContext ctx) {
-        return visitInterfaceTypeList(ctx.interfaceTypeList());
-    }
-    
-    @Override
-    public JUnaryExpression visitPrimaryPostInc(PrimaryPostIncContext ctx) {
-        return new JUnaryExpression(Operator.POST_INCREMENT,
+    public JExpressionUnary visitPrimaryPostInc(PrimaryPostIncContext ctx) {
+        return new JExpressionUnary(JExpressionUnary.Operator.POST_INCREMENT,
                                     (JExpression) visitPrimary(ctx.primary()));
     }
     
     @Override
-    public JUnaryExpression visitPrimaryPostDec(PrimaryPostDecContext ctx) {
-        return new JUnaryExpression(Operator.POST_DECREMENT,
+    public JExpressionUnary visitPrimaryPostDec(PrimaryPostDecContext ctx) {
+        return new JExpressionUnary(JExpressionUnary.Operator.POST_DECREMENT,
                                     (JExpression) visitPrimary(ctx.primary()));
     }
     
@@ -173,21 +157,21 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JTypeParameter visitTypeParameter(TypeParameterContext ctx) {
         JTypeParameter typeParameter = new JTypeParameter(visitIdentifier(ctx.identifier()));
         if (ctx.typeBound() != null) {
-            typeParameter.setBounds((JObjectList<JTypeName>) visit(ctx.typeBound()));
+            typeParameter.setBounds((List<JTypeName>) visit(ctx.typeBound()));
         }
         return typeParameter;
     }
     
     @Override
-    public JObjectList<JTypeName> visitSimpleTypeBound(Java8Parser.SimpleTypeBoundContext ctx) {
+    public List<JTypeName> visitSimpleTypeBound(Java8Parser.SimpleTypeBoundContext ctx) {
         JTypeName typeName = new JTypeName(ctx.typeVariable().getText());
-        return new JObjectList<>(Collections.singletonList(typeName));
+        return new List<>(Collections.singletonList(typeName));
     }
     
     @Override
-    public JObjectList<JTypeName> visitClassTypeBound(Java8Parser.ClassTypeBoundContext ctx) {
+    public List<JTypeName> visitClassTypeBound(Java8Parser.ClassTypeBoundContext ctx) {
         JTypeName initial = new JTypeName(ctx.classOrInterfaceType().getText());
-        JObjectList<JTypeName> set = new JObjectList<>();
+        List<JTypeName> set = new JObjectList<>();
         set.add(initial);
         for (AdditionalBoundContext e : ctx.additionalBound()) {
             set.add(new JTypeName(e.getText()));
@@ -243,8 +227,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JObjectList<JVariable> visitVariableDeclaratorList(VariableDeclaratorListContext ctx) {
-        JObjectList<JVariable> variables = new JObjectList<>();
+    public List<JVariable> visitVariableDeclaratorList(VariableDeclaratorListContext ctx) {
+        List<JVariable> variables = new JObjectList<>();
         for (VariableDeclaratorContext var : ctx.variableDeclarator()) {
             variables.add(visitVariableDeclarator(var));
         }
@@ -460,16 +444,15 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return body;
     }
     
-    private JClassBody visitClassBodyDeclarations
-            (Collection<ClassBodyDeclarationContext> ctx) {
+    private JClassBody visitClassBodyDeclarations(Collection<ClassBodyDeclarationContext> ctx) {
         return ctx.stream()
                   .map(this::visitClassBodyDeclaration)
                   .collect(Collectors.toCollection(JClassBody::new));
     }
     
     @Override
-    public JObjectList<JEnumConstant> visitEnumConstantList(EnumConstantListContext ctx) {
-        JObjectList<JEnumConstant> constants = new JObjectList<>();
+    public List<JEnumConstant> visitEnumConstantList(EnumConstantListContext ctx) {
+        List<JEnumConstant> constants = new JObjectList<>();
         for (EnumConstantContext enumConstantContext : ctx.enumConstant()) {
             constants.add(visitEnumConstant(enumConstantContext));
         }
@@ -489,7 +472,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     
-    private JModifierList visitModifiers(Collection<ModifierContext> ctx) {
+    private List<JModifier> visitModifiers(Collection<ModifierContext> ctx) {
         return ctx.stream()
                   .map(c -> JModifier.fromJava(c.getText()))
                   .collect(Collectors.toCollection(JModifierList::new));
@@ -526,11 +509,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return body;
     }
     
-    private JObjectList<JInterfaceMember> visitInterfaceMemberDeclarations
+    private List<JInterfaceMember> visitInterfaceMemberDeclarations
             (Collection<InterfaceMemberDeclarationContext> ctx) {
         return ctx.stream()
                   .map(this::visitInterfaceMemberDeclaration)
-                  .collect(Collectors.toCollection(JObjectList::new));
+                  .collect(Collectors.toCollection(List::new));
     }
     
     @Override
@@ -559,21 +542,21 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return visitInterfaceTypeList(ctx.interfaceTypeList());
     }
     
-    private JAnnotationList visitAnnotations(Collection<AnnotationContext> list) {
+    private List<JAnnotation> visitAnnotations(Collection<AnnotationContext> list) {
         return list.stream()
                    .map(this::visitAnnotation)
                    .map(JAnnotation.class::cast)
                    .collect(Collectors.toCollection(JAnnotationList::new));
     }
     
-    private JObjectList<JTypeDeclaration> visitTypeDeclarations(List<TypeDeclarationContext> list) {
+    private List<JType> visitTypeDeclarations(List<TypeDeclarationContext> list) {
         return list.stream()
                    .map(this::visitTypeDeclaration)
-                   .map(JTypeDeclaration.class::cast)
+                   .map(JType.class::cast)
                    .collect(createListCollector());
     }
     
-    private JObjectList<JImport> visitImports(Collection<ImportDeclarationContext> imports) {
+    private List<JImport> visitImports(Collection<ImportDeclarationContext> imports) {
         return imports.stream()
                       .map(this::visitImportDeclaration)
                       .map(JImport.class::cast)
@@ -1112,8 +1095,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JObjectList<JCatchClause> visitCatches(CatchesContext ctx) {
-        JObjectList<JCatchClause> catches = new JObjectList<>();
+    public List<JCatchClause> visitCatches(CatchesContext ctx) {
+        List<JCatchClause> catches = new JObjectList<>();
         for (CatchClauseContext catchClauseContext : ctx.catchClause()) {
             catches.add(visitCatchClause(catchClauseContext));
         }
@@ -1124,7 +1107,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JCatchClause visitCatchClause(CatchClauseContext ctx) {
         JCatchClause clause = new JCatchClause();
         clause.setModifiers(visitModifiers(ctx.modifier()));
-        JObjectList<JTypeName> catchTypes = new JObjectList<>();
+        List<JTypeName> catchTypes = new JObjectList<>();
         catchTypes.add(visitUnannClassType(ctx.unannClassType()));
         if (ctx.classType() != null) {
             for (ClassTypeContext classTypeContext : ctx.classType()) {
@@ -1213,7 +1196,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JBlock visitConstructorBody(ConstructorBodyContext ctx) {
         JBlock block = new JBlock();
         
-        JObjectList<JStatement> statements = new JObjectList<>();
+        List<JStatement> statements = new JObjectList<>();
         if (ctx.explicitConstructorInvocation() != null) {
             statements.add((JStatement) visitExplicitConstructorInvocation(ctx.explicitConstructorInvocation()));
         }
@@ -1252,11 +1235,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return body;
     }
     
-    private JObjectList<JAnnotationMember> visitAnnotationBody(AnnotationTypeBodyContext ctx) {
+    private List<JAnnotationMember> visitAnnotationBody(AnnotationTypeBodyContext ctx) {
         return ctx.annotationTypeMemberDeclaration()
                   .stream()
                   .map(this::visitAnnotationTypeMemberDeclaration)
-                  .collect(Collectors.toCollection(JObjectList::new));
+                  .collect(Collectors.toCollection(List::new));
     }
     
     @Override
@@ -1326,10 +1309,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JAnnotationValue.JPairCollection visitElementValuePairList(ElementValuePairListContext
                                                                                   ctx) {
         JAnnotationValue.JPairCollection collection = new JAnnotationValue.JPairCollection();
-        JObjectList<JAnnotationValue.JElementPair> values = ctx.elementValuePair()
-                                                               .stream()
-                                                               .map(this::visitElementValuePair)
-                                                               .collect(createListCollector());
+        List<JAnnotationValue.JElementPair> values = ctx.elementValuePair()
+                                                        .stream()
+                                                        .map(this::visitElementValuePair)
+                                                        .collect(createListCollector());
         collection.setValues(values);
         return collection;
     }

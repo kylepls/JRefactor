@@ -19,7 +19,7 @@ import in.kyle.ast.code.CodeModifier;
 import in.kyle.ast.code.FileSet;
 
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES, goal = "generate-sources")
-@Mojo(name = "generate-ast", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name = "generate-ast", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class GenerationMojo extends AbstractMojo {
     
     @Parameter(name = "targetDirectory",

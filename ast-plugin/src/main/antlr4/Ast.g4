@@ -25,7 +25,7 @@ enum_part
     ;
     
 object
-    : IDENTIFIER object_generic? object_implements? CONCRETE? object_block 
+    : IDENTIFIER object_generic? object_implements? object_block 
     ;
 
 object_generic
@@ -50,7 +50,7 @@ object_block
     ;
 
 object_elements
-    : (object_variable | NL)* (object | NL)* (inside_object | NL)*
+    : (object_variable | NL)* (object | NL)* (enum_element | NL)* (inside_object | NL)*
     ;
 
 object_variable
@@ -76,7 +76,6 @@ inside_object
 
 IS          : 'is';
 INSIDE      : 'inside' ;
-CONCRETE    : 'concrete' ;
 EQUALS      :  '=' ;
 COMMA       :  ',' ;
 OPEN_BLOCK  :  '{' ;

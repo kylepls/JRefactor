@@ -15,40 +15,22 @@
         <dependency>
             <groupId>in.kyle.refactor</groupId>
             <artifactId>tree</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.webguys</groupId>
-                <artifactId>string-template-maven-plugin</artifactId>
                 <configuration>
-                    <templates>
-                        <template combine.children="append">
-                            <identifier>AbstractParseMapper</identifier>
-                            <target>
-                                ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/parser/AbstractParseMapper.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.parser.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                    </templates>
+                    <includes>*.java</includes>
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
+                <groupId>in.kyle.refactor</groupId>
+                <artifactId>st-generator-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
             </plugin>
         </plugins>
     </build>

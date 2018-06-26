@@ -52,7 +52,7 @@ public class TestJavaFile {
     public void testSimpleFileImport() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         file.getImports().add("java.util.List");
-        
+    
         String result = file.write();
         matchesFile(result, "simpleFileImport");
     }

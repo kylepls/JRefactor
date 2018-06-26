@@ -1,13 +1,16 @@
 package in.kyle.ast.code.file;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import in.kyle.ast.code.JavaFile;
 import in.kyle.ast.code.JavaFileType;
 import in.kyle.ast.util.Formatter;
+import in.kyle.ast.util.Formatter.KV;
 import lombok.Data;
 
 @Data
@@ -29,8 +32,10 @@ public class JavaFileHeader implements WritableElement {
     public String write() {
         String extendsString = getExtendingType();
         Collection<String> implementing = computeImplementing(extendsString != null);
-        Object[] kv = new Object[]{"extends", extendsString, "implements", implementing};
-        return Formatter.fromTemplate("header", this, kv);
+        List<KV<String, Object>> kvs = new ArrayList<>();
+        kvs.add(KV.of("extends", extendsString));
+        kvs.add(KV.of("implements", implementing));
+        return Formatter.fromTemplate("header", this, kvs);
     }
     
     private Collection<String> computeImplementing(boolean isExtendingType) {
