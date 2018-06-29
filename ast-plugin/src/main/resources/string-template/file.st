@@ -1,18 +1,13 @@
 <if(!innerClass)><if(packageName)>package <packageName>;
 
 <endif><imports: {import | import <import>;
-}><if(isClass)>import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+}><if(isClass)>import lombok.Data;
 
-@AllArgsConstructor
-@Data<if(stringFields)>
-@NoArgsConstructor<endif>
-<endif><if(isEnum)>import lombok.AllArgsConstructor;
-
-<endif><endif><if(isEnum)>@AllArgsConstructor<endif>
+@Data
+<endif><endif>
 <header> {
     <enumStrings ; separator=",\n"><if(enumStrings)>;<endif>
+    <constructors ; separator="\n\n">
     <stringFields : { field | private <field>;}; separator="\n"><if(stringFields)>
 <endif>
     <methods ; separator="\n"><if(methods)>

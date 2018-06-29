@@ -22,6 +22,14 @@ public class Field implements WritableElement {
         this.name = name;
     }
     
+    public boolean hasGeneric() {
+        return getGeneric() != null;
+    }
+    
+    public boolean hasValue() {
+        return getValue() != null;
+    }
+    
     @Override
     public String write() {
         return Formatter.fromTemplate("field", this);

@@ -74,7 +74,7 @@ public class JavaFileHeader implements WritableElement {
         return superType.getType();
     }
     
-    private boolean hasSuperType() {
+    public boolean hasSuperType() {
         return superType != null;
     }
 }

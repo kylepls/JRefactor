@@ -12,6 +12,10 @@ public class EnumElement implements WritableElement {
     private final String name;
     private List<String> values = new ArrayList<>();
     
+    public void addValue(String value) {
+        values.add(value);
+    }
+    
     @Override
     public String write() {
         return Formatter.fromTemplate("enumElement", this);

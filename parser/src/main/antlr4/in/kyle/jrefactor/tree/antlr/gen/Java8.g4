@@ -716,7 +716,7 @@ expressionStatement
 
 
 statementExpression
-	:	assignment                      #assignementStatement
+	:	assignment                      #assignmentStatement
 	|	preIncrementExpression          #preIncrementStatement
 	|	preDecrementExpression          #preDecrementStatement
 	|	postIncrementExpression         #postIncrementStatement
@@ -1141,11 +1141,22 @@ lambdaExpression
 
 
 lambdaParameters
-	:	identifier                          #lambdaIdentifierParameter
-	|	'(' formalParameterList? ')'        #lambdaParameterList
-	|	'(' inferredFormalParameterList ')' #lambdaInferedParameterList
+	:	lambdaIdentifierParameter
+	|	lambdaParameterList
+	|   lambdaInteredParameterList
 	;
 
+lambdaInteredParameterList
+	:	'(' inferredFormalParameterList ')' #lambdaInferedParameterList
+	;
+
+lambdaIdentifierParameter
+    : identifier
+    ;
+
+lambdaParameterList
+	:	'(' formalParameterList? ')'        
+	;
 
 inferredFormalParameterList
 	:	identifier (',' identifier)*

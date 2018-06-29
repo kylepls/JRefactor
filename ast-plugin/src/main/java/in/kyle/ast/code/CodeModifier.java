@@ -5,6 +5,7 @@ import org.stringtemplate.v4.ST;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import in.kyle.api.utils.Try;
 import in.kyle.ast.code.file.Field;
@@ -35,9 +36,28 @@ public class CodeModifier {
         fieldDefaults.put(type, defaultValue);
     }
     
-    public void processFiles(FileSet files) {
-        files.getFiles().forEach(this::preProcess);
-        files.getFiles().forEach(this::process);
+    public void processFiles(FileSet fileSet) {
+        List<JavaFile> files = getAllFiles(fileSet);
+        files.forEach(this::preProcess);
+        files.forEach(this::process);
+        files.forEach(this::postProcess);
+    }
+    
+    List<JavaFile> getAllFiles(FileSet files) {
+        return files.getFiles()
+                    .stream()
+                    .map(this::getAllFiles)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+    }
+    
+    List<JavaFile> getAllFiles(JavaFile file) {
+        List<JavaFile> result = new ArrayList<>();
+        result.add(file);
+        for (JavaFile inner : file.getInnerClasses()) {
+            result.addAll(getAllFiles(inner));
+        }
+        return result;
     }
     
     void preProcess(JavaFile file) {
@@ -54,9 +74,102 @@ public class CodeModifier {
         addEnumMethods(file);
     }
     
+    void postProcess(JavaFile file) {
+        addConstructors(file);
+        addSuperImports(file);
+    }
+    
+    void addSuperImports(JavaFile file) {
+        if (file.hasSuperType()) {
+            addSuperImports(file.getSuperType());
+            file.addImports(file.getSuperType().getImports());
+        }
+    }
+    
+    void addConstructors(JavaFile file) {
+        if (file.isClass() || file.isEnum()) {
+            List<Field> superParameters = getFields(file);
+            removeDefaultFields(superParameters);
+            List<Field> allParameters = new ArrayList<>(superParameters);
+            List<Field> definedParameters = new ArrayList<>(file.getFields());
+            definedParameters.addAll(file.computeEnumFields());
+            removeDefaultFields(definedParameters);
+            superParameters.removeAll(definedParameters);
+            
+            String parameters = allParameters.stream()
+                                             .map(this::writeFieldParameter)
+                                             .collect(Collectors.joining(", "));
+            
+            String superCall;
+            if (file.isClass()) {
+                superCall = String.format("super(%s);",
+                                          superParameters.stream()
+                                                         .map(Field::getName)
+                                                         .collect(Collectors.joining(", ")));
+            } else {
+                superCall = "";
+            }
+            
+            
+            String assignments = definedParameters.stream()
+                                                  .map(f -> String.format("this.%s = %s;",
+                                                                          f.getName(),
+                                                                          f.getName()))
+                                                  .collect(Collectors.joining("\n"));
+            
+            String modifier = file.isClass() ? "public" : "private";
+            String constructorString = String.format("%s %s(%s) {\n\t%s\n\t%s\n}",
+                                                     modifier,
+                                                     file.getName(),
+                                                     parameters,
+                                                     superCall,
+                                                     assignments);
+            file.addConstructor(constructorString);
+            
+            if (!allParameters.isEmpty() && file.getType() != JavaFileType.ENUM) {
+                constructorString = String.format("public %s() { super(); }", file.getName());
+                file.addConstructor(constructorString);
+            }
+        }
+    }
+    
+    private String writeFieldParameter(Field field) {
+        if (field.hasGeneric()) {
+            return String.format("%s<%s> %s", field.getType(), field.getGeneric(), field.getName());
+        } else {
+            return String.format("%s %s", field.getType(), field.getName());
+        }
+    }
+    
+    private void removeDefaultFields(List<Field> fields) {
+        fields.removeIf(Field::hasValue);
+    }
+    
+    private List<Field> getFields(JavaFile file) {
+        List<Field> fields = new ArrayList<>();
+        if (file.hasSuperType()) {
+            fields.addAll(getFields(file.getSuperType()));
+        }
+        fields.addAll(file.getFields());
+        fields.addAll(file.computeEnumFields());
+        // generics transposition
+        for (int i = 0; i < fields.size(); i++) {
+            Field typeParameter = fields.get(i);
+            if (typeParameter.getType().length() == 1 && file.hasGenericSuper()) {
+                Field field = new Field(file.getGenericSuper(),
+                                        typeParameter.getGeneric(),
+                                        typeParameter.getName(),
+                                        typeParameter.getValue());
+                fields.set(i, field);
+            }
+        }
+        
+        return fields;
+    }
+    
     void updatePackageName(JavaFile file) {
         if (!packagePrefix.isEmpty()) {
-            if (file.getPackageName() != null) {
+            if (file.hasPackage()) {
                 file.setPackageName(packagePrefix + "." + file.getPackageName());
             } else {
                 file.setPackageName(packagePrefix);
@@ -125,10 +238,12 @@ public class CodeModifier {
     
     private void addImports(JavaFile file) {
         for (Field field : file.getFields()) {
-            if (field.getGeneric() != null) {
+            if (field.getGeneric() != null && !isInnerType(file, field.getGeneric())) {
                 addImport(file, field.getGeneric());
             }
-            addImport(file, field.getType());
+            if (!isInnerType(file, field.getType())) {
+                addImport(file, field.getType());
+            }
         }
         if (file.getSuperType() != null) {
             addImport(file, file.getSuperType().getName());
@@ -137,6 +252,10 @@ public class CodeModifier {
             addImport(file, file.getGenericSuper());
         }
         file.getImplementingTypes().forEach(type -> addImport(file, type));
+    }
+    
+    private boolean isInnerType(JavaFile file, String field) {
+        return file.getInnerClasses().stream().anyMatch(f -> f.getName().equals(field));
     }
     
     private void addImport(JavaFile file, String type) {

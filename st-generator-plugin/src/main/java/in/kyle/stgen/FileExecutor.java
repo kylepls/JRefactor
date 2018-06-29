@@ -76,7 +76,7 @@ public class FileExecutor {
                       artifact.getFile().getAbsolutePath());
             urls.add(artifact.getFile().toURI().toURL());
         }
-        
+    
         ClassLoader loader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]),
                                                         FileExecutor.class.getClassLoader());
         return loader.loadClass(className);

@@ -30,7 +30,8 @@ import lombok.EqualsAndHashCode;
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES, goal = "generate-sources")
 @Mojo(name = "generate-template-sources",
       defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-      requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
+      requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+      requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 @Data
 public class STMojo extends AbstractMojo {
     
@@ -41,10 +42,10 @@ public class STMojo extends AbstractMojo {
                defaultValue = "${project.build.directory}/generated-sources/template/")
     private File targetDirectory;
     
-    @Parameter(property = "project", required = true, readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
     
-    @Parameter(property = "session", required = true, readonly = true)
+    @Parameter(property = "session", readonly = true)
     private MavenSession session;
     
     

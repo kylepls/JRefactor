@@ -9,12 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>tree</module>
         <module>refactor</module>
         <module>writer</module>
         <module>parser</module>
         <module>ast-plugin</module>
         <module>st-generator-plugin</module>
+        <module>tree</module>
     </modules>
 
     <properties>

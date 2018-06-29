@@ -2,7 +2,12 @@ package in.kyle.ast.code;
 
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,7 @@ public class JavaFile implements WritableElement {
     private final Set<JavaFile> innerClasses = new OrderedHashSet<>();
     private final Set<EnumElement> enumElements = new OrderedHashSet<>();
     private final Set<String> methods = new OrderedHashSet<>();
+    private final List<String> constructors = new ArrayList<>();
     private String packageName;
     private boolean innerClass;
     
@@ -41,12 +47,36 @@ public class JavaFile implements WritableElement {
         fields.add(field);
     }
     
+    public void addConstructor(String constructor) {
+        constructors.add(constructor);
+    }
+    
+    public void addImports(Set<String> imports) {
+        this.imports.addAll(imports);
+    }
+    
+    public boolean hasPackage() {
+        return packageName != null;
+    }
+    
+    public boolean isClass() {
+        return getType() == JavaFileType.CLASS;
+    }
+    
+    public boolean hasGenericSuper() {
+        return getGenericSuper() != null;
+    }
+    
+    public void addEnumElement(EnumElement element) {
+        enumElements.add(element);
+    }
+    
     @Override
     public String write() {
         List<String> stringFields =
                 fields.stream().map(WritableElement::write).collect(Collectors.toList());
         if (getType() == JavaFileType.ENUM) {
-            stringFields.addAll(computeEnumFields());
+            stringFields.addAll(computeEnumFieldStrings());
         }
         
         List<KV<String, Object>> kvs = new ArrayList<>();
@@ -58,16 +88,21 @@ public class JavaFile implements WritableElement {
         return Formatter.fromTemplate("file", this, kvs);
     }
     
-    private List<String> computeEnumFields() {
-        List<String> fields = new ArrayList<>();
+    public List<Field> computeEnumFields() {
+        List<Field> fields = new ArrayList<>();
         if (enumElements.size() > 0) {
             int size = enumElements.iterator().next().getValues().size();
             for (int j = 0; j < size; j++) {
-                Field field = new Field("final String", null, "value" + (j + 1), null);
-                fields.add(field.write());
+                String fieldName = j == 0 ? "value" : "value" + (j + 1);
+                Field field = new Field("final String", null, fieldName, null);
+                fields.add(field);
             }
         }
         return fields;
+    }
+    
+    public List<String> computeEnumFieldStrings() {
+        return computeEnumFields().stream().map(Field::write).collect(Collectors.toList());
     }
     
     public Map<Consumer<String>, String> getRewritableTypes() {
@@ -98,5 +133,13 @@ public class JavaFile implements WritableElement {
     
     private List<String> computeInnerClassStrings() {
         return innerClasses.stream().map(WritableElement::write).collect(Collectors.toList());
+    }
+    
+    public boolean isEnum() {
+        return getType() == JavaFileType.ENUM;
+    }
+    
+    public boolean hasInnerClasses() {
+        return !getInnerClasses().isEmpty();
     }
 }

@@ -1,18 +1,15 @@
 package in.kyle.ast.code;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.ast.code.file.EnumElement;
 import in.kyle.ast.code.file.Field;
+import in.kyle.ast.util.FileUtils;
 
 public class TestJavaFile {
     @Test
@@ -108,18 +105,6 @@ public class TestJavaFile {
     }
     
     private void matchesFile(String text, String name) throws IOException {
-        List<String> oldText = readFile(name + ".java");
-        List<String> newText = Arrays.asList(text.split("\n"));
-        oldText.replaceAll(String::trim);
-        newText.replaceAll(String::trim);
-        
-        String oldTextString = oldText.stream().collect(Collectors.joining("\n"));
-        String newTextString = newText.stream().collect(Collectors.joining("\n"));
-        
-        Verify.that(oldTextString).diffEqual(newTextString);
-    }
-    
-    private List<String> readFile(String path) throws IOException {
-        return IOUtils.readLines(TestJavaFile.class.getResourceAsStream("/" + path), "UTF-8");
+        FileUtils.matchesFile(text, name);
     }
 }

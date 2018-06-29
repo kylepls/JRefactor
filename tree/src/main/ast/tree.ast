@@ -3,6 +3,11 @@ List = "new ArrayList<>()"
 Optional = "Optional.empty()"
     
 Obj {
+    PropertyLookup {
+        List<String> areas
+    }
+    
+    AnnotationElementValue { }
 
     TypeName {
         String type
@@ -15,10 +20,11 @@ Obj {
     Identifier is LambdaParameter {
         String name
     }
-
+    
     TypeArgument {
         TypeArgumentWildcard {
             WildcardType type
+            TypeName reference
             
             inside WildcardType {
                 EXTENDS
@@ -40,14 +46,14 @@ Obj {
     LambdaBody {
     }
 
-    Expression is VariableInitializer {
+    Expression {
 
         ExpressionLambda {
             List<LambdaParameter> parameters
             LambdaBody body
         }
         
-        ExpressionLiteral<T> {
+        ExpressionLiteral<T> is AnnotationValue {
             T value
             
             LiteralBoolean<Boolean> {}
@@ -96,10 +102,10 @@ Obj {
         }
         
         ExpressionMethodInvocation {
-            Identifier identifier
+            Identifier methodName
+            PropertyLookup methodArea
             List<Expression> arguments
             List<TypeArgument> typeArguments
-            Optional<String> methodArea
         }
         
         ExpressionParenthesis {
@@ -156,11 +162,6 @@ Obj {
                 BINARY_AND, "&"
             }
         }
-        
-        ExpressionMethodInvocation {
-            List<TypeArgument> arguments
-            Identifier identifier
-        }
     }
 
     StatementElse {
@@ -177,12 +178,12 @@ Obj {
                         Optional<Expression> init
                         Optional<Expression> condition
                         Optional<Expression> update
-                        Statement statement
                     }
                     
                     StatementEnhancedFor {
+                        Set<Modifier> variableModifiers
                         Parameter variable
-                        Statement statement
+                        Expression expression
                     }
                 }
                 
@@ -274,6 +275,8 @@ Obj {
         StatementLocalVariableDeclaration {
             List<Annotation> annotations
             Set<Modifier> modifiers
+            TypeName type
+            List<Variable> variables
         }
     }
 
@@ -285,25 +288,18 @@ Obj {
     AnnotationValue {
         ValuePair {
             Identifier identifier
-            String tempValue
+            AnnotationElementValue value
         }
+        ValueSingle {
+            AnnotationElementValue value
+        }
+        
     }
 
     Unit {
         BodyMember {
-            BodyElementInstantiable {
-                ConstructorDeclaration is ClassMember {
-                    TypeName identifier
-                    List<Parameter> parameters
-                    List<TypeName> throwsTypes
-                    Block body
-                }
-            }
             TypeMember {
                 AnnotationMember {
-                    AnnotationField {
-                        List<Annotation> annotations
-                    }
                 }
                 
                 EnumMember {
@@ -323,7 +319,10 @@ Obj {
                 }
                 
                 InterfaceMember {
-                    
+                    InterfaceMethod {
+                        MethodHeader header
+                        Optional<Block> body
+                    }
                 }
             }
         }
@@ -343,10 +342,8 @@ Obj {
 
     Variable {
         Identifier name
-        Optional<VariableInitializer> initializer
+        Optional<Expression> initializer
     }
-
-    VariableInitializer {}
 
     Modifiable {
         Set<Modifier> modifiers
@@ -362,14 +359,14 @@ Obj {
         
             Set<Annotation> annotations 
             
-            Field is BodyElementInstantiable {
+            Field is ClassMember {
                 TypeName type
                 List<Variable> variables
             }
             
-            Parameter {
+            Parameter is LambdaParameter {
                 TypeName type
-                String name
+                Identifier name
             }
             
             MultiParameter {
@@ -377,30 +374,57 @@ Obj {
                 String name
             }
             
+            ConstructorDeclaration is ClassMember {
+                TypeName identifier
+                List<Parameter> parameters
+                List<TypeParameter> typeParameters
+                List<TypeName> throwsTypes
+                Block body
+            }
+            
             Identifiable {
                 Identifier identifier
+                
+                TypeParameter {
+                    List<TypeName> bounds
+                } 
                 
                 EnumConstant is EnumMember {
                     List<Expression> arguments
                     Optional<ClassBody> body
                 }
                 
-                MethodHeader is InterfaceMember {
+                MethodHeader {
                     TypeName returns
                     List<Parameter> parameters
                     List<TypeName> throwsTypes
+                    List<TypeParameter> typeParameters
                 }
+                
+                AnnotationField is AnnotationMember {
+                    TypeName type
+                    Optional<AnnotationValue> defaultValue
+                }
+                
                 Type<T> is Unit {
                     T body
                     
                     AnnotationType<AnnotationBody> {}
                     
-                    TypeSuperInterface<T> {
+                    SuperInterfaceType<T> {
                         List<TypeName> superInterfaces
                         
-                        ClassType<ClassBody> {}
-                        EnumType<EnumBody> {}
-                        InterfaceType<InterfaceBody> {}
+                        TypeParameterType<T> {
+                            List<TypeParameter> typeParameters
+                            
+                            Interface<InterfaceBody> {}
+                            
+                            Class<ClassBody> is ClassMember {
+                                Optional<TypeName> superType
+                            }
+                        }
+                        
+                        Enum<EnumBody> {}
                     }
                 }
             }

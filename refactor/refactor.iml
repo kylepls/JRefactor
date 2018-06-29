@@ -16,6 +16,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tree" />
+    <orderEntry type="module" module-name="tree" />
+    <orderEntry type="module" module-name="tree" />
+    <orderEntry type="module" module-name="tree" />
     <orderEntry type="module" module-name="writer" scope="TEST" />
     <orderEntry type="module" module-name="parser" scope="TEST" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4:4.7.1" level="project" />
