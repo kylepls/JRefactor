@@ -44,9 +44,20 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
         } else if (ctx.enum_element() != null) {
             JavaFile file = visitEnum_element(ctx.enum_element());
             return Collections.singleton(file);
+        } else if (ctx.variable_definition() != null) {
+            visitVariable_definition(ctx.variable_definition());
+            return Collections.emptyList();
         } else {
             return visitObject(ctx.object());
         }
+    }
+    
+    @Override
+    public Object visitVariable_definition(AstParser.Variable_definitionContext ctx) {
+        String text = ctx.STRING().getText();
+        text = text.substring(1, text.length()-1);
+        modifier.addVariable(ctx.IDENTIFIER().getText(), text);
+        return null;
     }
     
     @Override
@@ -66,7 +77,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
         JavaFile file = new JavaFile(ctx.IDENTIFIER().toString(), JavaFileType.CLASS);
         if (superObject != null) {
             file.setSuperType(superObject);
-            file.setPackageName(getPackageName(superObject, file));
+            file.setPackageName(getPackageName(superObject));
         }
         addHeaderInfo(ctx, file);
         
@@ -95,7 +106,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
             Collection<JavaFile> javaFiles = visitObject(objectCtx, file);
             subObjects.addAll(javaFiles);
         }
-    
+        
         for (AstParser.Enum_elementContext enumCtx : ctx.enum_element()) {
             subObjects.add(visitEnum_element(enumCtx));
         }
@@ -105,11 +116,15 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
             innerEnum.setType(JavaFileType.ENUM);
             file.addInnerClass(innerEnum);
         }
+        
+        for (AstParser.Variable_placeholderContext varCtx : ctx.variable_placeholder()) {
+            file.addMethod(varCtx.IDENTIFIER().getText());
+        }
         return subObjects;
     }
     
     
-    private String getPackageName(JavaFile superObject, JavaFile file) {
+    private String getPackageName(JavaFile superObject) {
         String packageName = "";
         if (superObject.getPackageName() != null) {
             packageName += superObject.getPackageName() + ".";
@@ -164,12 +179,19 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     }
     
     private void appendEnumElements(AstParser.Enum_elementContext ctx, JavaFile file) {
+        for (TerminalNode variableCtx : ctx.enum_block().enum_header().IDENTIFIER()) {
+            file.addEnumVariable(variableCtx.getText());
+        }
         for (AstParser.Enum_partContext part : ctx.enum_block().enum_part()) {
             EnumElement element = new EnumElement(part.IDENTIFIER().getText());
             for (TerminalNode value : part.STRING()) {
                 element.getValues().add(value.toString());
             }
             file.getEnumElements().add(element);
+        }
+        for (AstParser.Variable_placeholderContext varCtx : ctx.enum_block()
+                                                               .variable_placeholder()) {
+            file.addMethod(varCtx.IDENTIFIER().getText());
         }
     }
 }

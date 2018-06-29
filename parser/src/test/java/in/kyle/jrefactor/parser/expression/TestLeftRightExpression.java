@@ -10,41 +10,42 @@ import java.util.Collection;
 import in.kyle.api.utils.StringUtils;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.expression.JExpressionName;
-import in.kyle.jrefactor.tree.expression.JLeftRightExpression;
-import in.kyle.jrefactor.tree.expression.JLeftRightExpression.Operation;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionName;
 import lombok.AllArgsConstructor;
+
+import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
 
 @AllArgsConstructor
 @RunWith(Parameterized.class)
 public class TestLeftRightExpression {
     
-    private final Operation operator;
+    private final JLeftRightOperator operator;
     private final Object value;
     
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         Collection<Object[]> data = new ArrayList<>();
-        data.add(testCase(Operation.ADD, 1));
-        data.add(testCase(Operation.SUBTRACT, 1));
-        data.add(testCase(Operation.MULTIPLY, 1));
-        data.add(testCase(Operation.DIVIDE, 1));
-        data.add(testCase(Operation.MODULUS, 1));
-        data.add(testCase(Operation.CONDITIONAL_AND, true));
-        data.add(testCase(Operation.CONDITIONAL_OR, true));
-        data.add(testCase(Operation.CONDITIONAL_LESS_THAN, 1));
-        data.add(testCase(Operation.CONDITIONAL_GREATER_THAN, 1));
-        data.add(testCase(Operation.CONDITIONAL_LESS_THAN_EQUAL, 1));
-        data.add(testCase(Operation.CONDITIONAL_GREATER_EQUAL, 1));
-        data.add(testCase(Operation.INSTANCE_OF, "var2"));
-        data.add(testCase(Operation.EQUAL, 1));
-        data.add(testCase(Operation.NOT_EQUAL, 1));
-        data.add(testCase(Operation.BINARY_SHIFT_LEFT, 1));
-        data.add(testCase(Operation.BINARY_SHIFT_RIGHT, 1));
-        data.add(testCase(Operation.BINARY_ALLIGN_RIGHT, 1));
-        data.add(testCase(Operation.BINARY_INCLUSIVE_OR, 1));
-        data.add(testCase(Operation.BINARY_EXCLUSIVE_OR, 1));
-        data.add(testCase(Operation.BINARY_AND, 1));
+        data.add(testCase(JLeftRightOperator.ADD, 1));
+        data.add(testCase(JLeftRightOperator.SUBTRACT, 1));
+        data.add(testCase(JLeftRightOperator.MULTIPLY, 1));
+        data.add(testCase(JLeftRightOperator.DIVIDE, 1));
+        data.add(testCase(JLeftRightOperator.MODULUS, 1));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_AND, true));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_OR, true));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_LESS_THAN, 1));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_GREATER_THAN, 1));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_LESS_THAN_EQUAL, 1));
+        data.add(testCase(JLeftRightOperator.CONDITIONAL_GREATER_EQUAL, 1));
+        data.add(testCase(JLeftRightOperator.INSTANCE_OF, "var2"));
+        data.add(testCase(JLeftRightOperator.EQUAL, 1));
+        data.add(testCase(JLeftRightOperator.NOT_EQUAL, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_SHIFT_LEFT, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_SHIFT_RIGHT, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_ALLIGN_RIGHT, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_INCLUSIVE_OR, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_EXCLUSIVE_OR, 1));
+        data.add(testCase(JLeftRightOperator.BINARY_AND, 1));
         return data;
     }
     
@@ -54,9 +55,10 @@ public class TestLeftRightExpression {
     
     @Test
     public void testExpression() {
-        String javaString = StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
+        String javaString =
+                StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
         System.out.println(javaString);
-        JLeftRightExpression expression = Parser.parse(javaString, JLeftRightExpression.class);
+        JExpressionLeftRight expression = Parser.parse(javaString, JExpressionLeftRight.class);
         Verify.that(expression.getLeft()).isInstanceOf(JExpressionName.class);
         Verify.that(expression.getRight()).isNotNull();
     }

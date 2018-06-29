@@ -1,6 +1,7 @@
 Set = "new ArrayList<>()"
 
 AnEnum {
+    <value>
     HELLO, "hello"
     WORLD, "world"
 }

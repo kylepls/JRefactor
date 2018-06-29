@@ -2,6 +2,12 @@ Set = "new HashSet<>()"
 List = "new ArrayList<>()"
 Optional = "Optional.empty()"
     
+#fromJava = "
+public static <name> fromJava(String string) {
+    return valueOf(string.toUpperCase());
+}
+"
+
 Obj {
     PropertyLookup {
         List<String> areas
@@ -27,6 +33,7 @@ Obj {
             TypeName reference
             
             inside WildcardType {
+                <>
                 EXTENDS
                 SUPER
             }
@@ -58,14 +65,14 @@ Obj {
             
             LiteralBoolean<Boolean> {}
             LiteralCharacter<Character> {}
-            StringLiteral<String> {}
-            NumericLiteral<T> {
-                FloatingLiteral<T> {
+            LiteralString<String> {}
+            LiteralNumeric<T> {
+                LiteralFloating<T> {
                     LiteralDouble<Double> {}
                     LiteralFloat<Float> {}
                 }
-                IntegerLiteral<Integer> {}
-                LongLiteral<Long> {}
+                LiteralInteger<Integer> {}
+                LiteralLong<Long> {}
             }
         }
         
@@ -75,6 +82,7 @@ Obj {
             Expression right
             
             inside AssignmentOperator {
+                <javaString>
                 EQUAL, "="
                 MULTIPLY, "*="
                 DIVIDE, "/="
@@ -87,6 +95,8 @@ Obj {
                 BINARY_AND, "&="
                 BINARY_EXCLUSIVE_OR, "^="
                 BINARY_INCLUSIVE_OR, "|="
+                
+                #fromJava
             }
         }
         
@@ -103,7 +113,7 @@ Obj {
         
         ExpressionMethodInvocation {
             Identifier methodName
-            PropertyLookup methodArea
+            Optional<PropertyLookup> methodArea
             List<Expression> arguments
             List<TypeArgument> typeArguments
         }
@@ -127,10 +137,12 @@ Obj {
             Expression expression
             
             inside Operator {
+                <javaString, formatString>
                 PRE_INCREMENT, "++", "++%s"
                 PRE_DECREMENT, "--", "--%s"
                 POST_INCREMENT, "++", "%s++"
                 POST_DECREMENT, "--", "%s--"
+                #fromJava
             }
         }
         
@@ -140,6 +152,7 @@ Obj {
             Expression right
             
             inside LeftRightOperator {
+                <javaString>
                 ADD, "+"
                 SUBTRACT, "-"
                 MULTIPLY, "*"
@@ -160,6 +173,8 @@ Obj {
                 BINARY_INCLUSIVE_OR, "|"
                 BINARY_EXCLUSIVE_OR, "^"
                 BINARY_AND, "&"
+                
+                #fromJava
             }
         }
     }
@@ -445,16 +460,19 @@ Obj {
     }
     
     Modifier {
-        PUBLIC
-        PRIVATE
-        PROTECTED
-        FINAL
-        STATIC
-        STRICTFP
-        VOLATILE
-        ABSTRACT
-        SYNCHRONIZED
-        TRANSIENT
-        NATIVE
+        <javaString>
+        PUBLIC, "public"
+        PRIVATE, "private"
+        PROTECTED, "protected"
+        FINAL, "final"
+        STATIC, "static"
+        STRICTFP, "strictfp"
+        VOLATILE, "volatile"
+        ABSTRACT, "abstract"
+        SYNCHRONIZED, "synchronized"
+        TRANSIENT, "transient"
+        NATIVE, "native"
+        
+        #fromJava
     }
 }

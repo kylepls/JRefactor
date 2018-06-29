@@ -1,10 +1,13 @@
 <if(!innerClass)><if(packageName)>package <packageName>;
 
-<endif><imports: {import | import <import>;
-}><if(isClass)>import lombok.Data;
+<endif><imports: {import | import <import>; }; separator="\n">
+<if(isClass)>import lombok.Data;<endif>
+<if(isEnum)>import lombok.Getter;<endif>
+<if(packageName || imports || isClass || isEnum)>
 
-@Data
-<endif><endif>
+<endif>
+<if(isClass)>@Data<endif>
+<endif><if(isEnum)>@Getter<endif>
 <header> {
     <enumStrings ; separator=",\n"><if(enumStrings)>;<endif>
     <constructors ; separator="\n\n">

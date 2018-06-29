@@ -4,17 +4,31 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.expression.JTernaryExpression;
-import in.kyle.jrefactor.tree.expression.literal.JBooleanLiteral;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionTernary;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralCharacter;
 
 public class TestTernaryExpression {
     
     @Test
     public void testExpression() {
         String javaString = "true ? true : false";
-        JTernaryExpression expression = Parser.parse(javaString, JTernaryExpression.class);
-        Verify.that(expression.getCondition()).isInstanceOf(JBooleanLiteral.class);
-        Verify.that(expression.getLeft()).isInstanceOf(JBooleanLiteral.class);
-        Verify.that(expression.getRight()).isInstanceOf(JBooleanLiteral.class);
+        JExpressionTernary expression = Parser.parse(javaString, JExpressionTernary.class);
+        Verify.that(expression.getCondition()).isInstanceOf(JLiteralBoolean.class);
+        Verify.that(expression.getLeft()).isInstanceOf(JLiteralBoolean.class);
+        Verify.that(expression.getRight()).isInstanceOf(JLiteralBoolean.class);
+    }
+    
+    @Test
+    public void testConditional() {
+        String testString = "false ? 'a' : 'b'";
+        JExpressionTernary expression = Parser.parse(testString, JExpressionTernary.class);
+        Verify.that(expression.getCondition()).isNotNull();
+        Verify.that(expression.getLeft()).isNotNull();
+        Verify.that(expression.getRight()).isNotNull();
+        
+        Verify.that(expression.getCondition()).isInstanceOf(JLiteralBoolean.class);
+        Verify.that(expression.getLeft()).isInstanceOf(JLiteralCharacter.class);
+        Verify.that(expression.getRight()).isInstanceOf(JLiteralCharacter.class);
     }
 }

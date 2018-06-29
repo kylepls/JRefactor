@@ -16,9 +16,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="tree" />
-    <orderEntry type="module" module-name="tree" />
-    <orderEntry type="module" module-name="tree" />
-    <orderEntry type="module" module-name="tree" />
     <orderEntry type="module" module-name="writer" scope="TEST" />
     <orderEntry type="module" module-name="parser" scope="TEST" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4:4.7.1" level="project" />
@@ -32,7 +29,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.18" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.github.kylepls:VerifyThat:1.3.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.github.kylepls:VerifyThat:1.3.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.github.wumpz:diffutils:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.jgit:org.eclipse.jgit:4.4.1.201607150455-r" level="project" />
   </component>

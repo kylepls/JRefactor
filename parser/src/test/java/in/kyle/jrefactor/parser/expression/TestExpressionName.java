@@ -4,8 +4,8 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.expression.JExpressionName;
-import in.kyle.jrefactor.tree.unit.JIdentifier;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionName;
 
 public class TestExpressionName {
     

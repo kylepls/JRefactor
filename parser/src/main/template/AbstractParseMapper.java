@@ -17,9 +17,10 @@ public class AbstractParseMapper {
     
     public static Map<String, Object> getParameters() throws IOException {
         Map<String, Object> result = new HashMap<>();
-        List<NamePair> namePairs = makeNamePairs(getJObjClassNames());
+        Set<NamePair> namePairs = makeNamePairs(getJObjClassNames());
         result.put("names", namePairs);
         System.out.println("Size: " + namePairs.size());
+        System.out.println(namePairs);
         return result;
     }
     
@@ -30,21 +31,21 @@ public class AbstractParseMapper {
         }
     }
     
-    private static List<String> getJObjClassNames() throws IOException {
+    private static Set<String> getJObjClassNames() throws IOException {
         return findClasses().stream()
                             .filter(JObj.class::isAssignableFrom)
                             .map(clazz -> clazz.getName().replace("$", "."))
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toSet());
     }
     
-    private static List<Class<?>> findClasses() throws IOException {
+    private static Set<Class<?>> findClasses() throws IOException {
         URL location = JObj.class.getProtectionDomain().getCodeSource().getLocation();
         System.out.println("Location :" + location.getPath());
         File root = new File(location.getFile());
         return findClasses(root);
     }
     
-    private static List<Class<?>> findClasses(File file) throws IOException {
+    private static Set<Class<?>> findClasses(File file) throws IOException {
         Collection<String> classNames;
         if (file.getName().endsWith(".jar")) {
             classNames = getClassesInFile(file);
@@ -53,7 +54,7 @@ public class AbstractParseMapper {
         }
         return classNames.stream()
                          .map(name -> Try.to(() -> Class.forName(name)))
-                         .collect(Collectors.toList());
+                         .collect(Collectors.toSet());
     }
     
     private static List<String> getClassesInFile(File file) throws IOException {
@@ -90,10 +91,10 @@ public class AbstractParseMapper {
         }
     }
     
-    private static List<NamePair> makeNamePairs(List<String> jObjectClassNames) {
+    private static Set<NamePair> makeNamePairs(Set<String> jObjectClassNames) {
         return jObjectClassNames.stream()
                                 .map(AbstractParseMapper::makeNamePair)
-                                .collect(Collectors.toList());
+                                .collect(Collectors.toSet());
     }
     
     private static NamePair makeNamePair(String name) {

@@ -6,8 +6,17 @@ ast_element
     : object 
     | enum_element
     | default_definition
+    | variable_definition
     ;
 
+variable_definition
+    : TAG IDENTIFIER EQUALS STRING 
+    ;
+
+variable_placeholder
+    : TAG IDENTIFIER
+    ;
+    
 default_definition
     : IDENTIFIER EQUALS STRING NL
     ;
@@ -17,7 +26,11 @@ enum_element
     ;
     
 enum_block
-    : OPEN_BLOCK NL* (enum_part NL*)+ CLOSE_BLOCK 
+    : OPEN_BLOCK NL* enum_header NL* (enum_part NL*)+ (variable_placeholder | NL)* CLOSE_BLOCK 
+    ;
+
+enum_header
+    : OPEN_DIAMOND (IDENTIFIER (COMMA IDENTIFIER)*)? CLOSE_DIAMOND
     ;
     
 enum_part
@@ -50,7 +63,7 @@ object_block
     ;
 
 object_elements
-    : (object_variable | NL)* (object | NL)* (enum_element | NL)* (inside_object | NL)*
+    : (object_variable | variable_placeholder | NL)* (object | NL)* (enum_element | NL)* (inside_object | NL)*
     ;
 
 object_variable
@@ -74,7 +87,8 @@ inside_object
     : INSIDE enum_element
     ;
 
-IS          : 'is';
+TAG         : '#' ;
+IS          : 'is' ;
 INSIDE      : 'inside' ;
 EQUALS      :  '=' ;
 COMMA       :  ',' ;
@@ -86,10 +100,9 @@ OPEN_DIAMOND:  '<' ;
 CLOSE_DIAMOND: '>' ;
 
 
-WS          : [ \t\u000C]+ -> skip;
+WS          : [ \t]+ -> skip;
 NL          : ('\n' | '\r' | ' ')+ ;
 
 STRING      :  '"' .*? '"' ;
-COMMENT_STRING: [^\n] ;
 
 fragment IDENTIFIER_LETTER: [a-zA-Z_] ;

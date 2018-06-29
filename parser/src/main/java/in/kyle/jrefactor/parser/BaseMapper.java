@@ -92,6 +92,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJLiteralNumeric(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJExpressionName(Java8Parser object) {
         return object.expressionName();
     }
@@ -202,6 +207,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJLiteralInteger(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJClass(Java8Parser object) {
         return object.classDeclaration();
     }
@@ -251,10 +261,6 @@ public class BaseMapper extends AbstractParseMapper {
         return object.typeParameter();
     }
     
-    protected ParserRuleContext parseJInterfaceType(Java8Parser object) {
-        return object.interfaceDeclaration();
-    }
-    
     @Override
     protected ParserRuleContext parseJField(Java8Parser object) {
         return object.fieldDeclaration();
@@ -293,6 +299,11 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJStatementAssert(Java8Parser object) {
         return object.assertStatement();
+    }
+    
+    @Override
+    protected ParserRuleContext parseJLiteralFloating(Java8Parser object) {
+        return null;
     }
     
     @Override
@@ -411,6 +422,16 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJAnnotationElementValue(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJValueSingle(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJTypeArgumentWildcard(Java8Parser object) {
         return null;
     }
@@ -423,11 +444,6 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJConstructorDeclaration(Java8Parser object) {
         return object.constructorDeclaration();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJBodyElementInstantiable(Java8Parser object) {
-        return null;
     }
     
     @Override
@@ -481,6 +497,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJLiteralLong(Java8Parser object) {
+        return object.literal();
+    }
+    
+    @Override
     protected ParserRuleContext parseJInterfaceMember(Java8Parser object) {
         return object.interfaceMemberDeclaration();
     }
@@ -513,5 +534,10 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJInterfaceBody(Java8Parser object) {
         return object.interfaceBody();
+    }
+    
+    @Override
+    protected ParserRuleContext parseJLiteralString(Java8Parser object) {
+        return object.literal();
     }
 }

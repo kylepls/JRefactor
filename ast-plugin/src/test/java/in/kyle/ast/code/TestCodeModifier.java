@@ -146,6 +146,7 @@ public class TestCodeModifier {
         
         JavaFile file = new JavaFile("Test", JavaFileType.ENUM);
         file.addEnumElement(element);
+        file.addEnumVariable("value");
         
         modifier.addConstructors(file);
         
@@ -163,5 +164,15 @@ public class TestCodeModifier {
         
         Verify.that(file.getConstructors()).sizeIs(1);
         FileUtils.matchesFile(file.getConstructors().get(0), "constructors/emptyEnum");
+    }
+    
+    @Test
+    public void testReplaceVariable() {
+        modifier.addVariable("test", "HELLO WORLD");
+        JavaFile file = new JavaFile("Test", JavaFileType.ENUM);
+        file.addMethod("test");
+        modifier.process(file);
+        Verify.that(file.getMethods()).sizeIs(1);
+        Verify.that(file.getMethods()).allMatch(string -> string.equals("HELLO WORLD"));
     }
 }

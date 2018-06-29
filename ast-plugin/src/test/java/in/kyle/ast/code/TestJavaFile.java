@@ -31,6 +31,7 @@ public class TestJavaFile {
         file.getEnumElements().add(one);
         file.getEnumElements().add(two);
         file.getEnumElements().add(three);
+        file.addEnumVariable("value");
         
         String result = file.write();
         matchesFile(result, "simpleFileEnum");

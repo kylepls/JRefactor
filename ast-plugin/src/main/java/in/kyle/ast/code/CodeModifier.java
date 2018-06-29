@@ -1,5 +1,6 @@
 package in.kyle.ast.code;
 
+import org.antlr.v4.runtime.misc.OrderedHashSet;
 import org.apache.commons.lang3.StringUtils;
 import org.stringtemplate.v4.ST;
 
@@ -21,6 +22,7 @@ public class CodeModifier {
     private final Map<String, String> fieldDefaults = new HashMap<>();
     private final Map<String, Set<String>> importMappings = new HashMap<>();
     private final Map<String, String> fieldMethods = new HashMap<>();
+    private final Map<String, String> variables = new HashMap<>();
     private final List<String> enumMethods = new ArrayList<>();
     
     private final Map<String, String> oldFiles = new HashMap<>();
@@ -30,6 +32,10 @@ public class CodeModifier {
     
     {
         addDefaultValues();
+    }
+    
+    public void addVariable(String id, String value) {
+        variables.put(id, value);
     }
     
     public void addFieldDefault(String type, String defaultValue) {
@@ -72,6 +78,7 @@ public class CodeModifier {
         setFieldDefaults(file);
         addFieldMethods(file);
         addEnumMethods(file);
+        transposeVariables(file);
     }
     
     void postProcess(JavaFile file) {
@@ -83,6 +90,19 @@ public class CodeModifier {
         if (file.hasSuperType()) {
             addSuperImports(file.getSuperType());
             file.addImports(file.getSuperType().getImports());
+        }
+    }
+    
+    private void transposeVariables(JavaFile file) {
+        Set<String> methods = new HashSet<>(file.getMethods());
+        for (String method : methods) {
+            if (variables.containsKey(method)) {
+                file.getMethods().remove(method);
+                String methodString = variables.get(method);
+                ST st = new ST(methodString);
+                st.add("name", file.getName());
+                file.addMethod(st.render());
+            }
         }
     }
     
@@ -210,7 +230,9 @@ public class CodeModifier {
     }
     
     private void addFieldMethods(JavaFile file) {
-        for (Field field : file.getFields()) {
+        Set<Field> fields = new OrderedHashSet<>();
+        fields.addAll(file.getFields());
+        for (Field field : fields) {
             String type = field.getType();
             if (fieldMethods.containsKey(type)) {
                 String templateString = fieldMethods.get(type);
@@ -250,6 +272,9 @@ public class CodeModifier {
         }
         if (file.getGenericSuper() != null) {
             addImport(file, file.getGenericSuper());
+        }
+        if (file.hasInnerClasses()) {
+            file.addImport("lombok.Getter");
         }
         file.getImplementingTypes().forEach(type -> addImport(file, type));
     }

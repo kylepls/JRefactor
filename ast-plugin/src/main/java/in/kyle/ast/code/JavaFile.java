@@ -29,13 +29,22 @@ public class JavaFile implements WritableElement {
     private final Set<Field> fields = new OrderedHashSet<>();
     private final Set<JavaFile> innerClasses = new OrderedHashSet<>();
     private final Set<EnumElement> enumElements = new OrderedHashSet<>();
-    private final Set<String> methods = new OrderedHashSet<>();
+    private final Set<String> enumVariables = new OrderedHashSet<>();
+    private final Set<String> methods = new HashSet<>();
     private final List<String> constructors = new ArrayList<>();
     private String packageName;
     private boolean innerClass;
     
     public JavaFile(String name, JavaFileType type) {
         this.header = new JavaFileHeader(name, type);
+    }
+    
+    public void addImport(String importString) {
+        imports.add(importString);
+    }
+    
+    public void addEnumVariable(String variable) {
+        enumVariables.add(variable);
     }
     
     public void addInnerClass(JavaFile file) {
@@ -53,6 +62,10 @@ public class JavaFile implements WritableElement {
     
     public void addImports(Set<String> imports) {
         this.imports.addAll(imports);
+    }
+    
+    public void addMethod(String method) {
+        this.methods.add(method);
     }
     
     public boolean hasPackage() {
@@ -90,13 +103,9 @@ public class JavaFile implements WritableElement {
     
     public List<Field> computeEnumFields() {
         List<Field> fields = new ArrayList<>();
-        if (enumElements.size() > 0) {
-            int size = enumElements.iterator().next().getValues().size();
-            for (int j = 0; j < size; j++) {
-                String fieldName = j == 0 ? "value" : "value" + (j + 1);
-                Field field = new Field("final String", null, fieldName, null);
-                fields.add(field);
-            }
+        for (String variableName : enumVariables) {
+            Field field = new Field("String", variableName);
+            fields.add(field);
         }
         return fields;
     }

@@ -154,7 +154,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         invocation.setMethodName(identifier);
         if (ctx.methodArea() != null) {
             JPropertyLookup area = visitMethodArea(ctx.methodArea());
-            invocation.setMethodArea(area);
+            invocation.setMethodArea(Optional.of(area));
         }
         if (ctx.typeArguments() != null) {
             List<JTypeArgument> typeArguments = visitTypeArguments(ctx.typeArguments());
@@ -809,10 +809,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JExpressionAssignment visitAssignment(Java8Parser.AssignmentContext ctx) {
         JExpressionAssignment assignment = new JExpressionAssignment();
         assignment.setLeft(visitLeftHandSide(ctx.leftHandSide()));
-        assignment.setOperator(JExpressionAssignment.JAssignmentOperator.valueOf(ctx.assignmentOperator()
-                                                                                    .getText()
-                                                                                    .toUpperCase
-                                                                                            ()));
+        assignment.setOperator(JExpressionAssignment.JAssignmentOperator.fromJava(ctx.assignmentOperator()
+                                                                                     .getText()));
         assignment.setRight(visitExpression(ctx.expression()));
         return assignment;
     }
@@ -1079,7 +1077,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JStatementEnhancedFor visitEnhancedForStatementNoShortIf(EnhancedForStatementNoShortIfContext ctx) {
+    public JStatementEnhancedFor visitEnhancedForStatementNoShortIf(
+            EnhancedForStatementNoShortIfContext ctx) {
         JStatementEnhancedFor statement = new JStatementEnhancedFor();
         JTypeName variableType = visitUnannType(ctx.unannType());
         JIdentifier variableName = visitVariableDeclaratorId(ctx.variableDeclaratorId());
@@ -1282,8 +1281,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     
     @Override
-    public JAnnotationType visitAnnotationTypeDeclaration(AnnotationTypeDeclarationContext
-                                                                             ctx) {
+    public JAnnotationType visitAnnotationTypeDeclaration(AnnotationTypeDeclarationContext ctx) {
         JAnnotationType declaration = new JAnnotationType();
         if (ctx.annotation() != null) {
             declaration.setAnnotations(visitAnnotations(ctx.annotation()));
@@ -1309,7 +1307,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return ctx.annotationTypeMemberDeclaration()
                   .stream()
                   .map(this::visitAnnotationTypeMemberDeclaration)
-                .collect(Collectors.toList());
+                  .collect(Collectors.toList());
     }
     
     @Override
@@ -1376,12 +1374,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public List<JAnnotationValue> visitElementValuePairList(ElementValuePairListContext
-                                                                                  ctx) {
+    public List<JAnnotationValue> visitElementValuePairList(ElementValuePairListContext ctx) {
         return ctx.elementValuePair()
-          .stream()
-          .map(this::visitElementValuePair)
-          .collect(Collectors.toList());
+                  .stream()
+                  .map(this::visitElementValuePair)
+                  .collect(Collectors.toList());
     }
     
     @Override

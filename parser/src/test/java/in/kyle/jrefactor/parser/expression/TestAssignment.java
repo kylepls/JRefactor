@@ -4,15 +4,15 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.expression.JAssignment;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionAssignment;
 
 public class TestAssignment {
     
     @Test
     public void testEqualityAssignment() {
         String expressionString = "i = 1";
-        JAssignment assignment = Parser.parse(expressionString, JAssignment.class);
-        Verify.that(assignment.getOperator()).isEqual(JAssignment.JAssignmentOperator.EQUAL);
+        JExpressionAssignment assignment = Parser.parse(expressionString, JExpressionAssignment.class);
+        Verify.that(assignment.getOperator()).isEqual(JExpressionAssignment.JAssignmentOperator.EQUAL);
         Verify.that(assignment.getLeft()).isNotNull();
         Verify.that(assignment.getRight()).isNotNull();
     }

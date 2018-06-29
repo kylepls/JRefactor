@@ -1,4 +1,4 @@
-private Test(final String value) {
+private Test(String value) {
     
     this.value = value;
 }

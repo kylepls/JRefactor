@@ -4,16 +4,16 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.expression.JClassInstanceCreationExpression;
-import in.kyle.jrefactor.tree.unit.JTypeName;
+import in.kyle.jrefactor.tree.obj.JTypeName;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionClassInstanceCreation;
 
 public class TestClassInstanceCreation {
     
     @Test
     public void testInstanceCreation() {
         String testString = "new pakage.Clazz<>(parameter) {}";
-        JClassInstanceCreationExpression expression =
-                Parser.parse(testString, JClassInstanceCreationExpression.class);
+        JExpressionClassInstanceCreation expression =
+                Parser.parse(testString, JExpressionClassInstanceCreation.class);
         
         Verify.that(expression.getType()).isEqual(new JTypeName("pakage.Clazz"));
         
