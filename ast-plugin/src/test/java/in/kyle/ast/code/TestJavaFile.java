@@ -47,15 +47,6 @@ public class TestJavaFile {
     }
     
     @Test
-    public void testSimpleFileImport() throws IOException {
-        JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        file.getImports().add("java.util.List");
-    
-        String result = file.write();
-        matchesFile(result, "simpleFileImport");
-    }
-    
-    @Test
     public void testSimpleInnerClass() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         
@@ -90,7 +81,7 @@ public class TestJavaFile {
         file.setGenericSuper("A");
         Field field = new Field("B", "C", "name", null);
         file.getFields().add(field);
-        file.getImplementingTypes().add("D");
+        file.addIsType("D");
         
         Map<Consumer<String>, String> rewritableTypes = file.getRewritableTypes();
         Verify.that(rewritableTypes).containsValue("A");
@@ -102,7 +93,7 @@ public class TestJavaFile {
         Verify.that(file.getGenericSuper()).isEqual("Z");
         Verify.that(field.getType()).isEqual("Z");
         Verify.that(field.getGeneric()).isEqual("Z");
-        Verify.that(file.getImplementingTypes()).sizeIs(1).contains("Z");
+        Verify.that(file.getIsTypes()).sizeIs(1).contains("Z");
     }
     
     private void matchesFile(String text, String name) throws IOException {

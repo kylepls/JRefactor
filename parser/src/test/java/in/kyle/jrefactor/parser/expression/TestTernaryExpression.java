@@ -26,7 +26,7 @@ public class TestTernaryExpression {
         Verify.that(expression.getCondition()).isNotNull();
         Verify.that(expression.getLeft()).isNotNull();
         Verify.that(expression.getRight()).isNotNull();
-        
+    
         Verify.that(expression.getCondition()).isInstanceOf(JLiteralBoolean.class);
         Verify.that(expression.getLeft()).isInstanceOf(JLiteralCharacter.class);
         Verify.that(expression.getRight()).isInstanceOf(JLiteralCharacter.class);

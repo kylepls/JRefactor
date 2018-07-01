@@ -5,7 +5,7 @@ import org.junit.Test;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
 import in.kyle.jrefactor.tree.obj.JTypeName;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionTypeReference;
+import in.kyle.jrefactor.tree.obj.reference.JExpressionTypeReference;
 
 public class TestTypeReference {
     

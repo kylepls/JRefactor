@@ -15,6 +15,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import static in.kyle.ast.code.JavaFileType.CLASS;
+import static in.kyle.ast.code.JavaFileType.ENUM;
+
 @Setter
 @Getter(AccessLevel.PACKAGE)
 public class CodeModifier {
@@ -107,7 +110,7 @@ public class CodeModifier {
     }
     
     void addConstructors(JavaFile file) {
-        if (file.isClass() || file.isEnum()) {
+        if (file.typeIs(CLASS) || file.typeIs(ENUM)) {
             List<Field> superParameters = getFields(file);
             removeDefaultFields(superParameters);
             List<Field> allParameters = new ArrayList<>(superParameters);
@@ -121,7 +124,7 @@ public class CodeModifier {
                                              .collect(Collectors.joining(", "));
             
             String superCall;
-            if (file.isClass()) {
+            if (file.typeIs(CLASS)) {
                 superCall = String.format("super(%s);",
                                           superParameters.stream()
                                                          .map(Field::getName)
@@ -137,7 +140,7 @@ public class CodeModifier {
                                                                           f.getName()))
                                                   .collect(Collectors.joining("\n"));
             
-            String modifier = file.isClass() ? "public" : "private";
+            String modifier = file.typeIs(CLASS) ? "public" : "private";
             String constructorString = String.format("%s %s(%s) {\n\t%s\n\t%s\n}",
                                                      modifier,
                                                      file.getName(),
@@ -276,7 +279,7 @@ public class CodeModifier {
         if (file.hasInnerClasses()) {
             file.addImport("lombok.Getter");
         }
-        file.getImplementingTypes().forEach(type -> addImport(file, type));
+        file.getIsTypes().forEach(type -> addImport(file, type));
     }
     
     private boolean isInnerType(JavaFile file, String field) {

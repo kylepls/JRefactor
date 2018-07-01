@@ -18,6 +18,8 @@ import in.kyle.ast.code.file.EnumElement;
 import in.kyle.ast.code.file.Field;
 import lombok.Getter;
 
+import static in.kyle.ast.code.JavaFileType.CLASS;
+
 public class CodeGenAstVisitor extends AstBaseVisitor {
     
     @Getter
@@ -55,7 +57,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     @Override
     public Object visitVariable_definition(AstParser.Variable_definitionContext ctx) {
         String text = ctx.STRING().getText();
-        text = text.substring(1, text.length()-1);
+        text = text.substring(1, text.length() - 1);
         modifier.addVariable(ctx.IDENTIFIER().getText(), text);
         return null;
     }
@@ -74,9 +76,13 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     }
     
     private Collection<JavaFile> visitObject(AstParser.ObjectContext ctx, JavaFile superObject) {
-        JavaFile file = new JavaFile(ctx.IDENTIFIER().toString(), JavaFileType.CLASS);
+        JavaFile file = new JavaFile(ctx.IDENTIFIER().toString(), CLASS);
         if (superObject != null) {
-            file.setSuperType(superObject);
+            if (superObject.typeIs(CLASS)) {
+                file.setSuperType(superObject);
+            } else {
+                file.addIsType(superObject.getName());
+            }
             file.setPackageName(getPackageName(superObject));
         }
         addHeaderInfo(ctx, file);
@@ -91,8 +97,9 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     private Collection<JavaFile> visitObject_elements(JavaFile file,
                                                       AstParser.Object_elementsContext ctx) {
         if (ctx.object_variable().isEmpty()) {
-            if (file.getSuperType() == null ||
-                file.getSuperType().getType() == JavaFileType.INTERFACE) {
+            boolean isSuperTypeInterface = file.getSuperType() == null ||
+                                           file.getSuperType().getType() == JavaFileType.INTERFACE;
+            if (isSuperTypeInterface) {
                 file.setType(JavaFileType.INTERFACE);
             }
         }
@@ -139,9 +146,8 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
         }
         
         if (ctx.object_implements() != null) {
-            visitObject_implements(ctx.object_implements()).forEach(impl -> file
-                    .getImplementingTypes()
-                                                                                .add(impl));
+            List<String> implementing = visitObject_implements(ctx.object_implements());
+            implementing.forEach(file::addIsType);
         }
     }
     

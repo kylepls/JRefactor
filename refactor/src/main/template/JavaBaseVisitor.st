@@ -1,4 +1,3 @@
-JavaBaseVisitor(names) ::= <<
 package in.kyle.jrefactor.refactor;
 
 public class JavaBaseVisitor\<T> extends AbstractJObjectVisitor\<T> implements JavaVisitor\<T> {
@@ -7,4 +6,3 @@ public class JavaBaseVisitor\<T> extends AbstractJObjectVisitor\<T> implements J
 \}
     }>
 }
->>

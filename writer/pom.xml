@@ -16,10 +16,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </pluginRepository>
-        <pluginRepository>
-            <id>myMavenRepo</id>
-            <url>${myMavenRepoReadUrl}</url>
-        </pluginRepository>
     </pluginRepositories>
 
     <dependencies>
@@ -33,33 +29,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.webguys</groupId>
-                <artifactId>string-template-maven-plugin</artifactId>
-                <configuration>
-                    <templates>
-                        <template combine.children="append">
-                            <identifier>CodeWriter</identifier>
-                            <target>
-                                ${basedir}/target/generated-sources/string-template/in/kyle/jrefactor/writer/CodeWriter.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.writer.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                    </templates>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
+                <groupId>in.kyle.refactor</groupId>
+                <artifactId>st-generator-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-template-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate-template-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

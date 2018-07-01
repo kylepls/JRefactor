@@ -41,7 +41,6 @@ public class TestUnaryExpression {
             javaString = "i" + operator.getJavaString();
         }
         
-        System.out.println(javaString);
         JExpressionUnary expression = Parser.parse(javaString, JExpressionUnary.class);
         Verify.that(expression).isNotNull();
         Verify.that(expression.getExpression()).isNotNull();

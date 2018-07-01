@@ -1,4 +1,3 @@
-JavaBaseListener(names) ::= <<
 package in.kyle.jrefactor.refactor;
 
 public class JavaBaseListener extends AbstractJObjectListener implements JavaListener {
@@ -9,4 +8,3 @@ public void exit<each.simpleName>(<each.identifier> object) {
 \}
     }>
 }
->>

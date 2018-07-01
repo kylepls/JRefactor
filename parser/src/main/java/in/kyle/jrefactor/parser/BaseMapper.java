@@ -27,37 +27,12 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
-    protected ParserRuleContext parseJNumericLiteral(Java8Parser object) {
-        return object.literal();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJStringLiteral(Java8Parser object) {
-        return object.literal();
-    }
-    
-    @Override
     protected ParserRuleContext parseJLiteralDouble(Java8Parser object) {
         return object.literal();
     }
     
     @Override
     protected ParserRuleContext parseJLiteralFloat(Java8Parser object) {
-        return object.literal();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJFloatingLiteral(Java8Parser object) {
-        return object.literal();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJIntegerLiteral(Java8Parser object) {
-        return object.literal();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJLongLiteral(Java8Parser object) {
         return object.literal();
     }
     
@@ -78,7 +53,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJExpressionLeftRight(Java8Parser object) {
-        return object.expression();
+        return object.assignmentExpression();
     }
     
     @Override
@@ -208,7 +183,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJLiteralInteger(Java8Parser object) {
-        return null;
+        return object.literal();
     }
     
     @Override
@@ -508,6 +483,11 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJBodyMember(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJReference(Java8Parser object) {
         return null;
     }
     

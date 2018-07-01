@@ -4,7 +4,12 @@ Optional = "Optional.empty()"
     
 #fromJava = "
 public static <name> fromJava(String string) {
-    return valueOf(string.toUpperCase());
+    for (<name> operator : values()) {
+        if (operator.javaString.equals(string)) {
+            return operator;
+        }
+    }
+    throw new IllegalArgumentException();
 }
 "
 
@@ -27,22 +32,28 @@ Obj {
         String name
     }
     
-    TypeArgument {
-        TypeArgumentWildcard {
-            WildcardType type
-            TypeName reference
-            
-            inside WildcardType {
-                <>
-                EXTENDS
-                SUPER
+    Reference {
+        TypeName reference
+        
+        TypeArgument {
+            TypeArgumentWildcard {
+                WildcardType type
+                
+                inside WildcardType {
+                    <>
+                    EXTENDS
+                    SUPER
+                }
+            }
+            TypeArgumentReference {
             }
         }
         
-        TypeArgumentReference {
-            TypeName type
+        ExpressionTypeReference is Expression {
         }
+        
     }
+    
 
     LambdaParameter {
         LambdaParameterInferred {
@@ -53,7 +64,7 @@ Obj {
     LambdaBody {
     }
 
-    Expression {
+    Expression is LambdaBody {
 
         ExpressionLambda {
             List<LambdaParameter> parameters
@@ -126,10 +137,6 @@ Obj {
             Expression left
             Expression condition
             Expression right
-        }
-        
-        ExpressionTypeReference {
-            TypeName reference
         }
         
         ExpressionUnary {
@@ -261,7 +268,7 @@ Obj {
             Optional<Expression> message
         }
         
-        Block {
+        Block is LambdaBody {
             List<Statement> statements
         }
         

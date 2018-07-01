@@ -8,9 +8,11 @@ import in.kyle.jrefactor.tree.obj.expression.JExpressionLiteral;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralCharacter;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.JIntegerLiteral;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.floatingliteral.JLiteralDouble;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.numericliteral.floatingliteral.JLiteralFloat;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
+        .JLiteralDouble;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
+        .JLiteralFloat;
 
 public class TestLiteral {
     
@@ -32,7 +34,7 @@ public class TestLiteral {
     @Test
     public void testIntegerLiteral() {
         String literalString = "100";
-        JIntegerLiteral literal = Parser.parse(literalString, JIntegerLiteral.class);
+        JLiteralInteger literal = Parser.parse(literalString, JLiteralInteger.class);
         Verify.that(literal.getValue()).isEqual(Integer.parseInt(literalString));
     }
     

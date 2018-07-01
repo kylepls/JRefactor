@@ -1,8 +1,6 @@
 package in.kyle.ast.code.file;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,68 +11,83 @@ import in.kyle.ast.util.Formatter;
 import in.kyle.ast.util.Formatter.KV;
 import lombok.Data;
 
+import static in.kyle.ast.code.JavaFileType.CLASS;
+import static in.kyle.ast.code.JavaFileType.INTERFACE;
+
 @Data
 public class JavaFileHeader implements WritableElement {
     
-    private final Set<String> implementingTypes = new HashSet<>();
+    private final Set<String> isTypes = new HashSet<>();
     private String genericDefine;
-    private String genericSuper;
     private String name;
     private JavaFileType type;
     private JavaFile superType;
+    private String genericSuper;
     
     public JavaFileHeader(String name, JavaFileType type) {
         this.name = name;
         this.type = type;
     }
     
-    @Override
-    public String write() {
-        String extendsString = getExtendingType();
-        Collection<String> implementing = computeImplementing(extendsString != null);
-        List<KV<String, Object>> kvs = new ArrayList<>();
-        kvs.add(KV.of("extends", extendsString));
-        kvs.add(KV.of("implements", implementing));
-        return Formatter.fromTemplate("header", this, kvs);
+    public void addIsType(String type) {
+        this.isTypes.add(type);
     }
     
-    private Collection<String> computeImplementing(boolean isExtendingType) {
-        if (type != JavaFileType.INTERFACE) {
-            Collection<String> implementing = new HashSet<>(implementingTypes);
-            boolean notExtendingType = !isExtendingType;
-            if (notExtendingType && hasSuperType()) {
-                String superString = superType.getName();
-                if (genericSuper != null) {
-                    superString += "<" + genericSuper + ">";
-                }
-                implementing.add(superString);
-            }
-            return implementing;
-        } else {
-            return Collections.emptyList();
-        }
+    public void removeIsType(String type) {
+        this.isTypes.remove(type);
     }
     
-    private String getExtendingType() {
-        if (hasSuperType()) {
-            if (superType() == JavaFileType.CLASS && type != JavaFileType.INTERFACE) {
-                // Class extending a class
-                return superType.getName();
-            } else if (superType() == JavaFileType.INTERFACE && type == JavaFileType.INTERFACE) {
-                // interface extending interface
-                return superType.getName();
-            }
-        } else if (type == JavaFileType.INTERFACE && implementingTypes.size() != 0) {
-            return implementingTypes.iterator().next();
-        }
-        return null;
-    }
-    
-    private JavaFileType superType() {
-        return superType.getType();
+    public boolean typeIs(JavaFileType type) {
+        return getType() == type;
     }
     
     public boolean hasSuperType() {
         return superType != null;
+    }
+    
+    @Override
+    public String write() {
+        ExtendsImplements ei = computeExtendImplement();
+        
+        List<KV<String, Object>> kvs = new ArrayList<>();
+        kvs.add(KV.of("extends", ei.getExtending()));
+        kvs.add(KV.of("implements", ei.getImplementing()));
+        return Formatter.fromTemplate("header", this, kvs);
+    }
+    
+    private ExtendsImplements computeExtendImplement() {
+        List<String> extend = new ArrayList<>();
+        List<String> implement = new ArrayList<>();
+        
+        String superTypeName = "";
+        if (hasSuperType()) {
+            superTypeName = superType.getName();
+            if (hasGenericSuper()) {
+                superTypeName += String.format("<%s>", genericSuper);
+            }
+        }
+        if (typeIs(INTERFACE)) {
+            if (hasSuperType()) {
+                extend.add(superTypeName);
+            }
+            extend.addAll(isTypes);
+        } else if (typeIs(CLASS)) {
+            if (hasSuperType()) {
+                extend.add(superTypeName);
+            }
+            implement.addAll(isTypes);
+        }
+        
+        return new ExtendsImplements(extend, implement);
+    }
+    
+    private boolean hasGenericSuper() {
+        return genericSuper != null;
+    }
+    
+    @Data
+    private class ExtendsImplements {
+        private final List<String> extending;
+        private final List<String> implementing;
     }
 }

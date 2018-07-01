@@ -58,7 +58,7 @@ public class TestCodeModifier {
     @Test
     public void testUpdateTypeNames() {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        file.getImplementingTypes().add("AType");
+        file.addIsType("AType");
         file.setGenericSuper("AType");
         Field field = new Field("AType", "AType", "test", null);
         file.getFields().add(field);
@@ -66,7 +66,7 @@ public class TestCodeModifier {
         modifier.getOldFiles().put("AType", "ANewType");
         modifier.updateTypeNames(file);
         
-        Verify.that(file.getImplementingTypes()).sizeIs(1).contains("ANewType");
+        Verify.that(file.getIsTypes()).sizeIs(1).contains("ANewType");
         Verify.that(file.getGenericSuper()).isEqual("ANewType");
         Verify.that(field.getType()).isEqual("ANewType");
         Verify.that(field.getGeneric()).isEqual("ANewType");
@@ -75,14 +75,14 @@ public class TestCodeModifier {
     @Test
     public void testTypeUpdateImportMapping() {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        file.getImplementingTypes().add("AType");
+        file.addIsType("AType");
         
         modifier.getOldFiles().put("AType", "ANewType");
         modifier.getImportMappings().put("ANewType", Collections.singleton("Test"));
         modifier.preProcess(file);
         modifier.process(file);
         
-        Verify.that(file.getImplementingTypes()).sizeIs(1).contains("ANewType");
+        Verify.that(file.getIsTypes()).sizeIs(1).contains("ANewType");
         Verify.that(file.getImports()).sizeIs(1).contains("Test");
     }
     

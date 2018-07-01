@@ -45,7 +45,6 @@ public class TestGeneration {
     
     private static void printFile(JCompilationUnit unit) {
         writer.write(unit);
-        System.out.println(writer.toString());
         writer.clear();
     }
     

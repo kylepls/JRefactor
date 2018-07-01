@@ -28,82 +28,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.webguys</groupId>
-                <artifactId>string-template-maven-plugin</artifactId>
-                <configuration>
-                    <templates>
-                        <template combine.children="append">
-                            <identifier>JavaVisitor</identifier>
-                            <target>
-                                ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaVisitor.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.refactor.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                        <!-- Maven only appends to first child :( -->
-                        <template combine.children="append">
-                            <directory>${project.basedir}/src/main/template/string-template
-                            </directory>
-                            <controller combine.self="append">
-                                <path>${project.basedir}/src/main/template/java</path>
-                            </controller>
-                            <identifier>JavaListener</identifier>
-                            <target>
-                                ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaListener.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.refactor.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                        <template combine.children="append">
-                            <directory>${project.basedir}/src/main/template/string-template
-                            </directory>
-                            <controller combine.self="append">
-                                <path>${project.basedir}/src/main/template/java</path>
-                            </controller>
-                            <identifier>JavaBaseListener</identifier>
-                            <target>
-                                ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaBaseListener.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.refactor.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                        <template combine.children="append">
-                            <directory>${project.basedir}/src/main/template/string-template
-                            </directory>
-                            <controller combine.self="append">
-                                <path>${project.basedir}/src/main/template/java</path>
-                            </controller>
-                            <identifier>JavaBaseVisitor</identifier>
-                            <target>
-                                ${project.build.outputDirectory}/generated-sources/string-template/in/kyle/jrefactor/refactor/JavaBaseVisitor.java
-                            </target>
-                            <controller>
-                                <className>in.kyle.jrefactor.refactor.gen.JObjectNames
-                                </className>
-                                <method>getClassNames</method>
-                            </controller>
-                        </template>
-                    </templates>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
+                <groupId>in.kyle.refactor</groupId>
+                <artifactId>st-generator-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-template-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate-template-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

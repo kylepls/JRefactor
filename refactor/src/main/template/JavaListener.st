@@ -1,4 +1,3 @@
-JavaListener(names) ::= <<
 package in.kyle.jrefactor.refactor;
 
 public interface JavaListener {
@@ -7,4 +6,3 @@ void enter<each.simpleName>(<each.identifier> object);
 void exit<each.simpleName>(<each.identifier> object);
     }>
 }
->>

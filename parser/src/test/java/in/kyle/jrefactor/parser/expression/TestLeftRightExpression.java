@@ -57,7 +57,6 @@ public class TestLeftRightExpression {
     public void testExpression() {
         String javaString =
                 StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
-        System.out.println(javaString);
         JExpressionLeftRight expression = Parser.parse(javaString, JExpressionLeftRight.class);
         Verify.that(expression.getLeft()).isInstanceOf(JExpressionName.class);
         Verify.that(expression.getRight()).isNotNull();

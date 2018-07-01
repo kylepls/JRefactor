@@ -29,7 +29,9 @@ public class TestLambda {
         String lambda = "a->{}";
         JExpressionLambda expression = Parser.parse(lambda, JExpressionLambda.class);
         Verify.that(expression.getParameters()).isNotNull();
-        JIdentifier parameter = (JIdentifier) expression.getParameters();
+        List<JLambdaParameter> parameters = expression.getParameters();
+        Verify.that(parameters).sizeIs(1);
+        JIdentifier parameter = (JIdentifier) parameters.get(0);
         Verify.that(parameter.getName()).isEqual("a");
         Verify.that(expression.getBody()).isNotNull();
         Verify.that(expression.getBody()).isInstanceOf(JBlock.class);

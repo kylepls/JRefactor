@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import in.kyle.api.utils.Try;
+import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.JObject;
 
 public abstract class AbstractWriter extends CodeWriter {
@@ -30,7 +31,7 @@ public abstract class AbstractWriter extends CodeWriter {
     private boolean newLine = false;
     
     @Override
-    public void write(JObject object) {
+    public void write(JObj object) {
         beginWrite();
         if (object != null) {
             Method method = METHODS.get(object.getClass());

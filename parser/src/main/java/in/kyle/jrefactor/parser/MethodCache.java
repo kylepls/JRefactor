@@ -29,7 +29,6 @@ public class MethodCache {
         if (method != null) {
             return method;
         } else {
-            System.out.println(mappings.keySet());
             throw new RuntimeException("No such method for " + clazz.getName());
         }
     }

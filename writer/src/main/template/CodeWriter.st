@@ -1,4 +1,3 @@
-CodeWriter(names) ::= <<
 package in.kyle.jrefactor.writer;
 
 public abstract class CodeWriter {
@@ -9,4 +8,3 @@ public abstract class CodeWriter {
 \}
     }>
 }
->>

@@ -72,10 +72,6 @@ public class JavaFile implements WritableElement {
         return packageName != null;
     }
     
-    public boolean isClass() {
-        return getType() == JavaFileType.CLASS;
-    }
-    
     public boolean hasGenericSuper() {
         return getGenericSuper() != null;
     }
@@ -121,10 +117,10 @@ public class JavaFile implements WritableElement {
             addIfNonNull(rewritable, field::setType, field.getType());
             addIfNonNull(rewritable, field::setGeneric, field.getGeneric());
         }
-        for (String implementing : getImplementingTypes()) {
+        for (String implementing : getIsTypes()) {
             addIfNonNull(rewritable, s -> {
-                getImplementingTypes().remove(implementing);
-                getImplementingTypes().add(s);
+                removeIsType(implementing);
+                addIsType(s);
             }, implementing);
         }
         return rewritable;
@@ -142,10 +138,6 @@ public class JavaFile implements WritableElement {
     
     private List<String> computeInnerClassStrings() {
         return innerClasses.stream().map(WritableElement::write).collect(Collectors.toList());
-    }
-    
-    public boolean isEnum() {
-        return getType() == JavaFileType.ENUM;
     }
     
     public boolean hasInnerClasses() {

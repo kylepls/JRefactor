@@ -2,6 +2,7 @@ package in.kyle.jrefactor.refactor;
 
 import java.util.Arrays;
 
+import in.kyle.jrefactor.refactor.gen.JavaBaseVisitor;
 import in.kyle.jrefactor.tree.JObject;
 import in.kyle.jrefactor.tree.expression.JLeftRightExpression;
 import in.kyle.jrefactor.tree.expression.JParenthesisExpression;
@@ -30,11 +31,9 @@ public class LiteralOptimizer extends JavaBaseVisitor {
     public Object visitJLeftRightExpression(JLeftRightExpression object) {
         if (object.getOperation() == JLeftRightExpression.Operation.ADD && object.getLeft() instanceof JLiteral &&
             object.getRight() instanceof JLiteral) {
-            System.out.print("Convert " + objToString(object) + " -> ");
             JLiteral replace =
                     convertLiterals((JLiteral) object.getLeft(), (JLiteral) object.getRight());
             session.replace(object, replace);
-            System.out.println(objToString(replace));
             rerun = true;
         } else if (contains(JParenthesisExpression.class, object.getLeft(), object.getRight())) {
             JLiteral left = extractLiteral(object.getLeft());

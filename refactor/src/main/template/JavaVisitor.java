@@ -11,7 +11,7 @@ import in.kyle.jrefactor.tree.JObj;
 import lombok.Data;
 
 // due to the location of this class, it is unlikely that it will be able to be inherited
-public class AbstractParseMapper {
+public class JavaVisitor {
     
     public static File OUTPUT_FILE = new File("in/kyle/jrefactor/parser/AbstractParseMapper.java");
     
@@ -25,7 +25,7 @@ public class AbstractParseMapper {
     private static Set<String> getJObjClassNames() throws IOException {
         return findClasses().stream()
                             .filter(JObj.class::isAssignableFrom)
-                            .map(clazz -> clazz.getName().replace("$", "."))
+                            .map(clazz -> clazz.getName().replace("$", ""))
                             .collect(Collectors.toSet());
     }
     
@@ -54,7 +54,7 @@ public class AbstractParseMapper {
         while (s.hasMoreElements()) {
             ZipEntry entry = s.nextElement();
             if (entry.getName().endsWith(".class")) {
-                String path = entry.getName().replace("/", ".");
+                String path = entry.getName().replace("/", "");
                 path = path.substring(0, path.length() - ".class".length());
                 classNames.add(path);
             }
@@ -72,8 +72,8 @@ public class AbstractParseMapper {
             return classNames;
         } else if (file.getName().endsWith(".class")) {
             String path = file.getAbsolutePath().substring(root.getAbsolutePath().length());
-            path = path.replace("\\", ".");
-            path = path.replace("/", ".");
+            path = path.replace("\\", "");
+            path = path.replace("/", "");
             path = path.substring(1, path.length() - ".class".length());
             return Collections.singleton(path);
         } else {
@@ -83,12 +83,12 @@ public class AbstractParseMapper {
     
     private static Set<NamePair> makeNamePairs(Set<String> jObjectClassNames) {
         return jObjectClassNames.stream()
-                                .map(AbstractParseMapper::makeNamePair)
+                                .map(JavaVisitor::makeNamePair)
                                 .collect(Collectors.toSet());
     }
     
     private static NamePair makeNamePair(String name) {
-        String simpleName = name.substring(name.lastIndexOf(".") + 1);
+        String simpleName = name.substring(name.lastIndexOf("") + 1);
         return new NamePair(simpleName, name);
     }
     
