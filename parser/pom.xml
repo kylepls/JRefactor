@@ -17,6 +17,13 @@
             <artifactId>tree</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>tree</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -69,6 +76,19 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <compileExcludes>
+                        <exclude>**/parser/**</exclude>
+                    </compileExcludes>
+                    <templates>
+                        <template>
+                            <templateName>AbstractParseMapper</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>AbstractParseMapper.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.parser</outputPackage>
+                        </template>
+                    </templates>
+                </configuration>
             </plugin>
         </plugins>
     </build>
