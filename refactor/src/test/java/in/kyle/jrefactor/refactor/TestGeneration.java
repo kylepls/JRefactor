@@ -23,8 +23,9 @@ public class TestGeneration {
         printFile(unit);
         RefactorSession session = new RefactorSession(unit);
         //optimizeFile(unit, session);
-        renameVariable(unit, session);
+//        renameVariable(unit, session);
         printFile(unit);
+        System.out.println("Done");
     }
     
     private static void renameVariable(JCompilationUnit unit, RefactorSession session) {
@@ -45,7 +46,9 @@ public class TestGeneration {
     }
     
     private static void printFile(JCompilationUnit unit) {
+        System.out.println("Write ");
         String write = writer.write(unit);
+        
         System.out.println(write);
     }
     

@@ -67,10 +67,6 @@ public class LiteralOptimizer extends JavaBaseVisitor {
         }
     }
     
-    private String objToString(JObj object) {
-        return writer.write(object);
-    }
-    
     private JExpressionLiteral convertLiterals(JExpressionLiteral left, JExpressionLiteral right) {
         if (contains(JLiteralString.class, left, right)) {
             return new JLiteralString(left.getValue().toString() + right.getValue());
