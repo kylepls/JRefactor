@@ -22,7 +22,19 @@
         <dependency>
             <groupId>in.kyle.refactor</groupId>
             <artifactId>parser</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>tree</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>tree</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -39,6 +51,42 @@
                         <goals>
                             <goal>generate-template-sources</goal>
                         </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <compileExcludes>
+                        <exclude>**/writer/**</exclude>
+                    </compileExcludes>
+                    <templates>
+                        <template>
+                            <templateName>CodeWriter</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>CodeWriter.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.writer</outputPackage>
+                        </template>
+                        <template>
+                            <templateName>StGenerator</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>SimpleWriter.stg</outputName>
+                        </template>
+                    </templates>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/template</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

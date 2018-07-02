@@ -111,7 +111,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JImport jImport = new JImport();
         jImport.setName(ctx.packageOrTypeName().getText());
         if (ctx.import_static() != null) {
-            jImport.setStatic(true);
+            jImport.setStaticImport(true);
         }
         if (ctx.import_wildcard() != null) {
             jImport.setOnDemand(true);
@@ -1016,7 +1016,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         statement.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf()));
         
         JStatementElse anElse = new JStatementElse();
-        anElse.setCondition(Optional.of(visitStatement(ctx.statement())));
+        anElse.setStatement(visitStatement(ctx.statement()));
         statement.addElseStatement(anElse);
         return statement;
     }
@@ -1027,7 +1027,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         statement.setExpression(visitExpression(ctx.expression()));
         statement.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf(0)));
         JStatementElse anElse = new JStatementElse();
-        anElse.setCondition(Optional.of(visitStatementNoShortIf(ctx.statementNoShortIf(1))));
+        anElse.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf(1)));
         return statement;
     }
     

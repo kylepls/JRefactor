@@ -1,0 +1,377 @@
+JModifier(obj) ::= <<
+<obj.javaString>
+>>
+
+JAnnotation(obj) ::= <%
+@<obj.type>
+<if(obj.values)>
+    (<obj.values:{each| <each>}; separator=", ">)
+<endif>
+%>
+
+JCompilationUnit(obj) ::= <%
+<if(obj.packageName.isPresent)>package <obj.packageName>;
+<if(obj.importss || obj.types)><\n><endif>
+<endif>
+<obj.importss:{import | <import>}; separator="\n">
+%>
+
+JIdentifier(obj) ::= <<
+<obj.name>
+>>
+
+JImport(obj) ::= <%
+import 
+<if(obj.staticImport)>static <endif>
+<if(obj.packageName)><obj.packageName>.<endif><obj.name>
+<if(obj.onDemand)>
+    <if(obj.name)>.<endif>
+*
+<endif>;
+%>
+
+JPropertyLookup(obj) ::= <<
+<obj.areas:{area | <area>}; separator=".">
+>>
+
+JStatementElse(obj) ::= <<
+else <if(obj.condition.present)>if(<obj.condition>) <endif>{
+    <obj.statement>
+}
+>>
+
+JTypeName(obj) ::= <<
+<obj.type>
+>>
+
+JVariable(obj) ::= <<
+<obj.name><if(obj.initializer.present)> = <obj.initializer><endif>
+>>
+
+JValuePair(obj) ::= <<
+<obj.identifier> = <obj.value>
+>>
+
+JValueSingle(obj) ::= <<
+<obj.value>
+>>
+
+JExpressionAssignment(obj) ::= <<
+<obj.left> <obj.operator> <obj.right>
+>>
+
+JAssignmentOperator(obj) ::= <<
+<obj.javaString>
+>>
+
+JExpressionClassInstanceCreation(obj) ::= <%
+new <obj.type>
+<if(obj.typeArguments)>\<
+<obj.typeArguments; separator=", ">
+><endif>
+(<obj.arguments; separator=",">)
+<if(obj.body.present)> <obj.body><endif>
+%>
+
+JExpressionLambda(obj) ::= <%
+(<obj.parameters; separator=", ">)-><obj.body>
+%>
+
+JExpressionLeftRight(obj) ::= <<
+<obj.left> <obj.operator> <obj.right>
+>>
+
+JLeftRightOperator(obj) ::= <<
+<obj.javaString>
+>>
+
+JExpressionMethodInvocation(obj) ::= <%
+<if(obj.methodArea.present)><obj.methodArea>.<endif>
+<obj.methodName>
+<if(obj.typeArguments)>\<<obj.typeArguments; separator="\n">><endif>
+(<obj.arguments; separator="\n">)
+%>
+
+JExpressionName(obj) ::= <<
+<obj.identifier>
+>>
+
+JExpressionParenthesis(obj) ::= <<
+(<obj.expression>)
+>>
+
+JExpressionTernary(obj) ::= <<
+<obj.condition> ? <obj.left> : <obj.right>
+>>
+
+JExpressionUnary(obj) ::= <<
+
+>>
+
+JOperator(obj) ::= <<
+<! todo !>
+>>
+
+JLiteralBoolean(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralCharacter(obj) ::= <<
+'<obj.value>'
+>>
+
+JLiteralNumeric(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralString(obj) ::= <<
+"<obj.value>"
+>>
+
+JLiteralFloating(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralInteger(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralLong(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralDouble(obj) ::= <<
+<obj.value>
+>>
+
+JLiteralFloat(obj) ::= <<
+<obj.value>
+>>
+
+JLambdaParameterInferred(obj) ::= <<
+<! todo !>
+>>
+
+JAnnotatable(obj) ::= <<
+<! todo !>
+>>
+
+JCatchClause(obj) ::= <<
+<! todo !>
+>>
+
+JConstructorDeclaration(obj) ::= <<
+<! todo !>
+>>
+
+JField(obj) ::= <<
+<! todo !>
+>>
+
+JIdentifiable(obj) ::= <<
+<! todo !>
+>>
+
+JMultiParameter(obj) ::= <<
+<! todo !>
+>>
+
+JParameter(obj) ::= <<
+<! todo !>
+>>
+
+JAnnotationField(obj) ::= <<
+<! todo !>
+>>
+
+JEnumConstant(obj) ::= <<
+<! todo !>
+>>
+
+JMethodHeader(obj) ::= <<
+<! todo !>
+>>
+
+JType(obj) ::= <<
+<! todo !>
+>>
+
+JTypeParameter(obj) ::= <<
+<! todo !>
+>>
+
+JAnnotationType(obj) ::= <<
+<! todo !>
+>>
+
+JSuperInterfaceType(obj) ::= <<
+<! todo !>
+>>
+
+JEnum(obj) ::= <<
+<! todo !>
+>>
+
+JTypeParameterType(obj) ::= <<
+<! todo !>
+>>
+
+JClass(obj) ::= <<
+<! todo !>
+>>
+
+JInterface(obj) ::= <<
+<! todo !>
+>>
+
+JExpressionTypeReference(obj) ::= <<
+>>
+
+JTypeArgument(obj) ::= <<
+<! todo !>
+>>
+
+JTypeArgumentReference(obj) ::= <<
+<obj.reference>
+>>
+
+JTypeArgumentWildcard(obj) ::= <<
+<! todo !>
+>>
+
+JWildcardType(obj) ::= <<
+<! todo !>
+>>
+
+JBlock(obj) ::= <%
+{
+<obj.statements; separator="\n">
+}
+%>
+
+JStatementAssert(obj) ::= <<
+<! todo !>
+>>
+
+JStatementEmpty(obj) ::= <<
+;
+>>
+
+JStatementExpression(obj) ::= <<
+<! todo !>
+>>
+
+JStatementLabeled(obj) ::= <<
+<! todo !>
+>>
+
+JStatementLocalVariableDeclaration(obj) ::= <<
+<! todo !>
+>>
+
+JIdentifiableStatement(obj) ::= <<
+<! todo !>
+>>
+
+JStatementCatch(obj) ::= <<
+<! todo !>
+>>
+
+JStatementIf(obj) ::= <<
+<! todo !>
+>>
+
+JStatementReturn(obj) ::= <<
+<! todo !>
+>>
+
+JStatementSwitch(obj) ::= <<
+<! todo !>
+>>
+
+JStatementSynchronized(obj) ::= <<
+<! todo !>
+>>
+
+JStatementThrow(obj) ::= <<
+<! todo !>
+>>
+
+JStatementTry(obj) ::= <<
+<! todo !>
+>>
+
+JStatementBreak(obj) ::= <<
+<! todo !>
+>>
+
+JStatementContinue(obj) ::= <<
+<! todo !>
+>>
+
+JStatementFor(obj) ::= <<
+<! todo !>
+>>
+
+JStatementWhile(obj) ::= <<
+<! todo !>
+>>
+
+JStatementBasicFor(obj) ::= <<
+<! todo !>
+>>
+
+JStatementEnhancedFor(obj) ::= <<
+<! todo !>
+>>
+
+JStatementDoWhile(obj) ::= <<
+<! todo !>
+>>
+
+JArrayTypeName(obj) ::= <<
+<! todo !>
+>>
+
+JTypeBody(obj) ::= <<
+<! todo !>
+>>
+
+JClassInitializer(obj) ::= <<
+<! todo !>
+>>
+
+JMethod(obj) ::= <<
+<! todo !>
+>>
+
+JClassInstanceInitializer(obj) ::= <<
+<! todo !>
+>>
+
+JClassStaticInitializer(obj) ::= <<
+<! todo !>
+>>
+
+JInterfaceMethod(obj) ::= <<
+<! todo !>
+>>
+
+JAnnotationBody(obj) ::= <<
+<! todo !>
+>>
+
+JClassBody(obj) ::= <<
+{
+    <obj.members; separator="\n\n">
+}
+>>
+
+JEnumBody(obj) ::= <<
+<! todo !>
+>>
+
+JInterfaceBody(obj) ::= <<
+<! todo !>
+>>
+
