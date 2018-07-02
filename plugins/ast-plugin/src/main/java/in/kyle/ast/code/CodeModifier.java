@@ -83,6 +83,25 @@ public class CodeModifier {
         addFieldMethods(file);
         addEnumMethods(file);
         transposeVariables(file);
+        passGenericToSuper(file);
+    }
+    
+    private void passGenericToSuper(JavaFile file) {
+        if (file.getGenericDefine() != null) {
+            boolean usesGeneric = false;
+            String generic = file.getGenericDefine();
+            for (Field field : file.getFields()) {
+                if (field.getType().equals(generic) ||
+                    (field.getGeneric() != null && field.getGeneric().equals(generic))) {
+                    usesGeneric = true;
+                    break;
+                }
+            }
+            
+            if (!usesGeneric) {
+                file.setGenericSuper(generic);
+            }
+        }
     }
     
     void postProcess(JavaFile file) {
@@ -141,7 +160,8 @@ public class CodeModifier {
                                                                           f.getName()))
                                                   .collect(Collectors.joining("\n"));
             
-            String modifier = file.typeIs(CLASS) || file.typeIs(ABSTRACT_CLASS) ? "public" : "private";
+            String modifier =
+                    file.typeIs(CLASS) || file.typeIs(ABSTRACT_CLASS) ? "public" : "private";
             String constructorString = String.format("%s %s(%s) {\n\t%s\n\t%s\n}",
                                                      modifier,
                                                      file.getName(),

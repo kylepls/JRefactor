@@ -1,0 +1,54 @@
+csv(list) ::= <<
+<collection(list, ", ")>
+>>
+
+collection(col, sep) ::= <<
+<col; separator=sep>
+>>
+
+annotatableSpace(obj) ::= <%
+<writeAnnotatable(obj)>
+<if(obj.modifiers)><\ ><endif>
+%>
+
+writeAnnotatable(obj) ::= <<
+<collection(obj.annotations, "\n")>
+<writeModifiable(obj)>
+>>
+
+writeModifiable(obj) ::= <<
+<collection(obj.modifiers, " ")>
+>>
+
+writeTypeParameters(obj) ::= <%
+<if(obj.typeParameters)>
+\<
+<csv(obj.typeParameters)>
+>
+<endif>
+%>
+
+writeTypeArguments(obj) ::= <%
+<if(obj.typeArguments)>
+\<
+<csv(obj.typeArguments)>
+>
+<endif>
+%>
+
+writeJType(obj, type, afterType="", superInterfaceKeyword="implements") ::= <%
+<annotatableSpace(obj)>
+<type> <obj.identifier><afterType>
+<if(obj.superInterfaces)> <superInterfaceKeyword> <csv(obj.superInterfaces)><endif>
+<\ ><obj.body>
+%>
+
+writeJTypeBody(obj) ::= <%
+{
+<if(obj.members)><indent(collection(obj.members, "\n"))><\n><endif>
+}
+%>
+
+indent(obj) ::= <<
+    <obj>
+>>

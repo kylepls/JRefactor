@@ -40,9 +40,11 @@ Obj {
                 WildcardType type
                 
                 inside WildcardType is Obj {
-                    <>
-                    EXTENDS
-                    SUPER
+                    <javaString>
+                    EXTENDS, "extends"
+                    SUPER, "super"
+                    
+                    #fromJava
                 }
             }
             concrete TypeArgumentReference {
@@ -187,6 +189,15 @@ Obj {
         Optional<Expression> condition
         Statement statement
     }
+    
+    SwitchCase {
+        List<Statement> statements
+        SwitchCaseExpression {
+            Expression condition
+        }
+        concrete SwitchCaseDefault {
+        }
+    }
 
     Statement {
         StatementControl {
@@ -228,6 +239,7 @@ Obj {
             
             StatementSwitch {
                 Expression expression
+                List<SwitchCase> caseElements
             }
             
             StatementSynchronized {
@@ -252,11 +264,6 @@ Obj {
                 Statement statement
                 Expression expression
                 List<StatementElse> elseStatements
-            }
-            
-            StatementCatch {
-                MultiParameter parameters
-                Block block
             }
         }
         
@@ -351,9 +358,7 @@ Obj {
             
             ClassBody<ClassMember> {}
             AnnotationBody<AnnotationMember> {}
-            EnumBody<EnumMember> {
-                List<EnumConstant> constants
-            }
+            EnumBody<EnumMember> {}
             InterfaceBody<InterfaceMember> {}
         }
         
@@ -368,7 +373,6 @@ Obj {
         Set<Modifier> modifiers
 
         CatchClause {
-            Identifier identifier
             List<TypeName> catchTypes
             Identifier variable
             Block block
@@ -396,7 +400,6 @@ Obj {
             ConstructorDeclaration is ClassMember {
                 TypeName identifier
                 List<Parameter> parameters
-                List<TypeParameter> typeParameters
                 List<TypeName> throwsTypes
                 Block body
             }

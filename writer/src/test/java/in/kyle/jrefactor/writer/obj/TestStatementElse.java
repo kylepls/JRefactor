@@ -15,7 +15,7 @@ public class TestStatementElse {
     @Test
     public void test() {
         JStatementElse elseStatement = new JStatementElse(new JStatementEmpty());
-        Verify.that(Write.object(elseStatement)).isEqual("else {\n    ;\n}");
+        Verify.that(Write.object(elseStatement)).isEqual("else\n    ;");
     }
     
     @Test
@@ -24,6 +24,6 @@ public class TestStatementElse {
         elseStatement.setCondition(Optional.of(new JLiteralBoolean(false)));
         String object = Write.object(elseStatement);
         System.out.println(object);
-        Verify.that(object).isEqual("else if(false) {\n    ;\n}");
+        Verify.that(object).isEqual("else if(false)\n    ;");
     }
 }

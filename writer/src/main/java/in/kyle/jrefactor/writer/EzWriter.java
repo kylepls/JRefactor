@@ -17,10 +17,24 @@ public class EzWriter {
     public String write(JObj obj) {
         file.registerRenderer(JObj.class, this::renderJobj);
         file.registerRenderer(Optional.class, this::renderOptional);
+        file.registerRenderer(Integer.class, this::renderInt);
         file.registerModelAdaptor(Optional.class, new OptionalAdaptor());
         ST st = file.getInstanceOf(obj.getClass().getSimpleName());
         st.add("obj", obj);
         return st.render();
+    }
+    
+    private String renderInt(Object o, String format, Locale locale) {
+        if ("array".equals(format)) {
+            StringBuilder builder = new StringBuilder();
+            int i = (int) o;
+            for (int j = 0; j < i; j++) {
+                builder.append("[]");
+            }
+            return builder.toString();
+        } else {
+            return o.toString();
+        }
     }
     
     private String renderJobj(Object o, String formatString, Locale locale) {
@@ -28,7 +42,11 @@ public class EzWriter {
         if (write.isEmpty()) {
             throw new RuntimeException("Could not write " + o + " writer returned empty string");
         }
-        return write;
+        if (formatString != null && formatString.contains("%")) {
+            return String.format(formatString, write);
+        } else {
+            return write;
+        }
     }
     
     private String renderOptional(Object o, String formatString, Locale locale) {

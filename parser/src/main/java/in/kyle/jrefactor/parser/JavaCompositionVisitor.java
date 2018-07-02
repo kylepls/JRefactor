@@ -491,7 +491,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JEnumBody visitEnumBody(EnumBodyContext ctx) {
         JEnumBody body = visitEnumBodyDeclarations(ctx.enumBodyDeclarations());
-        body.setConstants(visitEnumConstantList(ctx.enumConstantList()));
+        visitEnumConstantList(ctx.enumConstantList()).forEach(body::addMember);
         return body;
     }
     
@@ -1252,8 +1252,6 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         
         
         declaration.setAnnotations(visitAnnotations(ctx.annotation()));
-        declaration.setTypeParameters(visitTypeParameters(ctx.constructorDeclarator()
-                                                             .typeParameters()));
         declaration.setIdentifier(visitSimpleTypeName(ctx.constructorDeclarator()
                                                          .simpleTypeName()));
         if (ctx.throws_() != null) {

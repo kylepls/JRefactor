@@ -1,19 +1,19 @@
+import "Utils.stg"
+
 JModifier(obj) ::= <<
 <obj.javaString>
 >>
 
 JAnnotation(obj) ::= <%
 @<obj.type>
-<if(obj.values)>
-    (<obj.values:{each| <each>}; separator=", ">)
-<endif>
+<if(obj.values)>(<csv(obj.values)>)<endif>
 %>
 
 JCompilationUnit(obj) ::= <%
-<if(obj.packageName.isPresent)>package <obj.packageName>;
+<if(obj.packageName.present)>package <obj.packageName>;
 <if(obj.importss || obj.types)><\n><endif>
 <endif>
-<obj.importss:{import | <import>}; separator="\n">
+<collection(obj.importss, "\n")>
 %>
 
 JIdentifier(obj) ::= <<
@@ -31,13 +31,12 @@ import
 %>
 
 JPropertyLookup(obj) ::= <<
-<obj.areas:{area | <area>}; separator=".">
+<collection(obj.areas, ".")>
 >>
 
 JStatementElse(obj) ::= <<
-else <if(obj.condition.present)>if(<obj.condition>) <endif>{
+else<if(obj.condition.present)> if(<obj.condition>)<endif>
     <obj.statement>
-}
 >>
 
 JTypeName(obj) ::= <<
@@ -66,15 +65,13 @@ JAssignmentOperator(obj) ::= <<
 
 JExpressionClassInstanceCreation(obj) ::= <%
 new <obj.type>
-<if(obj.typeArguments)>\<
-<obj.typeArguments; separator=", ">
-><endif>
+<writeTypeArguments(obj)>
 (<obj.arguments; separator=",">)
 <if(obj.body.present)> <obj.body><endif>
 %>
 
 JExpressionLambda(obj) ::= <%
-(<obj.parameters; separator=", ">)-><obj.body>
+(<csv(obj.parameters)>)-><obj.body>
 %>
 
 JExpressionLeftRight(obj) ::= <<
@@ -88,8 +85,8 @@ JLeftRightOperator(obj) ::= <<
 JExpressionMethodInvocation(obj) ::= <%
 <if(obj.methodArea.present)><obj.methodArea>.<endif>
 <obj.methodName>
-<if(obj.typeArguments)>\<<obj.typeArguments; separator="\n">><endif>
-(<obj.arguments; separator="\n">)
+<writeTypeArguments(obj)>
+(<csv(obj.arguments)>)
 %>
 
 JExpressionName(obj) ::= <<
@@ -105,11 +102,7 @@ JExpressionTernary(obj) ::= <<
 >>
 
 JExpressionUnary(obj) ::= <<
-
->>
-
-JOperator(obj) ::= <<
-<! todo !>
+<obj.expression; format=obj.operator.formatString>
 >>
 
 JLiteralBoolean(obj) ::= <<
@@ -148,230 +141,230 @@ JLiteralFloat(obj) ::= <<
 <obj.value>
 >>
 
-JLambdaParameterInferred(obj) ::= <<
-<! todo !>
->>
-
-JAnnotatable(obj) ::= <<
-<! todo !>
->>
-
 JCatchClause(obj) ::= <<
-<! todo !>
+catch(<collection(obj.catchTypes, " | ")> <obj.variable>) <obj.block>
 >>
 
-JConstructorDeclaration(obj) ::= <<
-<! todo !>
->>
+JConstructorDeclaration(obj) ::= <%
+<annotatableSpace(obj)>
+<obj.identifier>(<csv(obj.parameters)>)
+<if(obj.throwsTypes)> throws <csv(obj.throwsTypes)><endif><\ ><obj.body>
+%>
 
-JField(obj) ::= <<
-<! todo !>
->>
-
-JIdentifiable(obj) ::= <<
-<! todo !>
->>
-
-JMultiParameter(obj) ::= <<
-<! todo !>
->>
+JField(obj) ::= <%
+<annotatableSpace(obj)>
+<obj.type> <collection(obj.variables, ", ")>;
+%>
 
 JParameter(obj) ::= <<
-<! todo !>
+<obj.type> <obj.name>
 >>
 
-JAnnotationField(obj) ::= <<
-<! todo !>
->>
+JAnnotationField(obj) ::= <%
+<annotatableSpace(obj)><obj.type> <obj.identifier>()
+<if(obj.defaultValue.present)> default <obj.defaultValue><endif>;
+%>
 
-JEnumConstant(obj) ::= <<
-<! todo !>
->>
+JEnumConstant(obj) ::= <%
+<annotatableSpace(obj)><obj.identifier>(<csv(obj.arguments)>)
+<if(obj.body.present)> <obj.body><endif>
+%>
 
-JMethodHeader(obj) ::= <<
-<! todo !>
->>
-
-JType(obj) ::= <<
-<! todo !>
->>
+JMethodHeader(obj) ::= <%
+<annotatableSpace(obj)>
+<if(obj.typeParameters)><writeTypeParameters(obj)><\ ><endif>
+<obj.returns><\ >
+<obj.identifier>(<csv(obj.parameters)>)
+<if(obj.throwsTypes)> throws <csv(obj.throwsTypes)><endif>
+%>
 
 JTypeParameter(obj) ::= <<
-<! todo !>
+<obj.identifier><if(obj.bounds)> extends <collection(obj.bounds, " & ")><endif>
 >>
 
 JAnnotationType(obj) ::= <<
-<! todo !>
->>
-
-JSuperInterfaceType(obj) ::= <<
-<! todo !>
+<writeJType(obj, "@interface")>
 >>
 
 JEnum(obj) ::= <<
-<! todo !>
->>
-
-JTypeParameterType(obj) ::= <<
-<! todo !>
+<writeJType(obj, "enum")>
 >>
 
 JClass(obj) ::= <<
-<! todo !>
+<writeJType(obj, "class", JClassSuper(obj))>
 >>
 
+JClassSuper(obj) ::= <%
+<writeTypeParameters(obj)>
+<if(obj.superType.present)> extends <obj.superType><endif>
+%>
+
 JInterface(obj) ::= <<
-<! todo !>
+<writeJType(obj, "class", JInterfaceSuper(obj), "extends")>
+>>
+
+JInterfaceSuper(obj) ::= <<
+<writeTypeParameters(obj)>
 >>
 
 JExpressionTypeReference(obj) ::= <<
->>
-
-JTypeArgument(obj) ::= <<
-<! todo !>
+<obj.reference>
 >>
 
 JTypeArgumentReference(obj) ::= <<
 <obj.reference>
 >>
 
-JTypeArgumentWildcard(obj) ::= <<
-<! todo !>
->>
+JTypeArgumentWildcard(obj) ::= <%
+?
+<if(obj.type)> <obj.type> <obj.reference><endif>
+%>
 
 JWildcardType(obj) ::= <<
-<! todo !>
+<obj.javaString>
 >>
 
 JBlock(obj) ::= <%
 {
-<obj.statements; separator="\n">
+<if(obj.statements)>
+<\n><indent(collection(obj.statements, "\n"))><\n>
+<endif>
 }
 %>
 
-JStatementAssert(obj) ::= <<
-<! todo !>
->>
+JStatementAssert(obj) ::= <%
+assert <obj.assertion>
+<if(obj.message.present)> : <obj.message><endif>
+;
+%>
 
 JStatementEmpty(obj) ::= <<
 ;
 >>
 
 JStatementExpression(obj) ::= <<
-<! todo !>
+<obj.expression>;
 >>
 
 JStatementLabeled(obj) ::= <<
-<! todo !>
+<obj.identifier>:
+    <obj.statement>
 >>
 
 JStatementLocalVariableDeclaration(obj) ::= <<
-<! todo !>
+<annotatableSpace(obj)><obj.type> <csv(obj.variables)>;
 >>
 
-JIdentifiableStatement(obj) ::= <<
-<! todo !>
->>
+JStatementIf(obj) ::= <%
+if (<obj.expression>)
+<\n><(indent(obj.statement))>
+<if(obj.elseStatements)><\n><endif>
+<collection(obj.elseStatements, " ")>
+%>
 
-JStatementCatch(obj) ::= <<
-<! todo !>
->>
+JStatementReturn(obj) ::= <%
+return
+<if(obj.expression.present)> <obj.expression><endif>
+;
+%>
 
-JStatementIf(obj) ::= <<
-<! todo !>
->>
+JStatementSwitch(obj) ::= <%
+switch (<obj.expression>) {
+<if(obj.caseElements)><\n><indent(collection(obj.caseElements, "\n"))><\n><endif>
+}
+%>
 
-JStatementReturn(obj) ::= <<
-<! todo !>
->>
+JSwitchCaseExpression(obj) ::= <%
+case <obj.condition>:
+<if(obj.statements)><\n><indent(collection(obj.statements, "\n"))><endif>
+%>
 
-JStatementSwitch(obj) ::= <<
-<! todo !>
->>
+JSwitchCaseDefault(obj) ::= <%
+default:
+<if(obj.statements)><\n><indent(collection(obj.statements, "\n"))><endif>
+%>
 
 JStatementSynchronized(obj) ::= <<
-<! todo !>
+synchronized (<obj.expression>) <obj.block>
 >>
 
 JStatementThrow(obj) ::= <<
-<! todo !>
+throw <obj.expression>;
 >>
 
-JStatementTry(obj) ::= <<
-<! todo !>
->>
+JStatementTry(obj) ::= <%
+try 
+<obj.block>
+<if(obj.catchClauses)> <collection(obj.catchClauses, " ")><endif>
+<if(obj.finallyBlock.present)> finally <obj.finallyBlock><endif>
+%>
 
-JStatementBreak(obj) ::= <<
-<! todo !>
->>
+JStatementBreak(obj) ::= <%
+break
+<if(obj.identifier.present)> <obj.identifier><endif>
+;
+%>
 
-JStatementContinue(obj) ::= <<
-<! todo !>
->>
-
-JStatementFor(obj) ::= <<
-<! todo !>
->>
+JStatementContinue(obj) ::= <%
+continue
+<if(obj.identifier.present)> <obj.identifier><endif>
+;
+%>
 
 JStatementWhile(obj) ::= <<
-<! todo !>
+while (<obj.expression>) <obj.statement>
 >>
 
 JStatementBasicFor(obj) ::= <<
-<! todo !>
+for (<obj.init>;<obj.condition>;<obj.update>) <obj.statement>
 >>
 
-JStatementEnhancedFor(obj) ::= <<
-<! todo !>
->>
+JStatementEnhancedFor(obj) ::= <%
+for (
+<collection(obj.variableModifiers, " ")>
+<if(obj.variableModifiers)> <endif>
+<obj.variable> : <obj.expression>
+) <obj.statement>
+%>
 
 JStatementDoWhile(obj) ::= <<
-<! todo !>
+do <obj.statement>
+while(<obj.expression>);
 >>
 
 JArrayTypeName(obj) ::= <<
-<! todo !>
->>
-
-JTypeBody(obj) ::= <<
-<! todo !>
->>
-
-JClassInitializer(obj) ::= <<
-<! todo !>
+<JTypeName(obj)><obj.dimensions; format="array">
 >>
 
 JMethod(obj) ::= <<
-<! todo !>
+<obj.header> <obj.body>
 >>
 
 JClassInstanceInitializer(obj) ::= <<
-<! todo !>
+<obj.block>
 >>
 
 JClassStaticInitializer(obj) ::= <<
-<! todo !>
+static <obj.block>
 >>
 
 JInterfaceMethod(obj) ::= <<
-<! todo !>
+<obj.header><if(obj.body.present)> default <obj.body><endif>
 >>
 
 JAnnotationBody(obj) ::= <<
-<! todo !>
+<writeJTypeBody(obj)>
 >>
 
 JClassBody(obj) ::= <<
-{
-    <obj.members; separator="\n\n">
-}
+<writeJTypeBody(obj)>
 >>
 
 JEnumBody(obj) ::= <<
-<! todo !>
+<writeJTypeBody(obj)>
 >>
 
 JInterfaceBody(obj) ::= <<
-<! todo !>
+<writeJTypeBody(obj)>
 >>
 

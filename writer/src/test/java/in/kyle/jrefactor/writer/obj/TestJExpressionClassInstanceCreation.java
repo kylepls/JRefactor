@@ -42,6 +42,6 @@ public class TestJExpressionClassInstanceCreation {
         JExpressionClassInstanceCreation creation = new JExpressionClassInstanceCreation();
         creation.setType(new JTypeName("Integer"));
         creation.setBody(Optional.of(new JClassBody()));
-        Verify.that(Write.object(creation)).isEqual("new Integer() {\n}");
+        Verify.that(Write.object(creation)).isEqual("new Integer() {}");
     }
 }
