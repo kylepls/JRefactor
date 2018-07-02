@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.JObj;
 
-class AbstractJObjectVisitor<T> {
+class AbstractJObjVisitor<T> {
     
     private static final String BASE_CLASS = "in.kyle.jrefactor.refactor.JavaBaseVisitor";
     
@@ -28,7 +28,7 @@ class AbstractJObjectVisitor<T> {
                                                   method -> method));
     }
     
-    public T visit(JObject object) {
+    public T visit(JObj object) {
         if (object != null) {
             Method method = METHODS.get(object.getClass());
             if (method == null) {
@@ -41,9 +41,9 @@ class AbstractJObjectVisitor<T> {
         }
     }
     
-    public T visitChildren(JObject object) {
+    public T visitChildren(JObj object) {
         if (object != null) {
-            for (JObject child : JObjectUtils.getDirectChildren(object)) {
+            for (JObj child : JObjUtils.getDirectChildren(object)) {
                 visit(child);
             }
         }

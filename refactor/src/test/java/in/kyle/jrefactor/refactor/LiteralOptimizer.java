@@ -2,25 +2,25 @@ package in.kyle.jrefactor.refactor;
 
 import java.util.Arrays;
 
-import in.kyle.jrefactor.refactor.gen.JavaBaseVisitor;
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.expression.JLeftRightExpression;
-import in.kyle.jrefactor.tree.expression.JParenthesisExpression;
-import in.kyle.jrefactor.tree.expression.literal.JIntegerLiteral;
-import in.kyle.jrefactor.tree.expression.literal.JLiteral;
-import in.kyle.jrefactor.tree.expression.literal.JNumericLiteral;
-import in.kyle.jrefactor.tree.expression.literal.JStringLiteral;
-import in.kyle.jrefactor.writer.AbstractWriter;
-import in.kyle.jrefactor.writer.SimpleWriter;
+import in.kyle.jrefactor.tree.JObj;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLiteral;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionParenthesis;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralNumeric;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
+import in.kyle.jrefactor.writer.EzWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator.ADD;
 
 
 @RequiredArgsConstructor
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final AbstractWriter writer = new SimpleWriter();
+    private final EzWriter writer = new EzWriter();
     private final RefactorSession session;
     
     @Getter
@@ -28,16 +28,16 @@ public class LiteralOptimizer extends JavaBaseVisitor {
     private boolean rerun = true;
     
     @Override
-    public Object visitJLeftRightExpression(JLeftRightExpression object) {
-        if (object.getOperation() == JLeftRightExpression.Operation.ADD && object.getLeft() instanceof JLiteral &&
-            object.getRight() instanceof JLiteral) {
-            JLiteral replace =
-                    convertLiterals((JLiteral) object.getLeft(), (JLiteral) object.getRight());
+    public Object visitJExpressionLeftRight(JExpressionLeftRight object) {
+        if (object.getOperator() == ADD && object.getLeft() instanceof JExpressionLiteral &&
+            object.getRight() instanceof JExpressionLiteral) {
+            JExpressionLiteral replace =
+                    convertLiterals((JExpressionLiteral) object.getLeft(), (JExpressionLiteral) object.getRight());
             session.replace(object, replace);
             rerun = true;
-        } else if (contains(JParenthesisExpression.class, object.getLeft(), object.getRight())) {
-            JLiteral left = extractLiteral(object.getLeft());
-            JLiteral right = extractLiteral(object.getRight());
+        } else if (contains(JExpressionParenthesis.class, object.getLeft(), object.getRight())) {
+            JExpressionLiteral left = extractLiteral(object.getLeft());
+            JExpressionLiteral right = extractLiteral(object.getRight());
             if (left != null) {
                 object.setLeft(left);
             }
@@ -45,20 +45,20 @@ public class LiteralOptimizer extends JavaBaseVisitor {
                 object.setRight(right);
             }
             if (left != null || right != null) {
-                visitJLeftRightExpression(object);
+                visitJExpressionLeftRight(object);
                 rerun = true;
             }
         }
-        return super.visitJLeftRightExpression(object);
+        return super.visitJExpressionLeftRight(object);
     }
     
-    private JLiteral extractLiteral(JObject object) {
-        if (object instanceof JParenthesisExpression) {
-            JParenthesisExpression ex = (JParenthesisExpression) object;
-            if (ex.getValue() instanceof JLiteral) {
-                return (JLiteral) ex.getValue();
-            } else if (ex.getValue() instanceof JParenthesisExpression){
-                return extractLiteral(ex.getValue());
+    private JExpressionLiteral extractLiteral(JObj object) {
+        if (object instanceof JExpressionParenthesis) {
+            JExpressionParenthesis ex = (JExpressionParenthesis) object;
+            if (ex.getExpression() instanceof JExpressionLiteral) {
+                return (JExpressionLiteral) ex.getExpression();
+            } else if (ex.getExpression() instanceof JExpressionParenthesis) {
+                return extractLiteral(ex.getExpression());
             } else {
                 return null;
             }
@@ -67,19 +67,17 @@ public class LiteralOptimizer extends JavaBaseVisitor {
         }
     }
     
-    private String objToString(JObject object) {
-        writer.clear();
-        writer.write(object);
-        return writer.toString();
+    private String objToString(JObj object) {
+        return writer.write(object);
     }
     
-    private JLiteral convertLiterals(JLiteral left, JLiteral right) {
-        if (contains(JStringLiteral.class, left, right)) {
-            return new JStringLiteral(left.getValue().toString() + right.getValue());
-        } else if (left instanceof JNumericLiteral && right instanceof JNumericLiteral) {
-            JNumericLiteral<Number> leftNumber = (JNumericLiteral) left;
-            JNumericLiteral<Number> rightNumber = (JNumericLiteral) right;
-            return new JIntegerLiteral(
+    private JExpressionLiteral convertLiterals(JExpressionLiteral left, JExpressionLiteral right) {
+        if (contains(JLiteralString.class, left, right)) {
+            return new JLiteralString(left.getValue().toString() + right.getValue());
+        } else if (left instanceof JLiteralNumeric && right instanceof JLiteralNumeric) {
+            JLiteralNumeric<Number> leftNumber = (JLiteralNumeric) left;
+            JLiteralNumeric<Number> rightNumber = (JLiteralNumeric) right;
+            return new JLiteralInteger(
                     leftNumber.getValue().intValue() + rightNumber.getValue().intValue());
         } else {
             throw new RuntimeException("idk");

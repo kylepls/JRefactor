@@ -14,17 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.JObjectList;
-import in.kyle.jrefactor.tree.statement.JBlock;
+import in.kyle.jrefactor.tree.JObj;
+import in.kyle.jrefactor.tree.obj.statement.JBlock;
 
-public final class JObjectUtils {
+public final class JObjUtils {
     
-    private static final Map<Class<? extends JObject>, Collection<Field>> fieldsCache =
+    private static final Map<Class<? extends JObj>, Collection<Field>> fieldsCache =
             new HashMap<>();
     
-    static <T extends JObject> T findField(JObject parent, T child) {
-        for (JObject field : JObjectUtils.getDirectChildren(parent)) {
+    static <T extends JObj> T findField(JObj parent, T child) {
+        for (JObj field : JObjUtils.getDirectChildren(parent)) {
             if (field == child) {
                 return (T) field;
             }
@@ -32,9 +31,9 @@ public final class JObjectUtils {
         throw new RuntimeException("Field not found");
     }
     
-    static boolean isChild(JObject parent, JObject child) {
+    static boolean isChild(JObj parent, JObj child) {
         if (parent != null) {
-            for (JObject jObject : JObjectUtils.getDirectChildren(parent)) {
+            for (JObj jObject : JObjUtils.getDirectChildren(parent)) {
                 if (jObject == child) {
                     return true;
                 }
@@ -43,16 +42,16 @@ public final class JObjectUtils {
         return false;
     }
     
-    public static <T extends JObject> T clone(T object) {
+    public static <T extends JObj> T clone(T object) {
         Class<?> clazz = object.getClass();
         if (!clazz.isEnum()) {
-            return Try.to(()->cloneInternal(object));
+            return Try.to(() -> cloneInternal(object));
         } else {
             return object;
         }
     }
     
-    private static <T extends JObject> T cloneInternal(T object)
+    private static <T extends JObj> T cloneInternal(T object)
             throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -62,23 +61,23 @@ public final class JObjectUtils {
         return (T) ois.readObject();
     }
     
-    public static JBlock getFirstUpwardBlock(JObject root, JObject object) {
-        JObject search = object;
+    public static JBlock getFirstUpwardBlock(JObj root, JObj object) {
+        JObj search = object;
         while (!(search instanceof JBlock)) {
-            search = JObjectUtils.findParent(root, search);
+            search = JObjUtils.findParent(root, search);
         }
         return (JBlock) search;
     }
     
     
-    public static JObject findParent(JObject search, JObject subject) {
+    public static JObj findParent(JObj search, JObj subject) {
         if (search != null) {
             if (isChild(search, subject)) {
                 return search;
             } else {
-                Collection<JObject> children = JObjectUtils.getDirectChildren(search);
-                for (JObject child : children) {
-                    JObject result = findParent(child, subject);
+                Collection<JObj> children = JObjUtils.getDirectChildren(search);
+                for (JObj child : children) {
+                    JObj result = findParent(child, subject);
                     if (result != null) {
                         return result;
                     }
@@ -87,29 +86,30 @@ public final class JObjectUtils {
         }
         return null;
     }
-    static Collection<JObject> getDirectChildren(JObject object) {
+    
+    static Collection<JObj> getDirectChildren(JObj object) {
         Collection<Field> fields =
-                fieldsCache.computeIfAbsent(object.getClass(), clazz -> getJObjectFields(object));
+                fieldsCache.computeIfAbsent(object.getClass(), clazz -> getJObjFields(object));
         
-        if (object instanceof JObjectList) {
-            return ((JObjectList<JObject>) object);
-        } else {
-            List<JObject> values = new ArrayList<>();
-            for (Field field : fields) {
-                JObject value = (JObject) Try.to(() -> field.get(object));
-                values.add(value);
+        List<JObj> values = new ArrayList<>();
+        for (Field field : fields) {
+            Object value = Try.to(() -> field.get(object));
+            if (value instanceof JObj) {
+                values.add((JObj) value);
+            } else if (value instanceof Collection) {
+                values.addAll((Collection<? extends JObj>) value);
             }
-            return values;
-        }
+        } return values;
     }
     
-    protected static <T extends JObject> Collection<Field> getJObjectFields(T object) {
+    protected static Collection<Field> getJObjFields(JObj object) {
         List<Field> fields = new ArrayList<>();
         Class<?> clazz = object.getClass();
         while (clazz.getSuperclass() != null) {
             for (Field field : clazz.getDeclaredFields()) {
                 if (!field.isEnumConstant() && !Modifier.isStatic(field.getModifiers())) {
-                    if (JObject.class.isAssignableFrom(field.getType())) {
+                    if (JObj.class.isAssignableFrom(field.getType()) ||
+                        Collection.class.isAssignableFrom(field.getType())) {
                         field.setAccessible(true);
                         fields.add(field);
                     }

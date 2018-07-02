@@ -4,14 +4,14 @@ import java.lang.reflect.Field;
 
 import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.refactor.symbol.SymbolTable;
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.unit.JIdentifier;
+import in.kyle.jrefactor.tree.JObj;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class RefactorSession {
     
-    private JObject root;
+    private JObj root;
     
     public void rename(JIdentifier identifier, String newName) {
         SymbolTable table = new SymbolTable(root);
@@ -21,12 +21,12 @@ public class RefactorSession {
         }
     }
     
-    public JObject findParent(JObject subject) {
-        return JObjectUtils.findParent(root, subject);
+    public JObj findParent(JObj subject) {
+        return JObjUtils.findParent(root, subject);
     }
     
-    public <T extends JObject> void replace(T subject, T replacement) {
-        JObject parent = findParent(subject);
+    public <T extends JObj> void replace(T subject, T replacement) {
+        JObj parent = findParent(subject);
         Try.to(() -> replaceField(parent, subject, replacement));
     }
     

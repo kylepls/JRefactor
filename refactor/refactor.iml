@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/target/classes/generated-sources/string-template" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/template" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/template" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -19,6 +20,7 @@
     <orderEntry type="module" module-name="tree" />
     <orderEntry type="module" module-name="writer" scope="TEST" />
     <orderEntry type="module" module-name="parser" scope="TEST" />
+    <orderEntry type="module" module-name="tree" scope="TEST" production-on-test="" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4:4.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.5.2" level="project" />

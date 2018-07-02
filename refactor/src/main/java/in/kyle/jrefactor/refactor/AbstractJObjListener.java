@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.tree.JObject;
+import in.kyle.jrefactor.tree.JObj;
 import lombok.Data;
 
-class AbstractJObjectListener {
+class AbstractJObjListener {
     private static final String BASE_CLASS = "in.kyle.jrefactor.refactor.JavaBaseListener";
     
     private static final Map<Class<?>, MethodPair> METHODS;
@@ -37,7 +37,7 @@ class AbstractJObjectListener {
     
     private static boolean isGeneratedMethod(Method method) {
         try {
-            AbstractJObjectListener.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
+            AbstractJObjListener.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
             return false;
         } catch (NoSuchMethodException e) {
             return true;
@@ -48,7 +48,7 @@ class AbstractJObjectListener {
         return Try.to(() -> CLAZZ.getDeclaredMethod("exit" + base, method.getParameterTypes()));
     }
     
-    public void enter(JObject object) {
+    public void enter(JObj object) {
         if (object != null) {
             MethodPair pair = METHODS.get(object.getClass());
             if (pair == null) {
@@ -61,13 +61,13 @@ class AbstractJObjectListener {
     }
     
     private void invoke(Method method, Object... args) {
-        Try.to(() -> method.invoke(AbstractJObjectListener.this, args));
+        Try.to(() -> method.invoke(AbstractJObjListener.this, args));
     }
     
     // probably need a better method identifier
-    public void enterChildren(JObject object) {
+    public void enterChildren(JObj object) {
         if (object != null) {
-            for (JObject child : JObjectUtils.getDirectChildren(object)) {
+            for (JObj child : JObjUtils.getDirectChildren(object)) {
                 enter(child);
             }
         }

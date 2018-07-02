@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.statement.JLocalVariableDeclaration;
-import in.kyle.jrefactor.tree.unit.JCompilationUnit;
-import in.kyle.jrefactor.tree.unit.JIdentifier;
-import in.kyle.jrefactor.tree.unit.body.JVariable;
-import in.kyle.jrefactor.tree.unit.types.JClassDeclaration;
-import in.kyle.jrefactor.tree.unit.types.classtype.JClassInitializer;
-import in.kyle.jrefactor.writer.AbstractWriter;
-import in.kyle.jrefactor.writer.SimpleWriter;
+import in.kyle.jrefactor.tree.obj.JCompilationUnit;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
+import in.kyle.jrefactor.tree.obj.JVariable;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
+        .typeparametertype.JClass;
+import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
+        .JClassInitializer;
+import in.kyle.jrefactor.writer.EzWriter;
 
 public class TestGeneration {
     
-    private static AbstractWriter writer = new SimpleWriter();
+    private static EzWriter writer = new EzWriter();
     
     public static void main(String[] args) throws IOException {
         JCompilationUnit unit = loadFile();
@@ -27,14 +28,14 @@ public class TestGeneration {
     }
     
     private static void renameVariable(JCompilationUnit unit, RefactorSession session) {
-        JClassDeclaration type = (JClassDeclaration) unit.getTypes().get(0);
+        JClass type = (JClass) unit.getTypes().get(0);
         
-        JClassInitializer initializer = (JClassInitializer) type.getBody().get(0);
-        JLocalVariableDeclaration declaration =
-                (JLocalVariableDeclaration) initializer.getBlock().getStatements().get(0);
+        JClassInitializer initializer = (JClassInitializer) type.getBody().getMembers().get(0);
+        JStatementLocalVariableDeclaration declaration =
+                (JStatementLocalVariableDeclaration) initializer.getBlock().getStatements().get(0);
         JVariable variable = declaration.getVariables().get(0);
         
-        JIdentifier identifier = variable.getIdentifier();
+        JIdentifier identifier = variable.getName();
         session.rename(identifier, "swag");
     }
     
@@ -44,8 +45,8 @@ public class TestGeneration {
     }
     
     private static void printFile(JCompilationUnit unit) {
-        writer.write(unit);
-        writer.clear();
+        String write = writer.write(unit);
+        System.out.println(write);
     }
     
     private static void optimizeFile(JCompilationUnit unit, RefactorSession session) {

@@ -1,61 +1,61 @@
 package in.kyle.jrefactor.refactor.symbol;
 
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.statement.JBlock;
-import in.kyle.jrefactor.tree.statement.JLocalVariableDeclaration;
-import in.kyle.jrefactor.tree.unit.JTypeDeclaration;
-import in.kyle.jrefactor.tree.unit.body.JMethod;
-import in.kyle.jrefactor.tree.unit.body.JParameter;
-import in.kyle.jrefactor.tree.unit.body.JVariable;
-import in.kyle.jrefactor.tree.unit.types.classtype.JField;
-import in.kyle.jrefactor.refactor.JObjectUtils;
+import in.kyle.jrefactor.refactor.JObjUtils;
 import in.kyle.jrefactor.refactor.JavaBaseListener;
-import in.kyle.jrefactor.tree.unit.types.enumtype.JEnumConstant;
+import in.kyle.jrefactor.tree.JObj;
+import in.kyle.jrefactor.tree.obj.JVariable;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JParameter;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JEnumConstant;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
+import in.kyle.jrefactor.tree.obj.statement.JBlock;
+import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
 import lombok.Data;
 
 @Data
 class IdentifierListener extends JavaBaseListener {
 
     private final SymbolTable symbolTable;
-    private final JObject root;
+    private final JObj root;
     
     @Override
     public void enterJMethod(JMethod object) {
         Scope scope = symbolTable.getScope(object.getBody());
-        for (JParameter parameter : object.getHeader().getParameterList().getParameters()) {
-            scope.addIdentifier(parameter.getIdentifier());
+        for (JParameter parameter : object.getHeader().getParameters()) {
+            scope.addIdentifier(parameter.getName());
         }
         super.enterJMethod(object);
     }
     
     @Override
-    public void enterJLocalVariableDeclaration(JLocalVariableDeclaration object) {
-        JBlock block = JObjectUtils.getFirstUpwardBlock(root, object);
+    public void enterJStatementLocalVariableDeclaration(JStatementLocalVariableDeclaration object) {
+        JBlock block = JObjUtils.getFirstUpwardBlock(root, object);
         Scope scope = symbolTable.getScope(block);
         for (JVariable variable : object.getVariables()) {
-            scope.addIdentifier(variable.getIdentifier());
+            scope.addIdentifier(variable.getName());
         }
     }
     
     @Override
     public void enterJField(JField object) {
-        JBlock block = JObjectUtils.getFirstUpwardBlock(root, object);
+        JBlock block = JObjUtils.getFirstUpwardBlock(root, object);
         Scope scope = symbolTable.getScope(block);
         for (JVariable variable : object.getVariables()) {
-            scope.addIdentifier(variable.getIdentifier());
+            scope.addIdentifier(variable.getName());
         }
     }
     
     @Override
-    public void enterJTypeDeclaration(JTypeDeclaration object) {
-        JBlock block = JObjectUtils.getFirstUpwardBlock(root, object);
+    public void enterJType(JType object) {
+        JBlock block = JObjUtils.getFirstUpwardBlock(root, object);
         Scope scope = symbolTable.getScope(block);
         scope.addIdentifier(object.getIdentifier());
     }
     
     @Override
     public void enterJEnumConstant(JEnumConstant object) {
-        JBlock block = JObjectUtils.getFirstUpwardBlock(root, object);
+        JBlock block = JObjUtils.getFirstUpwardBlock(root, object);
         Scope scope = symbolTable.getScope(block);
         scope.addIdentifier(object.getIdentifier());
     }

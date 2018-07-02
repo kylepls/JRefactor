@@ -23,6 +23,13 @@
             <version>${parent.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>tree</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
     <build>
@@ -38,6 +45,55 @@
                         <goals>
                             <goal>generate-template-sources</goal>
                         </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <compileExcludes>
+                        <exclude>**/refactor/**</exclude>
+                    </compileExcludes>
+                    <templates>
+                        <template>
+                            <templateName>JavaBaseListener</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>JavaBaseListener.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.refactor</outputPackage>
+                        </template>
+                        <template>
+                            <templateName>JavaBaseVisitor</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>JavaBaseVisitor.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.refactor</outputPackage>
+                        </template>
+                        <template>
+                            <templateName>JavaListener</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>JavaListener.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.refactor</outputPackage>
+                        </template>
+                        <template>
+                            <templateName>JavaVisitor</templateName>
+                            <className>in.kyle.gen.JObjParameters</className>
+                            <outputName>JavaVisitor.java</outputName>
+                            <outputPackage>in.kyle.jrefactor.refactor</outputPackage>
+                        </template>
+                    </templates>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/template</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

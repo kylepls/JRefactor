@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.kyle.jrefactor.tree.JObject;
-import in.kyle.jrefactor.tree.statement.JBlock;
-import in.kyle.jrefactor.tree.unit.JIdentifier;
-import in.kyle.jrefactor.refactor.JObjectUtils;
+import in.kyle.jrefactor.refactor.JObjUtils;
+import in.kyle.jrefactor.tree.JObj;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
+import in.kyle.jrefactor.tree.obj.statement.JBlock;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class SymbolTable {
     
-    private final JObject root;
+    private final JObj root;
     private final Map<JBlock, Scope> scopes = new HashMap<>();
     
     public void compute() {
@@ -22,9 +22,9 @@ public class SymbolTable {
     }
     
     public JBlock getDeclaringScope(JIdentifier identifier) {
-        JBlock search = JObjectUtils.getFirstUpwardBlock(root, identifier);
+        JBlock search = JObjUtils.getFirstUpwardBlock(root, identifier);
         while (!scopes.containsKey(search)) {
-            search = JObjectUtils.getFirstUpwardBlock(root, search);
+            search = JObjUtils.getFirstUpwardBlock(root, search);
         }
         return search;
     }
