@@ -7,8 +7,8 @@ import java.util.Optional;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JTypeName;
+import in.kyle.jrefactor.tree.obj.block.JStatementBlock;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JMethodHeader;
-import in.kyle.jrefactor.tree.obj.statement.JBlock;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
 import in.kyle.jrefactor.writer.Write;
 
@@ -31,7 +31,7 @@ public class TestJInterfaceMethod {
         header.setReturns(new JTypeName("void"));
         header.setIdentifier(new JIdentifier("test"));
         method.setHeader(header);
-        method.setBody(Optional.of(new JBlock()));
+        method.setBody(Optional.of(new JStatementBlock()));
         Verify.that(Write.object(method)).isEqual("void test() default {}");
     }
 }

@@ -12,13 +12,13 @@ import lombok.Data;
 public class UseListener extends JavaBaseListener {
     
     private final JIdentifier identity;
-    private final SymbolTable table;
+    private final UnitSymbolTable table;
     private final List<JIdentifier> identifiers = new ArrayList<>();
     private boolean foundFirstUse;
     
     @Override
     public void enterJBlock(JBlock object) {
-        Scope scope = table.getScope(object);
+        BlockScope scope = table.getScope(object);
         boolean conflict = scope.containsDeclaration(identity);
         if (!foundFirstUse && conflict) {
             foundFirstUse = true;

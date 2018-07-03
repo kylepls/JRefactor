@@ -15,7 +15,7 @@ import java.util.Map;
 
 import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.tree.JObj;
-import in.kyle.jrefactor.tree.obj.statement.JBlock;
+import in.kyle.jrefactor.tree.obj.JBlock;
 
 public final class JObjUtils {
     

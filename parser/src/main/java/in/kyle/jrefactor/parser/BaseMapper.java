@@ -7,6 +7,11 @@ import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
 public class BaseMapper extends AbstractParseMapper {
     
     @Override
+    protected ParserRuleContext parseJModifier(Java8Parser object) {
+        return object.modifier();
+    }
+    
+    @Override
     protected ParserRuleContext parseJObj(Java8Parser object) {
         throw new UnsupportedOperationException();
     }
@@ -42,6 +47,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJAssignmentOperator(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJExpressionClassInstanceCreation(Java8Parser object) {
         return object.classInstanceCreationExpression();
     }
@@ -54,6 +64,11 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJExpressionLeftRight(Java8Parser object) {
         return object.assignmentExpression();
+    }
+    
+    @Override
+    protected ParserRuleContext parseJLeftRightOperator(Java8Parser object) {
+        return null;
     }
     
     @Override
@@ -94,6 +109,11 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJExpressionUnary(Java8Parser object) {
         return object.unaryExpression();
+    }
+    
+    @Override
+    protected ParserRuleContext parseJOperator(Java8Parser object) {
+        return null;
     }
     
     @Override
@@ -157,6 +177,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJSwitchCase(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJTypeArgument(Java8Parser object) {
         return object.typeArgument();
     }
@@ -174,11 +199,6 @@ public class BaseMapper extends AbstractParseMapper {
     @Override
     protected ParserRuleContext parseJVariable(Java8Parser object) {
         return object.variableDeclarator();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJLambdaParameterInferred(Java8Parser object) {
-        throw new UnsupportedOperationException();
     }
     
     @Override
@@ -322,11 +342,6 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
-    protected ParserRuleContext parseJStatementCatch(Java8Parser object) {
-        return object.catchClause();
-    }
-    
-    @Override
     protected ParserRuleContext parseJStatementControlLoop(Java8Parser object) {
         return null;
     }
@@ -392,6 +407,16 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJSwitchCaseDefault(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJSwitchCaseExpression(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJTypeArgumentReference(Java8Parser object) {
         return null;
     }
@@ -407,7 +432,17 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJStatementBlock(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJTypeArgumentWildcard(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJWildcardType(Java8Parser object) {
         return null;
     }
     

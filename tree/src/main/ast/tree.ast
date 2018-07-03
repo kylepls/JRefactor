@@ -32,6 +32,18 @@ Obj {
         String name
     }
     
+    Block<T> {
+        List<T> elements
+        concrete StatementBlock<Statement> is LambdaBody {
+        }
+        concrete TypeBody<T> is Unit {
+            ClassBody<ClassMember> {}
+            AnnotationBody<AnnotationMember> {}
+            EnumBody<EnumMember> {}
+            InterfaceBody<InterfaceMember> {}
+        }
+    }
+    
     Reference {
         TypeName reference
         
@@ -272,9 +284,6 @@ Obj {
             Optional<Expression> message
         }
         
-        Block is LambdaBody {
-            List<Statement> statements
-        }
         
         concrete StatementEmpty {
         }
@@ -353,14 +362,6 @@ Obj {
             }
         }
         
-        TypeBody<T> {
-            List<T> members
-            
-            ClassBody<ClassMember> {}
-            AnnotationBody<AnnotationMember> {}
-            EnumBody<EnumMember> {}
-            InterfaceBody<InterfaceMember> {}
-        }
         
     }
 

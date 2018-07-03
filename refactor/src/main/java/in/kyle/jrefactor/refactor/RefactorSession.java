@@ -3,7 +3,7 @@ package in.kyle.jrefactor.refactor;
 import java.lang.reflect.Field;
 
 import in.kyle.api.utils.Try;
-import in.kyle.jrefactor.refactor.symbol.SymbolTable;
+import in.kyle.jrefactor.refactor.symbol.UnitSymbolTable;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ public class RefactorSession {
     private JObj root;
     
     public void rename(JIdentifier identifier, String newName) {
-        SymbolTable table = new SymbolTable(root);
+        UnitSymbolTable table = new UnitSymbolTable(root);
         table.compute();
         for (JIdentifier jIdentifier : table.getUses(identifier)) {
             jIdentifier.setName(newName);

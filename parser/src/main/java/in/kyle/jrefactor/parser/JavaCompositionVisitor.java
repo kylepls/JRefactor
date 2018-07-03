@@ -17,6 +17,11 @@ import in.kyle.jrefactor.tree.antlr.gen.Java8Parser.*;
 import in.kyle.jrefactor.tree.obj.*;
 import in.kyle.jrefactor.tree.obj.annotationvalue.JValuePair;
 import in.kyle.jrefactor.tree.obj.annotationvalue.JValueSingle;
+import in.kyle.jrefactor.tree.obj.block.JStatementBlock;
+import in.kyle.jrefactor.tree.obj.block.typebody.JAnnotationBody;
+import in.kyle.jrefactor.tree.obj.block.typebody.JClassBody;
+import in.kyle.jrefactor.tree.obj.block.typebody.JEnumBody;
+import in.kyle.jrefactor.tree.obj.block.typebody.JInterfaceBody;
 import in.kyle.jrefactor.tree.obj.expression.*;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
@@ -49,7 +54,6 @@ import in.kyle.jrefactor.tree.obj.reference.JExpressionTypeReference;
 import in.kyle.jrefactor.tree.obj.reference.JTypeArgument;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentReference;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentWildcard;
-import in.kyle.jrefactor.tree.obj.statement.JBlock;
 import in.kyle.jrefactor.tree.obj.statement.JStatementAssert;
 import in.kyle.jrefactor.tree.obj.statement.JStatementEmpty;
 import in.kyle.jrefactor.tree.obj.statement.JStatementExpression;
@@ -78,10 +82,6 @@ import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmem
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
         .classinitializer.JClassStaticInitializer;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
-import in.kyle.jrefactor.tree.obj.unit.typebody.JAnnotationBody;
-import in.kyle.jrefactor.tree.obj.unit.typebody.JClassBody;
-import in.kyle.jrefactor.tree.obj.unit.typebody.JEnumBody;
-import in.kyle.jrefactor.tree.obj.unit.typebody.JInterfaceBody;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
@@ -491,7 +491,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JEnumBody visitEnumBody(EnumBodyContext ctx) {
         JEnumBody body = visitEnumBodyDeclarations(ctx.enumBodyDeclarations());
-        visitEnumConstantList(ctx.enumConstantList()).forEach(body::addMember);
+        visitEnumConstantList(ctx.enumConstantList()).forEach(body::addElement);
         return body;
     }
     
@@ -499,15 +499,15 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JEnumBody visitEnumBodyDeclarations(EnumBodyDeclarationsContext ctx) {
         JClassBody classBody = visitClassBodyDeclarations(ctx.classBodyDeclaration());
         JEnumBody body = new JEnumBody();
-        for (JClassMember member : classBody.getMembers()) {
-            body.addMember(member);
+        for (JClassMember member : classBody.getElements()) {
+            body.addElement(member);
         }
         return body;
     }
     
     private JClassBody visitClassBodyDeclarations(Collection<ClassBodyDeclarationContext> ctx) {
         JClassBody body = new JClassBody();
-        ctx.stream().map(this::visitClassBodyDeclaration).forEachOrdered(body::addMember);
+        ctx.stream().map(this::visitClassBodyDeclaration).forEachOrdered(body::addElement);
         return body;
     }
     
@@ -564,7 +564,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JInterfaceBody body = new JInterfaceBody();
         if (ctx.interfaceMemberDeclaration() != null) {
             visitInterfaceMemberDeclarations(ctx.interfaceMemberDeclaration()).forEach
-                    (body::addMember);
+                    (body::addElement);
         }
         return body;
     }
@@ -666,10 +666,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JBlock visitBlock(Java8Parser.BlockContext ctx) {
-        JBlock jBlock = new JBlock();
+        JBlock jBlock = new JStatementBlock();
         for (BlockStatementContext statementCtx : ctx.blockStatement()) {
             JStatement statement = (JStatement) visitBlockStatement(statementCtx);
-            jBlock.addStatement(statement);
+            jBlock.addElement(statement);
         }
         return jBlock;
     }
@@ -1264,7 +1264,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JBlock visitConstructorBody(ConstructorBodyContext ctx) {
-        JBlock block = new JBlock();
+        JBlock block = new JStatementBlock();
         
         List<JStatement> statements = new ArrayList<>();
         if (ctx.explicitConstructorInvocation() != null) {
@@ -1276,7 +1276,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
             statements.addAll(temp);
         }
         
-        block.setStatements(statements);
+        block.setElements(statements);
         return block;
     }
     
@@ -1300,7 +1300,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JAnnotationBody visitAnnotationTypeBody(AnnotationTypeBodyContext ctx) {
         JAnnotationBody body = new JAnnotationBody();
-        body.setMembers(visitAnnotationBody(ctx));
+        body.setElements(visitAnnotationBody(ctx));
         return body;
     }
     

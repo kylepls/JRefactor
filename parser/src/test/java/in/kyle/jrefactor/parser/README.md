@@ -1,1 +1,0 @@
-I'll give Antlr the benefit of the doubt and only test that the transcription is broadly correct.

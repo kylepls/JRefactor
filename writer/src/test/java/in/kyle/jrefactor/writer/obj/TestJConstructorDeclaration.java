@@ -7,9 +7,9 @@ import in.kyle.jrefactor.tree.JModifier;
 import in.kyle.jrefactor.tree.obj.JAnnotation;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JTypeName;
+import in.kyle.jrefactor.tree.obj.block.JStatementBlock;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JConstructorDeclaration;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JParameter;
-import in.kyle.jrefactor.tree.obj.statement.JBlock;
 import in.kyle.jrefactor.writer.Write;
 
 public class TestJConstructorDeclaration {
@@ -18,7 +18,7 @@ public class TestJConstructorDeclaration {
     public void testModifiers() {
         JConstructorDeclaration declaration = new JConstructorDeclaration();
         declaration.setIdentifier(new JTypeName("Test"));
-        declaration.setBody(new JBlock());
+        declaration.setBody(new JStatementBlock());
         declaration.addModifier(JModifier.PUBLIC);
         Verify.that(Write.object(declaration)).isEqual("public Test() {}");
     }
@@ -27,7 +27,7 @@ public class TestJConstructorDeclaration {
     public void testAnnotations() {
         JConstructorDeclaration declaration = new JConstructorDeclaration();
         declaration.setIdentifier(new JTypeName("Test"));
-        declaration.setBody(new JBlock());
+        declaration.setBody(new JStatementBlock());
         declaration.addAnnotation(new JAnnotation(new JTypeName("Data")));
         Verify.that(Write.object(declaration)).isEqual("@Data\nTest() {}");
     }
@@ -36,7 +36,7 @@ public class TestJConstructorDeclaration {
     public void test() {
         JConstructorDeclaration declaration = new JConstructorDeclaration();
         declaration.setIdentifier(new JTypeName("Test"));
-        declaration.setBody(new JBlock());
+        declaration.setBody(new JStatementBlock());
         Verify.that(Write.object(declaration)).isEqual("Test() {}");
     }
     
@@ -44,7 +44,7 @@ public class TestJConstructorDeclaration {
     public void testParameter() {
         JConstructorDeclaration declaration = new JConstructorDeclaration();
         declaration.setIdentifier(new JTypeName("Test"));
-        declaration.setBody(new JBlock());
+        declaration.setBody(new JStatementBlock());
         declaration.addParameter(new JParameter(new JTypeName("String"), new JIdentifier("str")));
         Verify.that(Write.object(declaration)).isEqual("Test(String str) {}");
     }
@@ -53,7 +53,7 @@ public class TestJConstructorDeclaration {
     public void testThrows() {
         JConstructorDeclaration declaration = new JConstructorDeclaration();
         declaration.setIdentifier(new JTypeName("Test"));
-        declaration.setBody(new JBlock());
+        declaration.setBody(new JStatementBlock());
         declaration.addThrowsType(new JTypeName("Exception"));
         Verify.that(Write.object(declaration)).isEqual("Test() throws Exception {}");    }
 }

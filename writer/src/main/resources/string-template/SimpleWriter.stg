@@ -224,10 +224,10 @@ JWildcardType(obj) ::= <<
 <obj.javaString>
 >>
 
-JBlock(obj) ::= <%
+JStatementBlock(obj) ::= <%
 {
-<if(obj.statements)>
-<\n><indent(collection(obj.statements, "\n"))><\n>
+<if(obj.elements)>
+<\n><indent(collection(obj.elements, "\n"))><\n>
 <endif>
 }
 %>

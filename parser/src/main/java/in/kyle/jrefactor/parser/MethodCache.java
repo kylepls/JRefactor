@@ -15,13 +15,13 @@ public class MethodCache {
     public MethodCache(Class<?> targetClass, Predicate<Method>... filters) {
         Collector<Method, ?, Map<Class<?>, Method>> collector =
                 Collectors.toMap(method -> method.getParameterTypes()[0], method -> method);
-        this.mappings = calcuateMappings(targetClass, collector, filters);
+        this.mappings = calculateMappings(targetClass, collector, filters);
     }
     
     public MethodCache(Class<?> targetClass,
                        Collector<Method, ?, Map<Class<?>, Method>> collector,
                        Predicate<Method>... filters) {
-        this.mappings = calcuateMappings(targetClass, collector, filters);
+        this.mappings = calculateMappings(targetClass, collector, filters);
     }
     
     public Method get(Class<?> clazz) {
@@ -33,10 +33,10 @@ public class MethodCache {
         }
     }
     
-    private Map<Class<?>, Method> calcuateMappings(Class<?> clazz,
-                                                   Collector<Method, ?, Map<Class<?>, Method>> 
+    private Map<Class<?>, Method> calculateMappings(Class<?> clazz,
+                                                    Collector<Method, ?, Map<Class<?>, Method>> 
                                                            collector,
-                                                   Predicate<Method>[] filters) {
+                                                    Predicate<Method>[] filters) {
         Stream<Method> stream = Arrays.stream(clazz.getDeclaredMethods());
         for (Predicate<Method> filter : filters) {
             stream = stream.filter(filter);
