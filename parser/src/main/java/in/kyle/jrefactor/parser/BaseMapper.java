@@ -48,7 +48,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJAssignmentOperator(Java8Parser object) {
-        return null;
+        return object.assignmentOperator();
     }
     
     @Override
@@ -427,11 +427,6 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
-    protected ParserRuleContext parseJValueSingle(Java8Parser object) {
-        return null;
-    }
-    
-    @Override
     protected ParserRuleContext parseJStatementBlock(Java8Parser object) {
         return null;
     }
@@ -448,7 +443,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJArrayTypeName(Java8Parser object) {
-        return null;
+        return object.arrayType();
     }
     
     @Override

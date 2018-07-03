@@ -16,13 +16,13 @@ import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Parser.*;
 import in.kyle.jrefactor.tree.obj.*;
 import in.kyle.jrefactor.tree.obj.annotationvalue.JValuePair;
-import in.kyle.jrefactor.tree.obj.annotationvalue.JValueSingle;
 import in.kyle.jrefactor.tree.obj.block.JStatementBlock;
 import in.kyle.jrefactor.tree.obj.block.typebody.JAnnotationBody;
 import in.kyle.jrefactor.tree.obj.block.typebody.JClassBody;
 import in.kyle.jrefactor.tree.obj.block.typebody.JEnumBody;
 import in.kyle.jrefactor.tree.obj.block.typebody.JInterfaceBody;
 import in.kyle.jrefactor.tree.obj.expression.*;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionAssignment.JAssignmentOperator;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralCharacter;
@@ -812,10 +812,14 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JExpressionAssignment visitAssignment(Java8Parser.AssignmentContext ctx) {
         JExpressionAssignment assignment = new JExpressionAssignment();
         assignment.setLeft(visitLeftHandSide(ctx.leftHandSide()));
-        assignment.setOperator(JExpressionAssignment.JAssignmentOperator.fromJava(ctx.assignmentOperator()
-                                                                                     .getText()));
+        assignment.setOperator(visitAssignmentOperator(ctx.assignmentOperator()));
         assignment.setRight(visitExpression(ctx.expression()));
         return assignment;
+    }
+    
+    @Override
+    public JAssignmentOperator visitAssignmentOperator(AssignmentOperatorContext ctx) {
+        return JAssignmentOperator.fromJava(ctx.getText());
     }
     
     @Override
@@ -1368,9 +1372,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JAnnotation visitSingleElementAnnotation(SingleElementAnnotationContext ctx) {
         JAnnotation annotation = new JAnnotation();
         annotation.setType(visitTypeName(ctx.typeName()));
-        JValueSingle value = new JValueSingle();
-        value.setValue((JAnnotationElementValue) visit(ctx.elementValue()));
-        annotation.addValue(value);
+        annotation.addValue((JAnnotationValue) visit(ctx.elementValue()));
         return annotation;
     }
     

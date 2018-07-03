@@ -39,6 +39,10 @@ public class Parser {
         TokenStream ts = new CommonTokenStream(lexer);
         Java8Parser parser = new Java8Parser(ts);
         ParserRuleContext context = MAPPER.parsePart(parser, clazz);
-        return (T) VISITOR.visit(context);
+        if (context != null) {
+            return (T) VISITOR.visit(context);
+        } else {
+            throw new ParseException("No parser defined for type " + clazz.getName());
+        }
     }
 }

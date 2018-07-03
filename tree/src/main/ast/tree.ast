@@ -325,10 +325,6 @@ Obj {
             Identifier identifier
             AnnotationElementValue value
         }
-        ValueSingle {
-            AnnotationElementValue value
-        }
-        
     }
 
     Unit {
