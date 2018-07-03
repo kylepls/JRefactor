@@ -11,7 +11,8 @@ public class TestJExpressionTypeReference {
     
     @Test
     public void test() {
-        String javaString = "tEsT.class";
+        // TODO: 7/3/2018 What does this class even do? 
+        String javaString = "Test";
         JExpressionTypeReference expression =
                 Parser.parse(javaString, JExpressionTypeReference.class);
         Verify.that(expression.getReference()).isNotNull();

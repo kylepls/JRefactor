@@ -13,12 +13,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJObj(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
     protected ParserRuleContext parseJValuePair(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -57,6 +57,11 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJExpressionClassReference(Java8Parser object) {
+        return object.primaryClassType();
+    }
+    
+    @Override
     protected ParserRuleContext parseJExpressionLambda(Java8Parser object) {
         return object.lambdaExpression();
     }
@@ -68,7 +73,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJLeftRightOperator(Java8Parser object) {
-        return null;
+        return object.assignmentOperator();
     }
     
     @Override
@@ -103,7 +108,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJExpressionTypeReference(Java8Parser object) {
-        return object.primaryClassType();
+        return object.referenceType();
     }
     
     @Override
@@ -123,7 +128,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJAnnotationValue(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -148,12 +153,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJLambdaBody(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
     protected ParserRuleContext parseJLambdaParameter(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -173,7 +178,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJStatementElse(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -193,7 +198,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJUnit(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -263,22 +268,22 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJIdentifiable(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
     protected ParserRuleContext parseJMultiParameter(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
     protected ParserRuleContext parseJParameter(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return object.lastFormalParameter();
     }
     
     @Override
     protected ParserRuleContext parseJAnnotatable(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override
@@ -303,7 +308,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJStatementControl(Java8Parser object) {
-        throw new UnsupportedOperationException();
+        return null;
     }
     
     @Override

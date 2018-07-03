@@ -7,7 +7,6 @@ import in.kyle.jrefactor.tree.obj.JAnnotation;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JTypeName;
 import in.kyle.jrefactor.tree.obj.annotationvalue.JValuePair;
-import in.kyle.jrefactor.tree.obj.annotationvalue.JValueSingle;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
 import in.kyle.jrefactor.writer.Write;
 
@@ -22,7 +21,7 @@ public class TestJAnnotation {
     @Test
     public void testParamsSingle() {
         JAnnotation annotation = new JAnnotation(new JTypeName("Data"));
-        annotation.addValue(new JValueSingle(new JLiteralString("value")));
+        annotation.addValue(new JLiteralString("value"));
         Verify.that(Write.object(annotation)).isEqual("@Data(\"value\")");
     }
     

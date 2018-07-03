@@ -1,7 +1,5 @@
 package in.kyle.jrefactor.parser;
 
-import org.antlr.v4.runtime.RuleContext;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,10 +29,8 @@ import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralFloating;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralLong;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
-        .JLiteralDouble;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
-        .JLiteralFloat;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralDouble;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralFloat;
 import in.kyle.jrefactor.tree.obj.modifiable.JCatchClause;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JConstructorDeclaration;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
@@ -46,10 +42,8 @@ import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JTypeParameter;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.JAnnotationType;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.JEnum;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
-        .typeparametertype.JClass;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
-        .typeparametertype.JInterface;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JClass;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JInterface;
 import in.kyle.jrefactor.tree.obj.reference.JExpressionTypeReference;
 import in.kyle.jrefactor.tree.obj.reference.JTypeArgument;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentReference;
@@ -65,22 +59,17 @@ import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementSynchroni
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementThrow;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementTry;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementBreak;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement
-        .JStatementContinue;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementContinue;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.JStatementWhile;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor
-        .JStatementEnhancedFor;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementwhile
-        .JStatementDoWhile;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor.JStatementEnhancedFor;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementwhile.JStatementDoWhile;
 import in.kyle.jrefactor.tree.obj.typename.JArrayTypeName;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JAnnotationMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JInterfaceMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.JClassMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
-import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
-        .classinitializer.JClassInstanceInitializer;
-import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
-        .classinitializer.JClassStaticInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.classinitializer.JClassInstanceInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.classinitializer.JClassStaticInitializer;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
@@ -109,14 +98,24 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JImport visitImportDeclaration(ImportDeclarationContext ctx) {
         JImport jImport = new JImport();
-        jImport.setName(ctx.packageOrTypeName().getText());
+        jImport.setName(visitTypeName(ctx.typeName()));
         if (ctx.import_static() != null) {
             jImport.setStaticImport(true);
         }
         if (ctx.import_wildcard() != null) {
             jImport.setOnDemand(true);
         }
+        if(ctx.packageName() != null) {
+            jImport.setPackageName(Optional.of(visitPackageName(ctx.packageName())));
+        }
         return jImport;
+    }
+    
+    @Override
+    public JPropertyLookup visitPackageName(PackageNameContext ctx) {
+        JPropertyLookup lookup = new JPropertyLookup();
+        ctx.Identifier().forEach(area->lookup.addArea(area.getText()));
+        return lookup;
     }
     
     @Override
@@ -524,6 +523,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JEnumConstant visitEnumConstant(EnumConstantContext ctx) {
         JEnumConstant constant = new JEnumConstant(visitIdentifier(ctx.identifier()));
         constant.setAnnotations(visitAnnotations(ctx.annotation()));
+        if (ctx.argumentList() != null)
         constant.setArguments(visitArgumentList(ctx.argumentList()));
         if (ctx.classBody() != null) {
             JClassBody body = visitClassBody(ctx.classBody());
@@ -578,7 +578,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JInterfaceMethod visitInterfaceMethodDeclaration(InterfaceMethodDeclarationContext ctx) {
         JInterfaceMethod method = new JInterfaceMethod();
         method.setHeader(visitMethodHeader(ctx.methodHeader()));
-        if (ctx.methodBody() != null) {
+        if (ctx.methodBody().block() != null) {
             JBlock block = visitMethodBody(ctx.methodBody());
             method.setBody(Optional.of(block));
         }
@@ -748,22 +748,30 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public List<JParameter> visitFormalParameterList(FormalParameterListContext ctx) {
         List<JParameter> parameters = new ArrayList<>();
         
-        if (ctx.formalParameters() != null) {
-            for (FormalParameterContext formalCtx : ctx.formalParameters().formalParameter()) {
-                parameters.add(visitFormalParameter(formalCtx));
-            }
+        if (ctx.receiverParameter() != null) {
+            parameters.add(visitReceiverParameter(ctx.receiverParameter()));
         }
+        if (ctx.formalParameters() != null) {
+            ctx.formalParameters()
+               .formalParameter()
+               .forEach(c -> parameters.add(visitFormalParameter(c)));
+        }
+        
         
         if (ctx.lastFormalParameter() != null) {
             parameters.add(visitLastFormalParameter(ctx.lastFormalParameter()));
         }
-        
         return parameters;
     }
     
     @Override
     public JParameter visitFormalParameter(FormalParameterContext ctx) {
         return createJParameter(ctx.variableDeclaratorId(), ctx.unannType());
+    }
+    
+    @Override
+    public JParameter visitReceiverParameter(ReceiverParameterContext ctx) {
+        throw new UnsupportedOperationException("I haven't implemented this yet");
     }
     
     private JParameter createJParameter(VariableDeclaratorIdContext variableDeclaratorIdContext,
@@ -777,7 +785,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JParameter visitLastFormalParameter(Java8Parser.LastFormalParameterContext ctx) {
-        return createJParameter(ctx.variableDeclaratorId(), ctx.unannType());
+        if (ctx.formalParameter() != null) {
+            return visitFormalParameter(ctx.formalParameter());
+        } else {
+            return createJParameter(ctx.variableDeclaratorId(), ctx.unannType());
+        }
     }
     
     @Override
@@ -892,11 +904,15 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JExpressionTypeReference visitPrimaryClassType(PrimaryClassTypeContext ctx) {
-        String brackets =
-                ctx.bracketPair().stream().map(RuleContext::getText).collect(Collectors.joining());
+    public JExpressionClassReference visitPrimaryClassType(PrimaryClassTypeContext ctx) {
+        JTypeName type;
         String typeName = ctx.primaryClassTypeAlternates().getText();
-        return new JExpressionTypeReference(new JTypeName(typeName + brackets));
+        if (ctx.bracketPair() != null) {
+            type = new JArrayTypeName(typeName, ctx.bracketPair().size());
+        } else {
+            type = new JTypeName(typeName);
+        }
+        return new JExpressionClassReference(type);
     }
     
     @Override
@@ -1262,6 +1278,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
             declaration.setThrowsTypes(visitThrows_(ctx.throws_()));
         }
         declaration.setBody(visitConstructorBody(ctx.constructorBody()));
+        if (ctx.constructorDeclarator().formalParameterList() != null) {
+            declaration.setParameters(visitFormalParameterList(ctx.constructorDeclarator()
+                                                                  .formalParameterList()));
+        }
         
         return declaration;
     }

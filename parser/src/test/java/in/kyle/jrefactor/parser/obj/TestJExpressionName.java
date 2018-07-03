@@ -11,7 +11,7 @@ public class TestJExpressionName {
     
     @Test
     public void test() {
-        String testString = "a.b.c";
+        String testString = "a.b.c;";
         JExpressionName expression = Parser.parse(testString, JExpressionName.class);
         Verify.that(expression.getIdentifier()).isEqual(new JIdentifier("a.b.c"));
     }

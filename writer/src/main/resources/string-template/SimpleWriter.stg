@@ -23,7 +23,7 @@ JIdentifier(obj) ::= <<
 JImport(obj) ::= <%
 import 
 <if(obj.staticImport)>static <endif>
-<if(obj.packageName)><obj.packageName>.<endif><obj.name>
+<if(obj.packageName.present)><obj.packageName>.<endif><obj.name>
 <if(obj.onDemand)>
     <if(obj.name)>.<endif>
 *
@@ -348,9 +348,12 @@ JClassStaticInitializer(obj) ::= <<
 static <obj.block>
 >>
 
-JInterfaceMethod(obj) ::= <<
-<obj.header><if(obj.body.present)> default <obj.body><endif>
->>
+JInterfaceMethod(obj) ::= <%
+<if(obj.body.present)>default <endif>
+<obj.header>
+<if(obj.body.present)> <obj.body><endif>
+<if(!obj.body.present)>;<endif>
+%>
 
 JAnnotationBody(obj) ::= <<
 <writeJTypeBody(obj)>

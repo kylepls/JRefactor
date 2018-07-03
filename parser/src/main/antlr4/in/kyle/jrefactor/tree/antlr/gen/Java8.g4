@@ -26,6 +26,8 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *  Modified by @KylePls
  */
 
 grammar Java8;
@@ -180,24 +182,15 @@ wildcardBounds
 	:	boundType=('extends'|'super') referenceType
 	;
 
-
-packageName
+typeName
 	:	Identifier
 	|	packageName '.' Identifier
 	;
 
 
-typeName
-	:	Identifier
-	|	packageOrTypeName '.' Identifier
-	;
-
-
-packageOrTypeName
-	:	Identifier
-	|	packageOrTypeName '.' Identifier
-	;
-
+packageName
+    :   Identifier ('.' Identifier)*
+    ;
 
 expressionName
 	:	Identifier
@@ -227,7 +220,7 @@ import_static: 'static';
 import_wildcard: '.' '*';
 
 importDeclaration
-    : 'import' import_static? packageOrTypeName import_wildcard? ';'
+    : 'import' import_static? (packageName '.')? typeName import_wildcard? ';'
     ;
     
 
@@ -536,7 +529,7 @@ constantDeclaration
 
 
 interfaceMethodDeclaration
-	:	annotation* modifier* methodHeader methodBody
+	:	annotation* modifier* DEFAULT? methodHeader methodBody
 	;
 
 
@@ -1132,6 +1125,7 @@ constantExpression
 expression
 	:	lambdaExpression
 	|	assignmentExpression
+	|   conditionalExpression
 	;
 
 
@@ -1170,8 +1164,8 @@ lambdaBody
 
 
 assignmentExpression
-	:	conditionalExpression
-	|	assignment
+//	:	conditionalExpression
+	:	assignment
 	;
 
 
@@ -1201,87 +1195,35 @@ assignmentOperator
 	|	'|='
 	;
 	
+leftRightOperator
+    :   '||'
+    |   '&&'
+    |   '|'
+    |   '^'
+    |   '&'
+    |   '=='
+    |   '!='
+    |   '<'
+    |   '>'
+    |   '<='
+    |   '>='
+    |   'instanceof'
+    |   '<<'
+    |   '>>'
+    |   '>>>'
+    |   '+'
+    |   '-'
+    |   '*'
+    |   '/'
+    |   '%'
+    ;
 
 conditionalExpression
-	:	conditionalOrExpression 
-	|	conditionalTernary
-	;
-
-conditionalTernary
-	:	conditionalOrExpression '?' expression ':' conditionalExpression 
-	;
-
-
-conditionalOrExpression
-	:	conditionalAndExpression                                            #ig2
-	|	conditionalOrExpression '||' conditionalAndExpression               #conditionalOr
-	;
-
-
-conditionalAndExpression
-	:	inclusiveOrExpression                                               #ig3
-	|	conditionalAndExpression '&&' inclusiveOrExpression                 #conditionalAnd
-	;
-
-
-inclusiveOrExpression
-	:	exclusiveOrExpression                                               #ig4
-	|	inclusiveOrExpression '|' exclusiveOrExpression                     #binaryInclusiveOr
-	;
-
-
-exclusiveOrExpression
-	:	andExpression                                                       #ig5
-	|	exclusiveOrExpression '^' andExpression                             #binaryExclusiveOr
-	;
-
-
-andExpression
-	:	equalityExpression                                                  #ig6
-	|	andExpression '&' equalityExpression                                #binaryAnd
-	;
-
-
-equalityExpression
-	:	relationalExpression                                                #ig7
-	|	equalityExpression '==' relationalExpression                        #conditionalEquality
-	|	equalityExpression '!=' relationalExpression                        #conditionalNotEquality
-	;
-
-
-relationalExpression
-	:	shiftExpression                                                     #ig8
-	|	relationalExpression '<' shiftExpression                            #conditionalLessThan
-	|	relationalExpression '>' shiftExpression                            #conditionalGreaterThan
-	|	relationalExpression '<=' shiftExpression                           #conditionalLessThanEq
-	|	relationalExpression '>=' shiftExpression                           #conditionalGreatherThanEq
-	|	relationalExpression 'instanceof' referenceType                     #conditionalInstanceOf
-	;
-
-
-shiftExpression
-	:	additiveExpression                                                  #ig9
-	|	shiftExpression '<' '<' additiveExpression                          #binaryShiftLeft
-	|	shiftExpression '>' '>' additiveExpression                          #binaryShiftRight
-	|	shiftExpression '>' '>' '>' additiveExpression                      #binarcyAllignRight
-	;
-
-
-additiveExpression
-	:	multiplicativeExpression                                            #ig10
-	|	additiveExpression '+' multiplicativeExpression                     #expressionAdd
-	|	additiveExpression '-' multiplicativeExpression                     #expressionSubtract
-	;
-
-
-multiplicativeExpression
-	:	unaryExpression                                                     #ig11
-	|	multiplicativeExpression '*' unaryExpression                        #expressionMultiply
-	|	multiplicativeExpression '/' unaryExpression                        #expressionDivide
-	|	multiplicativeExpression '%' unaryExpression                        #expressionModulus
-	;
-
-
+    : conditionalExpression leftRightOperator conditionalExpression         #leftRightExpression
+    | conditionalExpression '?' expression ':' conditionalExpression        #conditionalTernary
+    | unaryExpression                                                       #ig18
+    ;
+ 
 unaryExpression
 	:	preIncrementExpression                                              #ig12
 	|	preDecrementExpression                                              #ig13

@@ -32,6 +32,6 @@ public class TestJInterfaceMethod {
         header.setIdentifier(new JIdentifier("test"));
         method.setHeader(header);
         method.setBody(Optional.of(new JStatementBlock()));
-        Verify.that(Write.object(method)).isEqual("void test() default {}");
+        Verify.that(Write.object(method)).isEqual("default void test() {}");
     }
 }

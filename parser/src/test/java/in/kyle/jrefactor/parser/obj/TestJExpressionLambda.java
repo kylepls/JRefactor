@@ -2,15 +2,9 @@ package in.kyle.jrefactor.parser.obj;
 
 import org.junit.Test;
 
-import java.util.List;
-
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.obj.JBlock;
-import in.kyle.jrefactor.tree.obj.JIdentifier;
-import in.kyle.jrefactor.tree.obj.JLambdaParameter;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLambda;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
 
 public class TestJExpressionLambda {
     
@@ -21,43 +15,26 @@ public class TestJExpressionLambda {
         Verify.that(expression.getParameters()).isNotNull();
         Verify.that(expression.getParameters()).isEmpty();
         Verify.that(expression.getBody()).isNotNull();
-        Verify.that(expression.getBody()).isInstanceOf(JBlock.class);
     }
     
     @Test
     public void testLambdaIdentifier() {
         String lambda = "a->{}";
         JExpressionLambda expression = Parser.parse(lambda, JExpressionLambda.class);
-        Verify.that(expression.getParameters()).isNotNull();
-        List<JLambdaParameter> parameters = expression.getParameters();
-        Verify.that(parameters).sizeIs(1);
-        JIdentifier parameter = (JIdentifier) parameters.get(0);
-        Verify.that(parameter.getName()).isEqual("a");
-        Verify.that(expression.getBody()).isNotNull();
-        Verify.that(expression.getBody()).isInstanceOf(JBlock.class);
+        Verify.that(expression.getParameters()).sizeIs(1);
     }
     
     @Test
     public void testLambdaInferredParameters() {
         String lambda = "(a, b, c)->{}";
         JExpressionLambda expression = Parser.parse(lambda, JExpressionLambda.class);
-        Verify.that(expression.getParameters()).isNotNull();
-        List<JLambdaParameter> parameters = expression.getParameters();
-        Verify.that(parameters).sizeIs(3);
-        Verify.that(parameters.get(0)).isEqual(new JIdentifier("a"));
-        Verify.that(parameters.get(1)).isEqual(new JIdentifier("b"));
-        Verify.that(parameters.get(2)).isEqual(new JIdentifier("c"));
-        Verify.that(expression.getBody()).isNotNull();
-        Verify.that(expression.getBody()).isInstanceOf(JBlock.class);
+        Verify.that(expression.getParameters()).sizeIs(3);
     }
     
     @Test
     public void testLambdaExpressionBlock() {
         String lambda = "()->true";
         JExpressionLambda expression = Parser.parse(lambda, JExpressionLambda.class);
-        Verify.that(expression.getParameters()).isNotNull();
-        Verify.that(expression.getParameters()).sizeIs(0);
         Verify.that(expression.getBody()).isNotNull();
-        Verify.that(expression.getBody()).isInstanceOf(JLiteralBoolean.class);
     }
 }

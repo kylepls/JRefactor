@@ -133,6 +133,10 @@ Obj {
             Identifier identifier
         }
         
+        ExpressionClassReference {
+            TypeName type
+        }
+        
         ExpressionMethodInvocation {
             Identifier methodName
             Optional<PropertyLookup> methodArea
@@ -451,8 +455,8 @@ Obj {
     }
 
     Import {
-        String packageName
-        String name
+        Optional<PropertyLookup> packageName
+        TypeName name
         boolean onDemand
         boolean staticImport
     }

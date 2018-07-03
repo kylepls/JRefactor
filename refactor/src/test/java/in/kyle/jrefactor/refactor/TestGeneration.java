@@ -31,9 +31,9 @@ public class TestGeneration {
     private static void renameVariable(JCompilationUnit unit, RefactorSession session) {
         JClass type = (JClass) unit.getTypes().get(0);
         
-        JClassInitializer initializer = (JClassInitializer) type.getBody().getMembers().get(0);
+        JClassInitializer initializer = (JClassInitializer) type.getBody().getElements().get(0);
         JStatementLocalVariableDeclaration declaration =
-                (JStatementLocalVariableDeclaration) initializer.getBlock().getStatements().get(0);
+                (JStatementLocalVariableDeclaration) initializer.getBlock().getElements().get(0);
         JVariable variable = declaration.getVariables().get(0);
         
         JIdentifier identifier = variable.getName();
