@@ -19,9 +19,14 @@ public class EzWriter {
         file.registerRenderer(Optional.class, this::renderOptional);
         file.registerRenderer(Integer.class, this::renderInt);
         file.registerModelAdaptor(Optional.class, new OptionalAdaptor());
-        ST st = file.getInstanceOf(obj.getClass().getSimpleName());
-        st.add("obj", obj);
-        return st.render();
+        String templateName = obj.getClass().getSimpleName();
+        ST st = file.getInstanceOf(templateName);
+        if (st != null) {
+            st.add("obj", obj);
+            return st.render();
+        } else {
+            throw new RuntimeException("Failed to find template for " + templateName);
+        }
     }
     
     private String renderInt(Object o, String format, Locale locale) {

@@ -187,9 +187,12 @@ typeName
 	|	packageName '.' Identifier
 	;
 
+propertyLookup
+    :   Identifier ('.' Identifier)*
+    ;
 
 packageName
-    :   Identifier ('.' Identifier)*
+    :   propertyLookup
     ;
 
 expressionName
@@ -707,18 +710,34 @@ expressionStatement
 	:	statementExpression ';'
 	;
 
-
 statementExpression
-	:	assignment                      #assignmentStatement
-	|	preIncrementExpression          #preIncrementStatement
-	|	preDecrementExpression          #preDecrementStatement
-	|	postIncrementExpression         #postIncrementStatement
-	|	postDecrementExpression         #postDecrementStatement
-	|	methodInvocation                #methodInvocationStatement
-	|	classInstanceCreationExpression #classInstanceCreationStatement
+	:	statementAssignment_nocol
+	|	statementPre_nocol
+	|	statementPost_nocol
+	|	statementMethodInvocation_nocol
+	|	statementClassInstanceCreation_nocol
 	;
 
+statementAssignment_nocol
+    :   assignment
+    ;
 
+statementPre_nocol
+    :   preExpression
+    ;
+    
+statementPost_nocol
+    :   postExpression
+    ;
+
+statementMethodInvocation_nocol
+    :   methodInvocation
+    ;
+
+statementClassInstanceCreation_nocol
+    :   classInstanceCreationExpression
+    ;
+    
 ifThenStatement
 	:	'if' '(' expression ')' statement
 	;
@@ -990,7 +1009,7 @@ primaryNoNewArray_lfno_primary_lfno_arrayAccess_lfno_primary
 	;
 
 classIdentifier
-    : Identifier ('.' Identifier)*
+    : propertyLookup
     ;
     
 classInstanceCreationExpression
@@ -1179,7 +1198,6 @@ leftHandSide
 	|	arrayAccess
 	;
 
-
 assignmentOperator
 	:	'='
 	|	'*='
@@ -1225,63 +1243,56 @@ conditionalExpression
     ;
  
 unaryExpression
-	:	preIncrementExpression                                              #ig12
-	|	preDecrementExpression                                              #ig13
-	|	'+' unaryExpression                                                 #idk_plus
-	|	'-' unaryExpression                                                 #idk_minus
-	|	unaryExpressionNotPlusMinus                                         #ig14
+	:	preExpression                                                       
+	|	postfixExpression   
+	|   binaryExpression
+	|	castExpression      
 	;
 
+binaryExpression
+    :   binaryOperator unaryExpression
+    ;
 
-preIncrementExpression
-	:	'++' unaryExpression
-	;
+binaryOperator
+    :   '+'
+    |   '-'
+    |   '~'
+    |   '!'
+    ;
+    
+prefixOperator
+    :   '++'
+    |   '--'
+    ;
 
-
-preDecrementExpression
-	:	'--' unaryExpression
-	;
-
-
-unaryExpressionNotPlusMinus
-	:	postfixExpression                                                   #ig15
-	|	'~' unaryExpression                                                 #binaryNot
-	|	'!' unaryExpression                                                 #conditionalNot
-	|	castExpression                                                      #ig16
-	;
+preExpression
+    :   prefixOperator unaryExpression
+    ;
 
 postfixExpression
-    :   primary postfixIncString          #primaryPostInc
-    |   expressionName postfixIncString   #expressionPostInc
-    |   primary postfixDecString          #primaryPostDec
-    |   expressionName postfixDecString   #expressionPostDec
-    |   (primary | expressionName)        #ig72
+    :   (primary | expressionName) postfixOperator?
 	;
 
-
-postIncrementExpression
-	:	postfixExpression '++'
-	;
-
-
-postfixIncString
-	:	'++'
-	;
-
-
-postDecrementExpression
-	:	postfixExpression '--'
-	;
-
-
-postfixDecString
-	:	'--'
+postfixOperator
+    :   '++'
+    |   '--'
+    ;
+    
+postExpression
+	:	(primary | expressionName) postfixOperator
 	;
 
 castExpression
-	:	'(' primitiveType ')' unaryExpression                               #castSimple
-	|	'(' referenceType additionalBound* ')' unaryExpressionNotPlusMinus  #castSimpleBound
-	|	'(' referenceType additionalBound* ')' lambdaExpression             #castLamda
+	:	castPrimitive
+	|   castReference
+	;
+
+castPrimitive
+	:	'(' primitiveType ')' unaryExpression                 
+	;
+
+castReference
+	:	'(' referenceType additionalBound* ')' (unaryExpression | lambdaExpression)
 	;
 
 identifier

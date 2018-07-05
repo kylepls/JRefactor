@@ -20,7 +20,6 @@ public class TestJAnnotation {
     public void testValue() {
         String test = "@Data(\"test\")";
         JAnnotation annotation = Parser.parse(test, JAnnotation.class);
-        System.out.println(annotation.getValues());
         Verify.that(annotation.getValues()).sizeIs(1);
     }
 }

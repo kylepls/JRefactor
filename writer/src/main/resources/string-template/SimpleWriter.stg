@@ -34,11 +34,6 @@ JPropertyLookup(obj) ::= <<
 <collection(obj.areas, ".")>
 >>
 
-JStatementElse(obj) ::= <<
-else<if(obj.condition.present)> if(<obj.condition>)<endif>
-    <obj.statement>
->>
-
 JTypeName(obj) ::= <<
 <obj.type>
 >>
@@ -49,10 +44,6 @@ JVariable(obj) ::= <<
 
 JValuePair(obj) ::= <<
 <obj.identifier> = <obj.value>
->>
-
-JValueSingle(obj) ::= <<
-<obj.value>
 >>
 
 JExpressionAssignment(obj) ::= <<
@@ -68,6 +59,10 @@ new <obj.type>
 <writeTypeArguments(obj)>
 (<obj.arguments; separator=",">)
 <if(obj.body.present)> <obj.body><endif>
+%>
+
+JExpressionClassReference(obj) ::= <%
+<obj.type>.class
 %>
 
 JExpressionLambda(obj) ::= <%
@@ -101,10 +96,6 @@ JExpressionTernary(obj) ::= <<
 <obj.condition> ? <obj.left> : <obj.right>
 >>
 
-JExpressionUnary(obj) ::= <<
-<obj.expression; format=obj.operator.formatString>
->>
-
 JLiteralBoolean(obj) ::= <<
 <obj.value>
 >>
@@ -113,16 +104,8 @@ JLiteralCharacter(obj) ::= <<
 '<obj.value>'
 >>
 
-JLiteralNumeric(obj) ::= <<
-<obj.value>
->>
-
 JLiteralString(obj) ::= <<
 "<obj.value>"
->>
-
-JLiteralFloating(obj) ::= <<
-<obj.value>
 >>
 
 JLiteralInteger(obj) ::= <<
@@ -191,20 +174,11 @@ JEnum(obj) ::= <<
 >>
 
 JClass(obj) ::= <<
-<writeJType(obj, "class", JClassSuper(obj))>
+<writeJType(obj, "class", writeSuperType(obj))>
 >>
-
-JClassSuper(obj) ::= <%
-<writeTypeParameters(obj)>
-<if(obj.superType.present)> extends <obj.superType><endif>
-%>
 
 JInterface(obj) ::= <<
-<writeJType(obj, "class", JInterfaceSuper(obj), "extends")>
->>
-
-JInterfaceSuper(obj) ::= <<
-<writeTypeParameters(obj)>
+<writeJType(obj, "class", writeTypeParameters(obj), "extends")>
 >>
 
 JExpressionTypeReference(obj) ::= <<
@@ -258,8 +232,10 @@ JStatementLocalVariableDeclaration(obj) ::= <<
 JStatementIf(obj) ::= <%
 if (<obj.expression>)
 <\n><(indent(obj.statement))>
-<if(obj.elseStatements)><\n><endif>
-<collection(obj.elseStatements, " ")>
+<if(obj.elseStatement.present)>
+<\n>else<\n>
+<(indent(obj.elseStatement))>
+<endif>
 %>
 
 JStatementReturn(obj) ::= <%
@@ -371,3 +347,14 @@ JInterfaceBody(obj) ::= <<
 <writeJTypeBody(obj)>
 >>
 
+JUnaryPrePost(obj) ::= <<
+<obj.expression; format=obj.operator.formatString>
+>>
+
+JUnaryOperator(obj) ::= <<
+<obj.javaString>
+>>
+
+JUnaryCast(obj) ::= <%
+(<collection(obj.bounds, " & ")>) <obj.expression>
+%>

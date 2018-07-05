@@ -17,35 +17,17 @@ import lombok.Data;
 
 public class JObjParameters {
     
-    public static Map<String, Object> getParameters() throws IOException {
-        Map<String, Object> result = new HashMap<>();
-        Collection<NamePair> namePairs = makeNamePairs(getJObjClassNames());
-        result.put("names", namePairs);
-        result.put("concrete", getConcreteClasses());
-        return result;
-    }
-    
-    private static Collection<NamePair> getConcreteClasses() throws IOException {
-        List<String> classNames = findClasses().stream()
-                                               .filter(c -> !Modifier.isAbstract(c.getModifiers()))
-                                               .map(JObjParameters::classToString)
-                                               .collect(Collectors.toList());
-        return makeNamePairs(classNames);
-    }
-    
     public static void main(String[] args) throws IOException {
-        Set<NamePair> names = (Set<NamePair>) getParameters().get("names");
+        List<ClassInfo> names = (List<ClassInfo>) getParameters().get("names");
         names.forEach(System.out::println);
     }
     
-    private static Collection<String> getJObjClassNames() throws IOException {
-        return findClasses().stream()
-                            .map(JObjParameters::classToString)
-                            .collect(Collectors.toList());
-    }
-    
-    private static String classToString(Class<?> clazz) {
-        return clazz.getName().replace("$", ".");
+    public static Map<String, Object> getParameters() throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        Collection<ClassInfo> classInfos = makeClassInfos(findClasses());
+        result.put("names", classInfos);
+        result.put("concrete", getConcreteClasses());
+        return result;
     }
     
     private static Collection<Class<?>> findClasses() throws IOException {
@@ -54,6 +36,13 @@ public class JObjParameters {
         return findClasses(root).stream()
                                 .filter(JObj.class::isAssignableFrom)
                                 .collect(Collectors.toList());
+    }
+    
+    public static Collection<ClassInfo> getConcreteClasses() throws IOException {
+        List<Class<?>> classes = findClasses().stream()
+                                              .filter(c -> !Modifier.isAbstract(c.getModifiers()))
+                                              .collect(Collectors.toList());
+        return makeClassInfos(classes);
     }
     
     private static Collection<Class<?>> findClasses(File file) throws IOException {
@@ -107,21 +96,27 @@ public class JObjParameters {
         }
     }
     
-    private static Collection<NamePair> makeNamePairs(Collection<String> jObjectClassNames) {
+    private static Collection<ClassInfo> makeClassInfos(Collection<Class<?>> jObjectClassNames) {
         return jObjectClassNames.stream()
-                                .map(JObjParameters::makeNamePair)
+                                .map(JObjParameters::makeClassInfo)
                                 .collect(Collectors.toList());
     }
     
-    private static NamePair makeNamePair(String name) {
+    private static ClassInfo makeClassInfo(Class<?> clazz) {
+        String name = classNameToPackage(clazz);
         String simpleName = name.substring(name.lastIndexOf(".") + 1);
-        return new NamePair(simpleName, name);
+        return new ClassInfo(simpleName, name, clazz);
+    }
+    
+    private static String classNameToPackage(Class<?> clazz) {
+        return clazz.getName().replace("$", ".");
     }
     
     @Data
-    public static class NamePair implements Comparable<NamePair> {
+    public static class ClassInfo implements Comparable<ClassInfo> {
         private final String simpleName;
         private final String name;
+        private final Class<?> clazz;
         
         public String getName() {
             return name;
@@ -131,12 +126,8 @@ public class JObjParameters {
             return simpleName;
         }
         
-        public Class<?> getClassFromName() {
-            return Try.to(() -> Class.forName(name));
-        }
-        
         @Override
-        public int compareTo(NamePair o) {
+        public int compareTo(ClassInfo o) {
             return simpleName.compareTo(o.simpleName);
         }
     }

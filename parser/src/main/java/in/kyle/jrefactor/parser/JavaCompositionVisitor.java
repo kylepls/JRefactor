@@ -31,6 +31,9 @@ import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JL
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralLong;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralDouble;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralFloat;
+import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryCast;
+import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost;
+import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost.JUnaryOperator;
 import in.kyle.jrefactor.tree.obj.modifiable.JCatchClause;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JConstructorDeclaration;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
@@ -44,7 +47,6 @@ import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.JAnno
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.JEnum;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JClass;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JInterface;
-import in.kyle.jrefactor.tree.obj.reference.JExpressionTypeReference;
 import in.kyle.jrefactor.tree.obj.reference.JTypeArgument;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentReference;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentWildcard;
@@ -61,6 +63,7 @@ import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementTry;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementBreak;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementContinue;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.JStatementWhile;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor.JStatementBasicFor;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor.JStatementEnhancedFor;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementwhile.JStatementDoWhile;
 import in.kyle.jrefactor.tree.obj.typename.JArrayTypeName;
@@ -73,6 +76,10 @@ import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmem
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
+    
+    private boolean has(Object object) {
+        return object != null;
+    }
     
     @Override
     public JCompilationUnit visitCompilationUnit(Java8Parser.CompilationUnitContext ctx) {
@@ -91,6 +98,13 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
+    public JPropertyLookup visitPropertyLookup(PropertyLookupContext ctx) {
+        JPropertyLookup lookup = new JPropertyLookup();
+        ctx.Identifier().forEach(area -> lookup.addArea(area.getText()));
+        return lookup;
+    }
+    
+    @Override
     public String visitPackageDeclaration(PackageDeclarationContext ctx) {
         return ctx.packageName().getText();
     }
@@ -105,7 +119,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         if (ctx.import_wildcard() != null) {
             jImport.setOnDemand(true);
         }
-        if(ctx.packageName() != null) {
+        if (ctx.packageName() != null) {
             jImport.setPackageName(Optional.of(visitPackageName(ctx.packageName())));
         }
         return jImport;
@@ -113,9 +127,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JPropertyLookup visitPackageName(PackageNameContext ctx) {
-        JPropertyLookup lookup = new JPropertyLookup();
-        ctx.Identifier().forEach(area->lookup.addArea(area.getText()));
-        return lookup;
+        return visitPropertyLookup(ctx.propertyLookup());
     }
     
     @Override
@@ -178,27 +190,92 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JExpressionUnary visitPrimaryPostInc(PrimaryPostIncContext ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_INCREMENT,
-                                    (JExpression) visitPrimary(ctx.primary()));
+    public JExpression visitUnaryExpression(UnaryExpressionContext ctx) {
+        if (ctx.preExpression() != null) {
+            return visitPreExpression(ctx.preExpression());
+        } else if (ctx.postfixExpression() != null) {
+            return visitPostfixExpression(ctx.postfixExpression());
+        } else if (ctx.binaryExpression() != null) {
+            return visitBinaryExpression(ctx.binaryExpression());
+        } else if (ctx.castExpression() != null) {
+            return visitCastExpression(ctx.castExpression());
+        } else {
+            return null;
+        }
     }
     
     @Override
-    public JExpressionUnary visitPrimaryPostDec(PrimaryPostDecContext ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_DECREMENT,
-                                    (JExpression) visitPrimary(ctx.primary()));
+    public JUnaryCast visitCastExpression(CastExpressionContext ctx) {
+        return (JUnaryCast) super.visitCastExpression(ctx);
     }
     
     @Override
-    public JExpressionUnary visitExpressionPostInc(ExpressionPostIncContext ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_INCREMENT,
-                                    visitExpressionName(ctx.expressionName()));
+    public JUnaryCast visitCastPrimitive(CastPrimitiveContext ctx) {
+        JUnaryCast cast = new JUnaryCast();
+        cast.setExpression(visitUnaryExpression(ctx.unaryExpression()));
+        cast.addBound(visitPrimitiveType(ctx.primitiveType()));
+        return cast;
     }
     
     @Override
-    public JExpressionUnary visitExpressionPostDec(ExpressionPostDecContext ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_DECREMENT,
-                                    visitExpressionName(ctx.expressionName()));
+    public JTypeName visitPrimitiveType(PrimitiveTypeContext ctx) {
+        return new JTypeName(ctx.getText());
+    }
+    
+    @Override
+    public JUnaryCast visitCastReference(CastReferenceContext ctx) {
+        JUnaryCast cast = new JUnaryCast();
+        if (ctx.unaryExpression() != null)
+        cast.setExpression(visitUnaryExpression(ctx.unaryExpression()));
+        
+        cast.addBound(visitReferenceType(ctx.referenceType()));
+        ctx.additionalBound().forEach(b->cast.addBound(visitAdditionalBound(b)));
+        return cast;
+    }
+    
+    @Override
+    public JTypeName visitAdditionalBound(AdditionalBoundContext ctx) {
+        return visitInterfaceType(ctx.interfaceType());
+    }
+    
+    @Override
+    public JTypeName visitInterfaceType(InterfaceTypeContext ctx) {
+        return visitClassType(ctx.classType());
+    }
+    
+    @Override
+    public JExpressionUnary visitBinaryExpression(BinaryExpressionContext ctx) {
+        return new JUnaryPrePost(visitUnaryExpression(ctx.unaryExpression()), visitBinaryOperator(ctx.binaryOperator()));
+    }
+    
+    @Override
+    public JUnaryOperator visitBinaryOperator(BinaryOperatorContext ctx) {
+        return JUnaryOperator.fromJava(ctx.getText());
+    }
+    
+    @Override
+    public JExpression visitPostfixExpression(PostfixExpressionContext ctx) {
+        if(has(ctx.postfixOperator())) {
+            JUnaryPrePost expression = new JUnaryPrePost();
+            if (ctx.primary() != null) {
+                expression.setExpression(visitPrimary(ctx.primary()));
+            } else {
+                expression.setExpression(visitExpressionName(ctx.expressionName()));
+            }
+            expression.setOperator(visitPostfixOperator(ctx.postfixOperator()));
+            return expression;
+        } else if (has(ctx.primary())) {
+            return visitPrimary(ctx.primary());
+        } else if (has(ctx.expressionName())) {
+            return visitExpressionName(ctx.expressionName());
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public JExpression visitPrimary(PrimaryContext ctx) {
+        return (JExpression) super.visitPrimary(ctx);
     }
     
     @Override
@@ -295,156 +372,24 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JExpressionLeftRight visitExpressionAdd(Java8Parser.ExpressionAddContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.ADD,
-                                        (JExpression) visit(ctx.additiveExpression()),
-                                        (JExpression) visit(ctx.multiplicativeExpression()));
-    }
-    
-    @Override
-    public JExpressionTernary visitConditionalTernary(Java8Parser.ConditionalTernaryContext ctx) {
-        return new JExpressionTernary((JExpression) visit(ctx.expression()),
-                                      (JExpression) visit(ctx.conditionalOrExpression()),
-                                      (JExpression) visit(ctx.conditionalExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalOr(Java8Parser.ConditionalOrContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_OR,
-                                        (JExpression) visit(ctx.conditionalOrExpression()),
-                                        (JExpression) visit(ctx.conditionalAndExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalAnd(Java8Parser.ConditionalAndContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_OR,
-                                        (JExpression) visit(ctx.conditionalAndExpression()),
-                                        (JExpression) visit(ctx.inclusiveOrExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitBinaryInclusiveOr(Java8Parser.BinaryInclusiveOrContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_INCLUSIVE_OR,
-                                        (JExpression) visit(ctx.inclusiveOrExpression()),
-                                        (JExpression) visit(ctx.exclusiveOrExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitBinaryExclusiveOr(Java8Parser.BinaryExclusiveOrContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_EXCLUSIVE_OR,
-                                        (JExpression) visit(ctx.exclusiveOrExpression()),
-                                        (JExpression) visit(ctx.andExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitBinaryAnd(Java8Parser.BinaryAndContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_AND,
-                                        (JExpression) visit(ctx.andExpression()),
-                                        (JExpression) visit(ctx.equalityExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalEquality(Java8Parser.ConditionalEqualityContext 
-                                                                     ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.EQUAL,
-                                        (JExpression) visit(ctx.equalityExpression()),
-                                        (JExpression) visit(ctx.relationalExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalNotEquality(Java8Parser.ConditionalNotEqualityContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.NOT_EQUAL,
-                                        (JExpression) visit(ctx.equalityExpression()),
-                                        (JExpression) visit(ctx.relationalExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalLessThan(Java8Parser.ConditionalLessThanContext 
-                                                                     ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_LESS_THAN,
-                                        (JExpression) visit(ctx.relationalExpression()),
-                                        (JExpression) visit(ctx.shiftExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalGreaterThan(Java8Parser.ConditionalGreaterThanContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_GREATER_THAN,
-                                        (JExpression) visit(ctx.relationalExpression()),
-                                        (JExpression) visit(ctx.shiftExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalLessThanEq(Java8Parser.ConditionalLessThanEqContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_LESS_THAN_EQUAL,
-                                        (JExpression) visit(ctx.relationalExpression()),
-                                        (JExpression) visit(ctx.shiftExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalGreatherThanEq(Java8Parser.ConditionalGreatherThanEqContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.CONDITIONAL_GREATER_EQUAL,
-                                        (JExpression) visit(ctx.relationalExpression()),
-                                        (JExpression) visit(ctx.shiftExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitConditionalInstanceOf(Java8Parser.ConditionalInstanceOfContext ctx) {
-        
-        JLeftRightOperator operator = JLeftRightOperator.INSTANCE_OF;
-        JExpression left = (JExpression) visit(ctx.relationalExpression());
-        JExpression right =
-                new JExpressionTypeReference(visitReferenceType(ctx.referenceType()).getReference
-                        ());
+    public Object visitLeftRightExpression(LeftRightExpressionContext ctx) {
+        JLeftRightOperator operator = visitLeftRightOperator(ctx.leftRightOperator());
+        JExpression left = (JExpression) visit(ctx.conditionalExpression(0));
+        JExpression right = (JExpression) visit(ctx.conditionalExpression(1));
         return new JExpressionLeftRight(operator, left, right);
     }
     
     @Override
-    public JExpressionLeftRight visitBinaryShiftLeft(Java8Parser.BinaryShiftLeftContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_SHIFT_LEFT,
-                                        (JExpression) visit(ctx.shiftExpression()),
-                                        (JExpression) visit(ctx.additiveExpression()));
+    public JLeftRightOperator visitLeftRightOperator(LeftRightOperatorContext ctx) {
+        return JLeftRightOperator.fromJava(ctx.getText());
     }
     
     @Override
-    public JExpressionLeftRight visitBinaryShiftRight(Java8Parser.BinaryShiftRightContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_SHIFT_RIGHT,
-                                        (JExpression) visit(ctx.shiftExpression()),
-                                        (JExpression) visit(ctx.additiveExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitBinarcyAllignRight(Java8Parser.BinarcyAllignRightContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.BINARY_ALLIGN_RIGHT,
-                                        (JExpression) visit(ctx.shiftExpression()),
-                                        (JExpression) visit(ctx.additiveExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitExpressionSubtract(Java8Parser.ExpressionSubtractContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.SUBTRACT,
-                                        (JExpression) visit(ctx.additiveExpression()),
-                                        (JExpression) visit(ctx.multiplicativeExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitExpressionDivide(Java8Parser.ExpressionDivideContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.DIVIDE,
-                                        (JExpression) visit(ctx.multiplicativeExpression()),
-                                        (JExpression) visit(ctx.unaryExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitExpressionMultiply(Java8Parser.ExpressionMultiplyContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.MULTIPLY,
-                                        (JExpression) visit(ctx.multiplicativeExpression()),
-                                        (JExpression) visit(ctx.unaryExpression()));
-    }
-    
-    @Override
-    public JExpressionLeftRight visitExpressionModulus(Java8Parser.ExpressionModulusContext ctx) {
-        return new JExpressionLeftRight(JLeftRightOperator.MODULUS,
-                                        (JExpression) visit(ctx.multiplicativeExpression()),
-                                        (JExpression) visit(ctx.unaryExpression()));
+    public JExpressionTernary visitConditionalTernary(ConditionalTernaryContext ctx) {
+        JExpression left = (JExpression) visit(ctx.conditionalExpression(0));
+        JExpression right = (JExpression) visit(ctx.conditionalExpression(1));
+        JExpression condition = visitExpression(ctx.expression());
+        return new JExpressionTernary(left, condition, right);
     }
     
     @Override
@@ -523,8 +468,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JEnumConstant visitEnumConstant(EnumConstantContext ctx) {
         JEnumConstant constant = new JEnumConstant(visitIdentifier(ctx.identifier()));
         constant.setAnnotations(visitAnnotations(ctx.annotation()));
-        if (ctx.argumentList() != null)
-        constant.setArguments(visitArgumentList(ctx.argumentList()));
+        if (ctx.argumentList() != null) {
+            constant.setArguments(visitArgumentList(ctx.argumentList()));
+        }
         if (ctx.classBody() != null) {
             JClassBody body = visitClassBody(ctx.classBody());
             constant.setBody(Optional.of(body));
@@ -534,9 +480,12 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     
     private List<JModifier> visitModifiers(Collection<ModifierContext> ctx) {
-        return ctx.stream()
-                  .map(c -> JModifier.valueOf(c.getText().toUpperCase()))
-                  .collect(Collectors.toList());
+        return ctx.stream().map(this::visitModifier).collect(Collectors.toList());
+    }
+    
+    @Override
+    public JModifier visitModifier(ModifierContext ctx) {
+        return JModifier.fromJava(ctx.getText());
     }
     
     @Override
@@ -816,7 +765,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JStatementExpression visitAssignmentStatement(AssignmentStatementContext ctx) {
+    public JStatementExpression visitStatementAssignment_nocol(StatementAssignment_nocolContext 
+                                                                           ctx) {
         return new JStatementExpression(visitAssignment(ctx.assignment()));
     }
     
@@ -840,52 +790,31 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JStatementExpression visitPreIncrementStatement(Java8Parser.PreIncrementStatementContext ctx) {
-        return new JStatementExpression(visitPreIncrementExpression(ctx.preIncrementExpression()));
+    public JStatementExpression visitStatementPre_nocol(StatementPre_nocolContext ctx) {
+        return new JStatementExpression(visitPreExpression(ctx.preExpression()));
     }
     
     @Override
-    public JExpressionUnary visitPreIncrementExpression(Java8Parser.PreIncrementExpressionContext
-                                                                    ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.PRE_INCREMENT,
-                                    (JExpression) visit(ctx.unaryExpression()));
+    public JExpressionUnary visitPreExpression(PreExpressionContext ctx) {
+        return new JUnaryPrePost((JExpression) visit(ctx.unaryExpression()), visitPrefixOperator(ctx.prefixOperator()));
     }
     
     @Override
-    public JStatementExpression visitPreDecrementStatement(Java8Parser.PreDecrementStatementContext ctx) {
-        return new JStatementExpression(visitPreDecrementExpression(ctx.preDecrementExpression()));
+    public JUnaryOperator visitPrefixOperator(PrefixOperatorContext ctx) {
+        if (ctx.getText().equals("++")) {
+            return JUnaryOperator.PRE_INCREMENT;
+        } else {
+            return JUnaryOperator.PRE_DECREMENT;
+        }
     }
     
     @Override
-    public JExpressionUnary visitPreDecrementExpression(Java8Parser.PreDecrementExpressionContext
-                                                                    ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.PRE_DECREMENT,
-                                    (JExpression) visit(ctx.unaryExpression()));
-    }
-    
-    @Override
-    public JStatementExpression visitPostIncrementStatement(Java8Parser.PostIncrementStatementContext ctx) {
-        return new JStatementExpression(visitPostIncrementExpression(ctx.postIncrementExpression
-                ()));
-    }
-    
-    @Override
-    public JExpressionUnary visitPostIncrementExpression(Java8Parser.PostIncrementExpressionContext ctx) {
-        
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_INCREMENT,
-                                    (JExpression) visit(ctx.postfixExpression()));
-    }
-    
-    @Override
-    public Object visitPostDecrementStatement(Java8Parser.PostDecrementStatementContext ctx) {
-        return new JStatementExpression(visitPostDecrementExpression(ctx.postDecrementExpression
-                ()));
-    }
-    
-    @Override
-    public JExpressionUnary visitPostDecrementExpression(Java8Parser.PostDecrementExpressionContext ctx) {
-        return new JExpressionUnary(JExpressionUnary.JOperator.POST_DECREMENT,
-                                    (JExpression) visit(ctx.postfixExpression()));
+    public JUnaryOperator visitPostfixOperator(PostfixOperatorContext ctx) {
+        if (ctx.getText().equals("++")) {
+            return JUnaryOperator.POST_INCREMENT;
+        } else {
+            return JUnaryOperator.POST_DECREMENT;
+        }
     }
     
     @Override
@@ -921,9 +850,68 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JStatementExpression visitClassInstanceCreationStatement(
-            ClassInstanceCreationStatementContext ctx) {
+    public JStatementExpression visitStatementClassInstanceCreation_nocol(
+            StatementClassInstanceCreation_nocolContext ctx) {
         return new JStatementExpression(visitClassInstanceCreationExpression(ctx.classInstanceCreationExpression()));
+    }
+    
+    @Override
+    public JStatementBasicFor visitBasicForStatement(BasicForStatementContext ctx) {
+        JStatementBasicFor statement = new JStatementBasicFor();
+        statement.setStatement(visitStatement(ctx.statement()));
+        if (ctx.forInit() != null) {
+            statement.setInit(visitForInit(ctx.forInit()));
+        }
+        if (ctx.expression() != null) {
+            statement.setCondition(Optional.of(visitExpression(ctx.expression())));
+        }
+        if (ctx.forUpdate() != null) {
+            statement.setUpdate(visitForUpdate(ctx.forUpdate()));
+        }
+        return statement;
+    }
+    
+    @Override
+    public List<JStatement> visitForUpdate(ForUpdateContext ctx) {
+        return visitStatementExpressionList(ctx.statementExpressionList());
+    }
+    
+    @Override
+    public List<JStatement> visitForInit(ForInitContext ctx) {
+        if (ctx.localVariableDeclaration() != null) {
+            return Collections.singletonList(visitLocalVariableDeclaration(ctx.localVariableDeclaration()));
+        } else {
+            return visitStatementExpressionList(ctx.statementExpressionList());
+        }
+    }
+    
+    @Override
+    public JStatement visitStatementExpression(StatementExpressionContext ctx) {
+        return (JStatement) super.visitStatementExpression(ctx);
+    }
+    
+    @Override
+    public List<JStatement> visitStatementExpressionList(StatementExpressionListContext ctx) {
+        return ctx.statementExpression()
+                  .stream()
+                  .map(this::visitStatementExpression)
+                  .collect(Collectors.toList());
+    }
+    
+    @Override
+    public JStatement visitStatementPost_nocol(StatementPost_nocolContext ctx) {
+        return new JStatementExpression(visitPostExpression(ctx.postExpression()));
+    }
+    
+    @Override
+    public JExpression visitPostExpression(PostExpressionContext ctx) {
+        JExpression expression;
+        if (has(ctx.primary())) {
+            expression = visitPrimary(ctx.primary());
+        } else {
+            expression = visitExpressionName(ctx.expressionName());
+        }
+        return new JUnaryPrePost(expression, visitPostfixOperator(ctx.postfixOperator()));
     }
     
     @Override
@@ -963,8 +951,17 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         return ctx.typeArgumentList()
                   .typeArgument()
                   .stream()
-                  .map(c -> (JTypeArgument) visitTypeArgument(c))
+                  .map(this::visitTypeArgument)
                   .collect(Collectors.toList());
+    }
+    
+    @Override
+    public JTypeArgument visitTypeArgument(TypeArgumentContext ctx) {
+        if (has(ctx.wildcard())) {
+            return visitWildcard(ctx.wildcard());
+        } else {
+            return new JTypeArgumentReference(visitReferenceType(ctx.referenceType()));
+        }
     }
     
     @Override
@@ -981,8 +978,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public JReference visitReferenceType(ReferenceTypeContext ctx) {
-        return new JTypeArgumentReference(new JTypeName(ctx.getText()));
+    public JTypeName visitReferenceType(ReferenceTypeContext ctx) {
+        return new JTypeName(ctx.getText());
     }
     
     @Override
@@ -1034,10 +1031,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JStatementIf statement = new JStatementIf();
         statement.setExpression(visitExpression(ctx.expression()));
         statement.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf()));
-        
-        JStatementElse anElse = new JStatementElse();
-        anElse.setStatement(visitStatement(ctx.statement()));
-        statement.addElseStatement(anElse);
+        statement.setElseStatement(Optional.of(visitStatement(ctx.statement())));
         return statement;
     }
     
@@ -1046,8 +1040,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JStatementIf statement = new JStatementIf();
         statement.setExpression(visitExpression(ctx.expression()));
         statement.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf(0)));
-        JStatementElse anElse = new JStatementElse();
-        anElse.setStatement(visitStatementNoShortIf(ctx.statementNoShortIf(1)));
+        statement.setElseStatement(Optional.of(visitStatementNoShortIf(ctx.statementNoShortIf(1))));
         return statement;
     }
     

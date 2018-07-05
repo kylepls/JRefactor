@@ -49,6 +49,11 @@ writeJTypeBody(obj) ::= <%
 }
 %>
 
+writeSuperType(obj) ::= <%
+<writeTypeParameters(obj)>
+<if(obj.superType.present)> extends <obj.superType><endif>
+%>
+
 indent(obj) ::= <<
     <obj>
 >>

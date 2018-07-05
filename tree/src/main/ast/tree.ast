@@ -9,7 +9,7 @@ public static <name> fromJava(String string) {
             return operator;
         }
     }
-    throw new IllegalArgumentException();
+    throw new IllegalArgumentException(string);
 }
 "
 
@@ -36,11 +36,11 @@ Obj {
         List<T> elements
         concrete StatementBlock<Statement> is LambdaBody {
         }
-        concrete TypeBody<T> is Unit {
-            ClassBody<ClassMember> {}
-            AnnotationBody<AnnotationMember> {}
-            EnumBody<EnumMember> {}
-            InterfaceBody<InterfaceMember> {}
+        TypeBody<T> is Unit {
+            concrete ClassBody<ClassMember> {}
+            concrete AnnotationBody<AnnotationMember> {}
+            concrete EnumBody<EnumMember> {}
+            concrete InterfaceBody<InterfaceMember> {}
         }
     }
     
@@ -155,16 +155,23 @@ Obj {
         }
         
         ExpressionUnary {
-            Operator operator
             Expression expression
             
-            inside Operator is Obj {
-                <javaString, formatString>
-                PRE_INCREMENT, "++", "++%s"
-                PRE_DECREMENT, "--", "--%s"
-                POST_INCREMENT, "++", "%s++"
-                POST_DECREMENT, "--", "%s--"
-                #fromJava
+            UnaryCast {
+                List<TypeName> bounds
+            }
+            
+            UnaryPrePost {
+                UnaryOperator operator
+                
+                inside UnaryOperator is Obj {
+                    <javaString, formatString>
+                    PRE_INCREMENT, "++", "++%s"
+                    PRE_DECREMENT, "--", "--%s"
+                    POST_INCREMENT, "++", "%s++"
+                    POST_DECREMENT, "--", "%s--"
+                    #fromJava
+                }
             }
         }
         
@@ -201,11 +208,6 @@ Obj {
         }
     }
 
-    StatementElse {
-        Optional<Expression> condition
-        Statement statement
-    }
-    
     SwitchCase {
         List<Statement> statements
         SwitchCaseExpression {
@@ -221,9 +223,9 @@ Obj {
                 StatementFor {
                     Statement statement
                     StatementBasicFor {
-                        Optional<Expression> init
+                        List<Statement> init
                         Optional<Expression> condition
-                        Optional<Expression> update
+                        List<Statement> update
                     }
                     
                     StatementEnhancedFor {
@@ -279,7 +281,7 @@ Obj {
             StatementIf {
                 Statement statement
                 Expression expression
-                List<StatementElse> elseStatements
+                Optional<Statement> elseStatement
             }
         }
         
@@ -391,11 +393,6 @@ Obj {
             Parameter is LambdaParameter {
                 TypeName type
                 Identifier name
-            }
-            
-            MultiParameter {
-                List<TypeName> types
-                String name
             }
             
             ConstructorDeclaration is ClassMember {

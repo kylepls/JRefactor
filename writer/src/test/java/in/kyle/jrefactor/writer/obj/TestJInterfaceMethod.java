@@ -21,7 +21,7 @@ public class TestJInterfaceMethod {
         header.setReturns(new JTypeName("void"));
         header.setIdentifier(new JIdentifier("test"));
         method.setHeader(header);
-        Verify.that(Write.object(method)).isEqual("void test()");
+        Verify.that(Write.object(method)).isEqual("void test();");
     }
     
     @Test

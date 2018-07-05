@@ -12,7 +12,7 @@ public class TestJAnnotationField {
     
     @Test
     public void test() {
-        String test = "String string()";
+        String test = "String string();";
         JAnnotationField field = Parser.parse(test, JAnnotationField.class);
         Verify.that(field.getType().getType()).isEqual("String");
         Verify.that(field.getIdentifier().getName()).isEqual("string");
@@ -23,7 +23,7 @@ public class TestJAnnotationField {
     
     @Test
     public void testDefaultValue() {
-        String test = "String string() default \"test\"";
+        String test = "String string() default \"test\";";
         JAnnotationField field = Parser.parse(test, JAnnotationField.class);
         Verify.that(field.getDefaultValue()).isPresent();
         JAnnotationValue value = field.getDefaultValue().get();

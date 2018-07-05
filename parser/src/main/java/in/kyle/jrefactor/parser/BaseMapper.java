@@ -42,6 +42,16 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJUnaryCast(Java8Parser object) {
+        return object.castExpression();
+    }
+    
+    @Override
+    protected ParserRuleContext parseJUnaryPrePost(Java8Parser object) {
+        return object.unaryExpression();
+    }
+    
+    @Override
     protected ParserRuleContext parseJExpressionAssignment(Java8Parser object) {
         return object.assignmentExpression();
     }
@@ -68,12 +78,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJExpressionLeftRight(Java8Parser object) {
-        return object.assignmentExpression();
+        return object.expression();
     }
     
     @Override
     protected ParserRuleContext parseJLeftRightOperator(Java8Parser object) {
-        return object.assignmentOperator();
+        return object.leftRightOperator();
     }
     
     @Override
@@ -103,7 +113,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJExpressionTernary(Java8Parser object) {
-        return object.expression();
+        return object.conditionalExpression();
     }
     
     @Override
@@ -117,7 +127,7 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
-    protected ParserRuleContext parseJOperator(Java8Parser object) {
+    protected ParserRuleContext parseJUnaryOperator(Java8Parser object) {
         return null;
     }
     
@@ -168,17 +178,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJPropertyLookup(Java8Parser object) {
-        return null;
+        return object.propertyLookup();
     }
     
     @Override
     protected ParserRuleContext parseJStatement(Java8Parser object) {
         return object.statement();
-    }
-    
-    @Override
-    protected ParserRuleContext parseJStatementElse(Java8Parser object) {
-        return null;
     }
     
     @Override
@@ -272,11 +277,6 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
-    protected ParserRuleContext parseJMultiParameter(Java8Parser object) {
-        return null;
-    }
-    
-    @Override
     protected ParserRuleContext parseJParameter(Java8Parser object) {
         return object.lastFormalParameter();
     }
@@ -293,7 +293,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJBlock(Java8Parser object) {
-        return object.block();
+        return null;
     }
     
     @Override
@@ -398,12 +398,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJStatementBasicFor(Java8Parser object) {
-        return object.forStatement();
+        return object.basicForStatement();
     }
     
     @Override
     protected ParserRuleContext parseJStatementEnhancedFor(Java8Parser object) {
-        return object.forStatement();
+        return object.enhancedForStatement();
     }
     
     @Override
@@ -433,7 +433,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJStatementBlock(Java8Parser object) {
-        return null;
+        return object.block();
     }
     
     @Override

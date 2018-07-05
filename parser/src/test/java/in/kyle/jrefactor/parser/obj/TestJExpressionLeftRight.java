@@ -7,7 +7,6 @@ import org.junit.runners.Parameterized;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import in.kyle.api.utils.StringUtils;
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
@@ -22,7 +21,7 @@ public class TestJExpressionLeftRight {
     private final JLeftRightOperator operator;
     private final Object value;
     
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         Collection<Object[]> data = new ArrayList<>();
         data.add(testCase(JLeftRightOperator.ADD, 1));
@@ -54,8 +53,7 @@ public class TestJExpressionLeftRight {
     
     @Test
     public void testExpression() {
-        String javaString =
-                StringUtils.replaceVariables("var {} {}", operator.getJavaString(), value);
+        String javaString = String.format("var %s %s", operator.getJavaString(), value);
         JExpressionLeftRight expression = Parser.parse(javaString, JExpressionLeftRight.class);
         Verify.that(expression.getLeft()).isInstanceOf(JExpressionName.class);
         Verify.that(expression.getRight()).isNotNull();

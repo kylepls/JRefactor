@@ -9,20 +9,20 @@ import java.util.Collection;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionUnary;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionUnary.JOperator;
+import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost;
+import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost.JUnaryOperator;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RunWith(Parameterized.class)
-public class TestJExpressionUnary {
+public class TestJUnaryPrePost {
     
-    private final JOperator operator;
+    private final JUnaryOperator operator;
     
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         Collection<Object[]> data = new ArrayList<>();
-        for (JOperator operator : JOperator.values()) {
+        for (JUnaryOperator operator : JUnaryOperator.values()) {
             data.add(testCase(operator));
         }
         return data;
@@ -41,7 +41,7 @@ public class TestJExpressionUnary {
             javaString = "i" + operator.getJavaString();
         }
         
-        JExpressionUnary expression = Parser.parse(javaString, JExpressionUnary.class);
+        JUnaryPrePost expression = Parser.parse(javaString, JUnaryPrePost.class);
         Verify.that(expression).isNotNull();
         Verify.that(expression.getExpression()).isNotNull();
         Verify.that(expression.getOperator()).isEqual(operator);

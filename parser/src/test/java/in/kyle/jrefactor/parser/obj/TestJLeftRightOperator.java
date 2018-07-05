@@ -19,7 +19,7 @@ public class TestJLeftRightOperator {
     
     private final JLeftRightOperator operator;
     
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.stream(JLeftRightOperator.values())
                      .map(a -> new Object[]{a})
