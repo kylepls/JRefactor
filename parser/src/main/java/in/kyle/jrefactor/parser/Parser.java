@@ -40,7 +40,12 @@ public class Parser {
         Java8Parser parser = new Java8Parser(ts);
         ParserRuleContext context = MAPPER.parsePart(parser, clazz);
         if (context != null) {
-            return (T) VISITOR.visit(context);
+            T visit = (T) VISITOR.visit(context);
+            if (visit != null) {
+                return visit;
+            } else {
+                throw new ParseException("No parser implemented for type " + clazz.getName());
+            }
         } else {
             throw new ParseException("No parser defined for type " + clazz.getName());
         }

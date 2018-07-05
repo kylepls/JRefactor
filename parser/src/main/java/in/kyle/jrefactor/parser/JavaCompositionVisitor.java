@@ -29,8 +29,10 @@ import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralFloating;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralLong;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralDouble;
-import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating.JLiteralFloat;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
+        .JLiteralDouble;
+import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.literalfloating
+        .JLiteralFloat;
 import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryCast;
 import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost;
 import in.kyle.jrefactor.tree.obj.expression.expressionunary.JUnaryPrePost.JUnaryOperator;
@@ -45,11 +47,14 @@ import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JTypeParameter;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.JAnnotationType;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.JEnum;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JClass;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JInterface;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
+        .typeparametertype.JClass;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
+        .typeparametertype.JInterface;
 import in.kyle.jrefactor.tree.obj.reference.JTypeArgument;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentReference;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentWildcard;
+import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentWildcard.JWildcardType;
 import in.kyle.jrefactor.tree.obj.statement.JStatementAssert;
 import in.kyle.jrefactor.tree.obj.statement.JStatementEmpty;
 import in.kyle.jrefactor.tree.obj.statement.JStatementExpression;
@@ -57,22 +62,31 @@ import in.kyle.jrefactor.tree.obj.statement.JStatementLabeled;
 import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementIf;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementReturn;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementSwitch;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementSynchronized;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementThrow;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.JStatementTry;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementBreak;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement.JStatementContinue;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.identifiablestatement
+        .JStatementContinue;
 import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.JStatementWhile;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor.JStatementBasicFor;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor.JStatementEnhancedFor;
-import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementwhile.JStatementDoWhile;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor
+        .JStatementBasicFor;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementfor
+        .JStatementEnhancedFor;
+import in.kyle.jrefactor.tree.obj.statement.statementcontrol.statementcontrolloop.statementwhile
+        .JStatementDoWhile;
+import in.kyle.jrefactor.tree.obj.switchcase.JSwitchCaseDefault;
+import in.kyle.jrefactor.tree.obj.switchcase.JSwitchCaseExpression;
 import in.kyle.jrefactor.tree.obj.typename.JArrayTypeName;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JAnnotationMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.JInterfaceMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.JClassMember;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
-import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.classinitializer.JClassInstanceInitializer;
-import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.classinitializer.JClassStaticInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
+        .classinitializer.JClassInstanceInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
+        .classinitializer.JClassStaticInitializer;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
@@ -225,11 +239,12 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JUnaryCast visitCastReference(CastReferenceContext ctx) {
         JUnaryCast cast = new JUnaryCast();
-        if (ctx.unaryExpression() != null)
-        cast.setExpression(visitUnaryExpression(ctx.unaryExpression()));
+        if (ctx.unaryExpression() != null) {
+            cast.setExpression(visitUnaryExpression(ctx.unaryExpression()));
+        }
         
         cast.addBound(visitReferenceType(ctx.referenceType()));
-        ctx.additionalBound().forEach(b->cast.addBound(visitAdditionalBound(b)));
+        ctx.additionalBound().forEach(b -> cast.addBound(visitAdditionalBound(b)));
         return cast;
     }
     
@@ -245,7 +260,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpressionUnary visitBinaryExpression(BinaryExpressionContext ctx) {
-        return new JUnaryPrePost(visitUnaryExpression(ctx.unaryExpression()), visitBinaryOperator(ctx.binaryOperator()));
+        return new JUnaryPrePost(visitUnaryExpression(ctx.unaryExpression()),
+                                 visitBinaryOperator(ctx.binaryOperator()));
     }
     
     @Override
@@ -255,7 +271,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpression visitPostfixExpression(PostfixExpressionContext ctx) {
-        if(has(ctx.postfixOperator())) {
+        if (has(ctx.postfixOperator())) {
             JUnaryPrePost expression = new JUnaryPrePost();
             if (ctx.primary() != null) {
                 expression.setExpression(visitPrimary(ctx.primary()));
@@ -394,18 +410,24 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JLiteralNumeric visitIntegerLiteral(Java8Parser.IntegerLiteralContext ctx) {
-        String text = ctx.IntegerLiteral().getText();
+        String text = ctx.IntegerLiteral().getText().replace("_", "");
         if (text.endsWith("L")) {
-            return new JLiteralLong(Long.parseLong(ctx.getText()
-                                                      .substring(0, ctx.getText().length() - 1)));
+            return new JLiteralLong(Long.parseLong(text.substring(0, text.length() - 1)));
+        } else if (text.contains("x")) {
+            int value = Integer.parseInt(text.substring(2), 16);
+            return new JLiteralInteger(value);
+        } else if (text.contains("b")) {
+            int value = Integer.parseInt(text.substring(2), 2);
+            return new JLiteralInteger(value);
         } else {
-            return new JLiteralInteger(Integer.parseInt(ctx.getText()));
+            return new JLiteralInteger(Integer.parseInt(text));
         }
     }
     
     @Override
     public JLiteralString visitStringLiteral(Java8Parser.StringLiteralContext ctx) {
-        return new JLiteralString(ctx.getText().substring(1, ctx.getText().length() - 1));
+        String string = ctx.getText().substring(1, ctx.getText().length() - 1);
+        return new JLiteralString(JavaStringUtils.unescapeString(string));
     }
     
     @Override
@@ -796,7 +818,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpressionUnary visitPreExpression(PreExpressionContext ctx) {
-        return new JUnaryPrePost((JExpression) visit(ctx.unaryExpression()), visitPrefixOperator(ctx.prefixOperator()));
+        return new JUnaryPrePost((JExpression) visit(ctx.unaryExpression()),
+                                 visitPrefixOperator(ctx.prefixOperator()));
     }
     
     @Override
@@ -967,14 +990,19 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JTypeArgument visitWildcard(WildcardContext ctx) {
         
-        JTypeArgumentWildcard.JWildcardType type = null;
-        JTypeName reference = null;
+        JTypeArgumentWildcard wildcard = new JTypeArgumentWildcard();
         if (ctx.wildcardBounds() != null) {
-            String text = ctx.wildcardBounds().boundType.getText();
-            type = JTypeArgumentWildcard.JWildcardType.valueOf(text.toUpperCase());
-            reference = new JTypeName(ctx.wildcardBounds().referenceType().getText());
+            JWildcardType type = visitWildcardType(ctx.wildcardBounds().wildcardType());
+            JTypeName reference = visitReferenceType(ctx.wildcardBounds().referenceType());
+            wildcard.setReference(Optional.of(reference));
+            wildcard.setType(Optional.of(type));
         }
-        return new JTypeArgumentWildcard(reference, type);
+        return wildcard;
+    }
+    
+    @Override
+    public JWildcardType visitWildcardType(WildcardTypeContext ctx) {
+        return JWildcardType.fromJava(ctx.getText());
     }
     
     @Override
@@ -1206,7 +1234,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JLiteralCharacter visitCharacterLiteral(CharacterLiteralContext ctx) {
         String text = ctx.CharacterLiteral().getText();
-        return new JLiteralCharacter(text.charAt(1));
+        text = text.substring(1, text.length() - 1);
+        text = JavaStringUtils.unescapeString(text);
+        return new JLiteralCharacter(text.charAt(0));
     }
     
     @Override
@@ -1433,5 +1463,49 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         } else {
             return new JLiteralFloat(Float.parseFloat(ctx.getText()));
         }
+    }
+    
+    @Override
+    public JStatementSwitch visitSwitchStatement(SwitchStatementContext ctx) {
+        JStatementSwitch statement = new JStatementSwitch();
+        statement.setExpression(visitExpression(ctx.expression()));
+        statement.setCaseElements(visitSwitchBlock(ctx.switchBlock()));
+        return statement;
+        
+    }
+    
+    @Override
+    public List<JSwitchCase> visitSwitchBlock(SwitchBlockContext ctx) {
+        List<JSwitchCase> cases = new ArrayList<>();
+        for (SwitchCaseContext caseContext : ctx.switchCase()) {
+            JSwitchCase switchCase = visitSwitchCase(caseContext);
+            if (has(caseContext.blockStatements())) {
+                switchCase.setStatements(visitBlockStatements(caseContext.blockStatements()));
+            }
+            cases.add(switchCase);
+        }
+        if (has(ctx.defaultSwitchCase())) {
+            cases.add(visitDefaultSwitchCase(ctx.defaultSwitchCase()));
+        }
+        return cases;
+    }
+    
+    @Override
+    public JSwitchCaseExpression visitSwitchCase(SwitchCaseContext ctx) {
+        JSwitchCaseExpression switchCase = new JSwitchCaseExpression();
+        switchCase.setCondition(visitExpression(ctx.expression()));
+        if (has(ctx.blockStatements())) {
+            switchCase.setStatements(visitBlockStatements(ctx.blockStatements()));
+        }
+        return switchCase;
+    }
+    
+    @Override
+    public JSwitchCaseDefault visitDefaultSwitchCase(DefaultSwitchCaseContext ctx) {
+        JSwitchCaseDefault switchCase = new JSwitchCaseDefault();
+        if (has(ctx.blockStatements())) {
+            switchCase.setStatements(visitBlockStatements(ctx.blockStatements()));
+        }
+        return switchCase;
     }
 }

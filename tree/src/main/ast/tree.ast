@@ -45,11 +45,11 @@ Obj {
     }
     
     Reference {
-        TypeName reference
         
         TypeArgument {
             TypeArgumentWildcard {
-                WildcardType type
+                Optional<TypeName> reference
+                Optional<WildcardType> type
                 
                 inside WildcardType is Obj {
                     <javaString>
@@ -59,15 +59,16 @@ Obj {
                     #fromJava
                 }
             }
-            concrete TypeArgumentReference {
+            TypeArgumentReference {
+                TypeName reference
             }
         }
         
-        ExpressionTypeReference is Expression {
+        concrete ExpressionTypeReference is Expression {
+            TypeName reference
         }
         
     }
-    
 
     LambdaParameter {
     }

@@ -167,6 +167,7 @@ typeArgumentList
 	;
 
 
+
 typeArgument
 	:	referenceType
 	|	wildcard
@@ -179,8 +180,13 @@ wildcard
 
 
 wildcardBounds
-	:	boundType=('extends'|'super') referenceType
+	:	wildcardType referenceType
 	;
+
+wildcardType
+    :   'extends'
+    |   'super'
+    ;
 
 typeName
 	:	Identifier
@@ -763,27 +769,16 @@ switchStatement
 	;
 
 switchBlock
-	:	'{' switchBlockStatementGroup* switchLabel* '}'
+	:	'{' switchCase* defaultSwitchCase? '}'
 	;
 
-switchBlockStatementGroup
-	:	switchLabels blockStatements
+switchCase
+    :   'case' expression ':' blockStatements?
 	;
 
-switchLabels
-	:	switchLabel switchLabel*
-	;
-
-switchLabel
-	:	'case' constantExpression ':'
-	|	'case' enumConstantName ':'
-	|	'default' ':'
-	;
-
-enumConstantName
-	:	identifier
-	;
-
+defaultSwitchCase
+    :   'default' ':' blockStatements?
+    ;
 
 whileStatement
 	:	'while' '(' expression ')' statement
@@ -1136,22 +1131,15 @@ dimExpr
 	:	annotation* '[' expression ']'
 	;
 
-constantExpression
-	:	expression
-	;
-
-
 expression
 	:	lambdaExpression
 	|	assignmentExpression
 	|   conditionalExpression
 	;
 
-
 lambdaExpression
 	:	lambdaParameters '->' lambdaBody
 	;
-
 
 lambdaParameters
 	:	lambdaIdentifierParameter

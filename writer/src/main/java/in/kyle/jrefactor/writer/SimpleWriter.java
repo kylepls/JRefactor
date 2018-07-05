@@ -424,7 +424,7 @@ public class SimpleWriter {
 //        }
 //    }
 //    
-//    protected void writeVariableHolder(VariableHolder object) { // TODO: 1/10/2018  
+//    protected void writeVariableHolder(VariableHolder object) { 
 //        write(object.getModifiers());
 //        write(object.getType());
 //        writeString(" ");

@@ -2,6 +2,8 @@ package in.kyle.jrefactor.writer.obj;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.tree.obj.JTypeName;
 import in.kyle.jrefactor.tree.obj.reference.typeargument.JTypeArgumentWildcard;
@@ -20,8 +22,8 @@ public class TestJTypeArgumentWildcard {
     @Test
     public void testType() {
         JTypeArgumentWildcard wildcard = new JTypeArgumentWildcard();
-        wildcard.setType(EXTENDS);
-        wildcard.setReference(new JTypeName("String"));
+        wildcard.setType(Optional.of(EXTENDS));
+        wildcard.setReference(Optional.of(new JTypeName("String")));
         Verify.that(Write.object(wildcard)).isEqual("? extends String");
     }
 }

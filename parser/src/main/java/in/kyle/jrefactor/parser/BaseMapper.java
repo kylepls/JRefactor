@@ -18,7 +18,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJValuePair(Java8Parser object) {
-        return null;
+        return object.elementValuePair();
     }
     
     @Override
@@ -353,7 +353,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJStatementIf(Java8Parser object) {
-        return object.ifThenStatement();
+        return object.statement();
     }
     
     @Override
@@ -413,17 +413,17 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJSwitchCaseDefault(Java8Parser object) {
-        return null;
+        return object.defaultSwitchCase();
     }
     
     @Override
     protected ParserRuleContext parseJSwitchCaseExpression(Java8Parser object) {
-        return null;
+        return object.switchCase();
     }
     
     @Override
     protected ParserRuleContext parseJTypeArgumentReference(Java8Parser object) {
-        return null;
+        return object.typeArgument();
     }
     
     @Override
@@ -438,12 +438,12 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJTypeArgumentWildcard(Java8Parser object) {
-        return null;
+        return object.wildcard();
     }
     
     @Override
     protected ParserRuleContext parseJWildcardType(Java8Parser object) {
-        return null;
+        return object.wildcardType();
     }
     
     @Override

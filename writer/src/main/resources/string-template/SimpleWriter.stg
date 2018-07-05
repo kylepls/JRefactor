@@ -14,6 +14,8 @@ JCompilationUnit(obj) ::= <%
 <if(obj.importss || obj.types)><\n><endif>
 <endif>
 <collection(obj.importss, "\n")>
+<if(obj.importss && obj.types)><\n><endif>
+<collection(obj.types, "\n\n")>
 %>
 
 JIdentifier(obj) ::= <<
@@ -191,7 +193,7 @@ JTypeArgumentReference(obj) ::= <<
 
 JTypeArgumentWildcard(obj) ::= <%
 ?
-<if(obj.type)> <obj.type> <obj.reference><endif>
+<if(obj.type.present)> <obj.type> <obj.reference><endif>
 %>
 
 JWildcardType(obj) ::= <<

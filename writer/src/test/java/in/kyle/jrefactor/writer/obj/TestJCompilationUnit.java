@@ -6,8 +6,12 @@ import java.util.Optional;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.tree.obj.JCompilationUnit;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JImport;
 import in.kyle.jrefactor.tree.obj.JTypeName;
+import in.kyle.jrefactor.tree.obj.block.typebody.JClassBody;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
+        .typeparametertype.JClass;
 import in.kyle.jrefactor.writer.Write;
 
 public class TestJCompilationUnit {
@@ -34,6 +38,8 @@ public class TestJCompilationUnit {
     @Test
     public void testTypes() {
         JCompilationUnit unit = new JCompilationUnit();
-        //todo
+        JClass clazz = new JClass(new JIdentifier("Test"), new JClassBody());
+        unit.addType(clazz);
+        Verify.that(Write.object(unit)).isEqual("class Test {}");
     }
 }
