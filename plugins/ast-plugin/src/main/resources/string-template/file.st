@@ -16,4 +16,9 @@
     <methods ; separator="\n"><if(methods)>
 <endif>
     <innerClassStrings ; separator="\n\n">
+    <if(hasBuilder)>
+    public static <if(packageName)><packageName>.<endif><builderName> builder() {
+        return <builderName>.create();
+    }
+    <endif>
 }

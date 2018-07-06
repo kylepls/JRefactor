@@ -1,59 +1,66 @@
 package in.kyle.jrefactor.refactor.symbol;
 
-import in.kyle.jrefactor.refactor.JObjUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import in.kyle.jrefactor.refactor.JavaBaseListener;
 import in.kyle.jrefactor.tree.JObj;
-import in.kyle.jrefactor.tree.obj.JBlock;
+import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JVariable;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JParameter;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JEnumConstant;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JMethodHeader;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
 import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
 class IdentifierListener extends JavaBaseListener {
 
-    private final UnitSymbolTable table;
-    private final JObj root;
+    @Getter
+    private final List<Declaration> declarations = new ArrayList<>();
     
     @Override
-    public void enterJMethodHeader(JMethodHeader object) {
-        BlockScope scope = table.getScope(object);
-        for (JParameter parameter : object.getParameters()) {
-            scope.addIdentifier(parameter.getName());
+    public void enterJMethod(JMethod object) {
+        for (JParameter parameter : object.getHeader().getParameters()) {
+            addDeclaration(object, parameter.getName());
         }
-        super.enterJMethodHeader(object);
+        enterJBlock(object.getBody());
     }
     
     @Override
     public void enterJStatementLocalVariableDeclaration(JStatementLocalVariableDeclaration object) {
-        BlockScope scope = table.getScope(object);
         for (JVariable variable : object.getVariables()) {
-            scope.addIdentifier(variable.getName());
+            addDeclaration(object, variable.getName());
         }
     }
     
     @Override
     public void enterJField(JField object) {
-        BlockScope scope = table.getScope(object);
         for (JVariable variable : object.getVariables()) {
-            scope.addIdentifier(variable.getName());
+            addDeclaration(object, variable.getName());
         }
     }
     
     @Override
     public void enterJType(JType object) {
-        JBlock block = JObjUtils.getFirstUpwardBlock(root, object);
-        BlockScope scope = table.getScope(block);
-        scope.addIdentifier(object.getIdentifier());
+        addDeclaration(object, object.getIdentifier());
     }
     
     @Override
     public void enterJEnumConstant(JEnumConstant object) {
-        BlockScope scope = table.getScope(object);
-        scope.addIdentifier(object.getIdentifier());
+        addDeclaration(object, object.getIdentifier());
+    }
+    
+    private void addDeclaration(JObj object, JIdentifier identifier) {
+        Declaration declaration = new Declaration(object, identifier);
+        declarations.add(declaration);
+    }
+    
+    @Data
+    public static class Declaration {
+        private final JObj object;
+        private final JIdentifier identifier;
     }
 }

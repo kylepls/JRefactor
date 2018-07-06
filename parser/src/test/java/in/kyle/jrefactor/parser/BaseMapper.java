@@ -538,7 +538,7 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJClassBody(Java8Parser object) {
-        return object.classBodyDeclaration();
+        return object.classBody();
     }
     
     @Override

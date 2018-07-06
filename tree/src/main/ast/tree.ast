@@ -13,6 +13,12 @@ public static <name> fromJava(String string) {
 }
 "
 
+#staticStringConstructor = "
+public static <name> of(String value) {
+    return new <name>(value);
+}
+"
+
 Obj {
     PropertyLookup {
         List<String> areas
@@ -23,6 +29,8 @@ Obj {
     concrete TypeName {
         String type
         
+        #staticStringConstructor
+        
         ArrayTypeName {
             int dimensions
         }
@@ -30,11 +38,13 @@ Obj {
 
     Identifier is LambdaParameter {
         String name
+        
+        #staticStringConstructor
     }
     
     Block<T> {
         List<T> elements
-        concrete StatementBlock<Statement> is LambdaBody {
+        concrete StatementBlock<Statement> is Statement, LambdaBody {
         }
         TypeBody<T> is Unit {
             concrete ClassBody<ClassMember> {}

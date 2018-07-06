@@ -3,6 +3,7 @@ package in.kyle.stgen;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STRawGroupDir;
+import org.stringtemplate.v4.StringRenderer;
 
 import java.io.File;
 import java.util.Map;
@@ -26,18 +27,28 @@ public class Template {
     @Parameter(name = "outputName", required = true)
     private String outputName;
     
+    @Parameter(name = "multipleFile")
+    private boolean multipleFiles = false;
+    
     Map<String, Object> getParameters(STMojo mojo) throws Exception {
         Class<?> providerClass = ClassUtils.loadFile(className, mojo);
         return getProperties(providerClass);
     }
     
+    Map<String, Map<String, Object>> getFiles(STMojo mojo) throws Exception {
+        Class<?> providerClass = ClassUtils.loadFile(className, mojo);
+        return getFiles(providerClass);        
+    }
+    
     ST getSt(File templateDirectory) {
         STRawGroupDir rawGroupDir = new STRawGroupDir(templateDirectory.getAbsolutePath());
+        rawGroupDir.registerRenderer(String.class, new StringRenderer());
         return rawGroupDir.getInstanceOf(templateName);
     }
     
     File getOutputFile(File targetDirectory) {
-        return new File(targetDirectory, packageToPath(outputPackage) + File.separator + outputName);
+        return new File(targetDirectory,
+                        packageToPath(outputPackage) + File.separator + outputName);
     }
     
     private String packageToPath(String packageName) {
@@ -50,6 +61,10 @@ public class Template {
     
     private Map<String, Object> getParameters(Class<?> clazz) {
         return (Map<String, Object>) Try.to(() -> clazz.getMethod("getParameters").invoke(null));
+    }
+    
+    private Map<String, Map<String, Object>> getFiles(Class<?> clazz) {
+        return (Map<String, Map<String, Object>>) Try.to(() -> clazz.getMethod("getFiles").invoke(null));
     }
     
     @Data

@@ -13,6 +13,7 @@ import org.apache.maven.project.ProjectDependenciesResolver;
 import org.stringtemplate.v4.ST;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,11 +80,34 @@ public class STMojo extends AbstractMojo {
     }
     
     private void processTemplate(Template template) throws Exception {
+        if (template.isMultipleFiles()) {
+            processMultiFileTemplate(template);
+        } else {
+            processSingleFileTemplate(template);
+        }
+    }
+    
+    private void processMultiFileTemplate(Template template) throws Exception {
+        ST blank = template.getSt(templateDirectory);
+        Map<String, Map<String, Object>> files = template.getFiles(this);
+        for (Map.Entry<String, Map<String, Object>> entry : files.entrySet()) {
+            File outputFile = new File(targetDirectory, entry.getKey());
+            ST st = new ST(blank);
+            writeTemplate(outputFile, entry.getValue(), st);
+        }
+    }
+    
+    private void processSingleFileTemplate(Template template) throws Exception {
         ST st = template.getSt(templateDirectory);
         Map<String, Object> parameters = template.getParameters(this);
+        File outputFile = template.getOutputFile(targetDirectory);
+        writeTemplate(outputFile, parameters, st);
+    }
+    
+    private void writeTemplate(File outputFile, Map<String, Object> parameters, ST st)
+            throws IOException {
         parameters.forEach(st::add);
         String outputString = st.render();
-        File outputFile = template.getOutputFile(targetDirectory);
         outputFile.getParentFile().mkdirs();
         getLog().info("Writing to: " + outputFile.getAbsolutePath());
         Files.write(outputFile.toPath(), outputString.getBytes());

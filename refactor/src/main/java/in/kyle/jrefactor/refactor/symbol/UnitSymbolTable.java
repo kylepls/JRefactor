@@ -18,7 +18,8 @@ public class UnitSymbolTable {
     
     public void compute() {
         scopes.clear();
-        new IdentifierListener(this, root).enter(root);
+        IdentifierListener listener = new IdentifierListener();
+        listener.enter(root);
     }
     
     public BlockScope getScope(JObj obj) {

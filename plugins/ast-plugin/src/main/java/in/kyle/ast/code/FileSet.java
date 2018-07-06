@@ -7,12 +7,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 public class FileSet {
     
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final Set<JavaFile> files = new HashSet<>();
     
     public void addFiles(Collection<JavaFile> file) {
@@ -32,7 +31,7 @@ public class FileSet {
         }
     }
     
-    static String createRelPath(JavaFile file) {
+    public static String createRelPath(JavaFile file) {
         String path = "";
         if (file.getPackageName() != null) {
             path += file.getPackageName().replace(".", File.separator) + File.separator;

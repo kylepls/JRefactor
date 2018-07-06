@@ -15,6 +15,7 @@ import in.kyle.ast.code.file.EnumElement;
 import in.kyle.ast.code.file.Field;
 import in.kyle.ast.code.file.JavaFileHeader;
 import in.kyle.ast.code.file.WritableElement;
+import in.kyle.ast.mojo.GenerationMojo;
 import in.kyle.ast.util.Formatter;
 import in.kyle.ast.util.Formatter.KV;
 import lombok.Data;
@@ -23,6 +24,7 @@ import lombok.experimental.Delegate;
 import static in.kyle.ast.code.JavaFileType.ABSTRACT_CLASS;
 import static in.kyle.ast.code.JavaFileType.CLASS;
 import static in.kyle.ast.code.JavaFileType.ENUM;
+import static in.kyle.ast.code.JavaFileType.INTERFACE;
 
 @Data
 public class JavaFile implements WritableElement {
@@ -98,9 +100,13 @@ public class JavaFile implements WritableElement {
         List<KV<String, Object>> kvs = new ArrayList<>();
         kvs.add(KV.of("isEnum", typeIs(ENUM)));
         kvs.add(KV.of("isClass", typeIs(CLASS) || typeIs(ABSTRACT_CLASS)));
+        kvs.add(KV.of("isAbstract", typeIs(ABSTRACT_CLASS) || typeIs(INTERFACE) && !typeIs(ENUM)));
+        kvs.add(KV.of("isConcrete", typeIs(CLASS)));
         kvs.add(KV.of("stringFields", stringFields));
         kvs.add(KV.of("enumStrings", computeEnumStrings()));
         kvs.add(KV.of("innerClassStrings", computeInnerClassStrings()));
+        kvs.add(KV.of("hasBuilder", GenerationMojo.shouldGenerateBuilder(this)));
+        kvs.add(KV.of("builderName", getName() + "Builder"));
         return Formatter.fromTemplate("file", this, kvs);
     }
     

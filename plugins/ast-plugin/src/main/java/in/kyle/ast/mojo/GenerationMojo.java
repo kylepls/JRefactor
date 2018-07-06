@@ -11,12 +11,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.Objects;
 
+import in.kyle.api.utils.Try;
 import in.kyle.ast.antlr.AstFile;
 import in.kyle.ast.antlr.AstGenerator;
 import in.kyle.ast.code.CodeModifier;
 import in.kyle.ast.code.FileSet;
+import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.JavaFileBuilder;
+import in.kyle.ast.code.JavaFileType;
 
 @Execute(phase = LifecyclePhase.GENERATE_SOURCES, goal = "generate-sources")
 @Mojo(name = "generate-ast", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
@@ -34,6 +39,9 @@ public class GenerationMojo extends AbstractMojo {
     
     @Parameter(name = "filePrefix")
     private String filePrefix = "";
+    
+    @Parameter(name = "generateBuilders")
+    private boolean generateBuilders = true;
     
     @Override
     public void execute() throws MojoExecutionException {
@@ -63,7 +71,32 @@ public class GenerationMojo extends AbstractMojo {
         modifier.setFilePrefix(filePrefix);
         modifier.processFiles(files);
         
+        
         getLog().info("Generating " + files.getFileCount() + " files");
         files.write(targetDirectory);
+        
+        if (generateBuilders) {
+            makeBuilders(files.getFiles());
+        }
+    }
+    
+    private void makeBuilders(Collection<JavaFile> files) {
+        for (JavaFile file : files) {
+            if (shouldGenerateBuilder(file)) {
+                JavaFileBuilder builder = new JavaFileBuilder(file);
+                String text = builder.write();
+                File output = new File(targetDirectory, builder.getRelPath());
+                getLog().info("Generating " + output.getAbsolutePath());
+                Try.to(() -> Files.write(output.toPath(), text.getBytes()));
+            }
+        }
+    }
+    
+    public static boolean shouldGenerateBuilder(JavaFile file) {
+        boolean isClass = file.typeIs(JavaFileType.CLASS);
+        boolean hasFields = !file.getFields().isEmpty();
+        boolean hasConcreteSuper =
+                file.hasSuperType() && file.getSuperType().typeIs(JavaFileType.CLASS);
+        return isClass && hasFields && !hasConcreteSuper;
     }
 }

@@ -12,7 +12,6 @@ import java.io.InputStream;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Lexer;
 import in.kyle.jrefactor.tree.antlr.gen.Java8Parser;
-import in.kyle.jrefactor.tree.obj.JCompilationUnit;
 
 public class Parser {
     
@@ -28,10 +27,6 @@ public class Parser {
         }
     }
     
-    public static JCompilationUnit parseFile(InputStream is) throws IOException {
-        return parseInternal(is, JCompilationUnit.class);
-    }
-    
     private static <T extends JObj> T parseInternal(InputStream is, Class<T> clazz)
             throws IOException {
         ANTLRInputStream ais = new ANTLRInputStream(is);
@@ -44,10 +39,10 @@ public class Parser {
             if (visit != null) {
                 return visit;
             } else {
-                throw new ParseException("No parser implemented for type " + clazz.getName());
+                throw new RuntimeException("No parser implemented for type " + clazz.getName());
             }
         } else {
-            throw new ParseException("No parser defined for type " + clazz.getName());
+            throw new RuntimeException("No parser defined for type " + clazz.getName());
         }
     }
 }

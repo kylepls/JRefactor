@@ -9,7 +9,6 @@ import in.kyle.jrefactor.tree.obj.expression.JExpressionParenthesis;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralNumeric;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
-import in.kyle.jrefactor.writer.EzWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,7 +19,6 @@ import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRi
 @RequiredArgsConstructor
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final EzWriter writer = new EzWriter();
     private final RefactorSession session;
     
     @Getter
@@ -31,8 +29,8 @@ public class LiteralOptimizer extends JavaBaseVisitor {
     public Object visitJExpressionLeftRight(JExpressionLeftRight object) {
         if (object.getOperator() == ADD && object.getLeft() instanceof JExpressionLiteral &&
             object.getRight() instanceof JExpressionLiteral) {
-            JExpressionLiteral replace =
-                    convertLiterals((JExpressionLiteral) object.getLeft(), (JExpressionLiteral) object.getRight());
+            JExpressionLiteral replace = convertLiterals((JExpressionLiteral) object.getLeft(),
+                                                         (JExpressionLiteral) object.getRight());
             session.replace(object, replace);
             rerun = true;
         } else if (contains(JExpressionParenthesis.class, object.getLeft(), object.getRight())) {

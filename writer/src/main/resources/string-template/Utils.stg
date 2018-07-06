@@ -45,7 +45,7 @@ writeJType(obj, type, afterType="", superInterfaceKeyword="implements") ::= <%
 
 writeJTypeBody(obj) ::= <%
 {
-<if(obj.members)><indent(collection(obj.members, "\n"))><\n><endif>
+<if(obj.elements)><\n><indent(collection(obj.elements, "\n"))><\n><endif>
 }
 %>
 

@@ -1,6 +1,7 @@
 package in.kyle.ast.util;
 
 import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.StringRenderer;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -26,6 +27,7 @@ public final class Formatter {
         String templateString =
                 Try.to(() -> ResourceUtils.loadResource("string-template/" + template + ".st"));
         ST instance = new ST(templateString);
+        instance.groupThatCreatedThisInstance.registerRenderer(String.class, new StringRenderer());
         for (Field field : object.getClass().getDeclaredFields()) {
             Object value = getFieldValue(object, field);
             if (value instanceof WritableElement) {

@@ -3,15 +3,13 @@ package in.kyle.jrefactor.refactor;
 import java.io.IOException;
 import java.io.InputStream;
 
-import in.kyle.jrefactor.parser.Parser;
+import in.kyle.jrefactor.parser.JavaParser;
 import in.kyle.jrefactor.tree.obj.JCompilationUnit;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JVariable;
-import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
-        .typeparametertype.JClass;
+import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype.typeparametertype.JClass;
 import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
-import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
-        .JClassInitializer;
+import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JClassInitializer;
 import in.kyle.jrefactor.writer.EzWriter;
 
 public class TestGeneration {
@@ -22,7 +20,7 @@ public class TestGeneration {
         JCompilationUnit unit = loadFile();
         printFile(unit);
         RefactorSession session = new RefactorSession(unit);
-        //optimizeFile(unit, session);
+        optimizeFile(unit, session);
 //        renameVariable(unit, session);
         printFile(unit);
         System.out.println("Done");
@@ -42,13 +40,12 @@ public class TestGeneration {
     
     private static JCompilationUnit loadFile() throws IOException {
         InputStream is = TestGeneration.class.getResourceAsStream("/test");
-        return Parser.parseFile(is);
+        return JavaParser.parseFile(is);
     }
     
     private static void printFile(JCompilationUnit unit) {
-        System.out.println("Write ");
+        System.out.println("====================================================== ");
         String write = writer.write(unit);
-        
         System.out.println(write);
     }
     

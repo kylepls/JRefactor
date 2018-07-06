@@ -637,12 +637,12 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JBlock visitBlock(Java8Parser.BlockContext ctx) {
-        JBlock jBlock = new JStatementBlock();
+        JBlock block = new JStatementBlock();
         for (BlockStatementContext statementCtx : ctx.blockStatement()) {
             JStatement statement = (JStatement) visitBlockStatement(statementCtx);
-            jBlock.addElement(statement);
+            block.addElement(statement);
         }
-        return jBlock;
+        return block;
     }
     
     // k?
