@@ -24,7 +24,7 @@ class IdentifierListener extends JavaBaseListener {
     @Override
     public void enterJMethod(JMethod object) {
         for (JParameter parameter : object.getHeader().getParameters()) {
-            addDeclaration(object, parameter.getName());
+            addDeclaration(object.getBody(), parameter.getName());
         }
         enterJBlock(object.getBody());
     }

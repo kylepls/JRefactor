@@ -20,17 +20,22 @@ public class UnitSymbolTable {
         scopes.clear();
         IdentifierListener listener = new IdentifierListener();
         listener.enter(root);
-    }
-    
-    public BlockScope getScope(JObj obj) {
-        if (obj instanceof JBlock) {
-            return getScope((JBlock) obj);
-        } else {
-            return getScope(getScopeForObj(obj));
+        for (IdentifierListener.Declaration declaration : listener.getDeclarations()) {
+            getScope(declaration.getObject()).addIdentifier(declaration.getIdentifier());
         }
     }
     
-    private BlockScope getScope(JBlock block) {
+    public BlockScope getScope(JObj obj) {
+        JBlock block;
+        if (obj instanceof JBlock) {
+            block = (JBlock) obj;
+        } else {
+            block = JObjUtils.getFirstUpwardBlock(root, obj);
+        }
+        return getOrCreateScope(block);
+    }
+    
+    private BlockScope getOrCreateScope(JBlock block) {
         BlockScope scope = scopes.get(block);
         if (scope == null) {
             scope = new BlockScope();
@@ -48,8 +53,8 @@ public class UnitSymbolTable {
     }
     
     public List<JIdentifier> getUses(JIdentifier identifier) {
-        JBlock declaringScope = getScopeForObj(identifier);
         UseListener listener = new UseListener(identifier, this);
+        JBlock declaringScope = getScopeForObj(identifier);
         listener.enter(declaringScope);
         return listener.getIdentifiers();
     }

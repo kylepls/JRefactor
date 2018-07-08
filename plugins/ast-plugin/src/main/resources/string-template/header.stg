@@ -1,0 +1,24 @@
+writeHeader(obj) ::= <%
+public <obj.type.javaName> <obj.name>
+<if(genericDefine)>\<<genericDefine>><endif> 
+writeExtends(obj)
+writeImplements(obj)
+%>
+
+writeExtends(obj) ::= <%
+<if(obj.superType)>
+    <\ ><obj.superType.name>
+    <if(obj.genericSuper)>\<<obj.genericSuper>><endif>
+<endif>
+<if(obj.type.isInterface)>
+    <if(obj.superType)>,<endif>
+    <\ ><obj.isTypes; separator=", ">
+<endif>
+%>
+
+
+writeImplements(obj) ::= <%
+<if(!obj.type.isInterface)>
+    <if(implements)> implements <implements :{implement | <implement>}; separator=", "><endif>
+<endif>
+%>

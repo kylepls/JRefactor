@@ -1,0 +1,44 @@
+writeConstructor(obj) ::= <%
+<if(obj.type.isClass)>
+    <writeClassConstructor(obj)>
+<elseif(obj.type.isEnum)>
+    <writeEnumConstructor(obj)>
+<endif>
+%>
+
+writeClassConstructor(obj) ::= <<
+public <obj.name>(<writeClassConstructorParameters(obj.allFields)>) {
+    super(<writeSuperArgs(obj.superFields)>);
+    <fields : {field | this.<field.name> = <field.name>;}; separator="\n">
+}<\\>
+<if(allFields)>
+public <file.name>() {
+    super();
+}
+<endif>
+>>
+
+writeClassConstructorParameters(fields) ::= <%
+<fields : {field | <fieldToParameter(field)>}; separator=", ">
+%>
+
+writeSuperArgs(fields) ::= <%
+<fields : {field | <field.name>}; separator=", ">
+%>
+
+writeEnumConstructor(obj) ::= <<
+private <file.name>(<writeEnumConstructorParameters(obj)>) {
+    <obj.enumVariables: {var | this.<var> = <var>;}; separator="\n">
+}
+>>
+
+writeEnumConstructorParameters(obj) ::= <%
+<obj.enumVariables: {var | private final String <var>;}; separator="\n">
+%>
+
+
+fieldToParameter(field) ::= <%
+<field.type>
+<if(field.generic)>\<<field.generic>><endif>
+<\ ><field.name>
+%>

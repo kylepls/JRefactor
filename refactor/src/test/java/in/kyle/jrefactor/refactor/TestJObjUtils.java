@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import in.kyle.api.verify.Verify;
@@ -20,6 +21,11 @@ public class TestJObjUtils {
         @Data
         class A implements JObj {
             private List<JExpressionLiteral> list = new ArrayList<>();
+    
+            @Override
+            public List<Object> getDirectChildren() {
+                return new ArrayList<>(list);
+            }
         }
         A a = new A();
         a.list.add(new JLiteralInteger(1));
@@ -34,6 +40,11 @@ public class TestJObjUtils {
         @ToString
         class A implements JObj {
             private JObj test = new JLiteralInteger(1);
+    
+            @Override
+            public List<Object> getDirectChildren() {
+                return Collections.singletonList(test);
+            }
         }
         A testObject = new A();
         Collection<JObj> values = JObjUtils.getDirectChildren(testObject);

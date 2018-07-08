@@ -1,0 +1,47 @@
+import "header.stg"
+import "constructor.stg"
+import "field.stg"
+import "builder.stg"
+
+writeFile(obj) ::= <<
+<if(!obj.innerClass)><if(obj.packageName)>package <obj.packageName>;
+
+<endif>
+<if(obj.packageName || obj.imports || obj.isClass || obj.isEnum)>
+
+<endif>
+<if(obj.type.isClass)>lombok.@Data<endif>
+<endif><if(obj.type.isEnum)>lombok.@Getter<endif>
+<writeHeader(obj.header)> {
+    <obj.enumElements : {element | <writeEnumElement(element)>}; separator=",\n"><\\>
+    <if(obj.enumStrings)>;<endif><\\>
+    
+    <writeConstructor(obj)>
+    
+    <writeFields(obj)>
+    <obj.bodyElements ; separator="\n"><if(obj.bodyElements)><\n><endif>
+    <obj.innerClasses: {class | <writeFile(class)>}; separator="\n\n">
+    <\\>
+    <if(obj.hasBuilder)>
+    <writeBuilderMethod(obj)>
+    
+    <writeBuilder(obj)>
+    <endif>
+}
+>>
+
+writeFields(obj) ::= <%
+<obj.fields : {field | <writeField(field)>}; separator="\n">
+<obj.enumVariables : {var | private final String <var>;}; separator="\n">
+%>
+
+writeField(obj) ::= <%
+<type>
+<if(generic)>\<<generic>><endif>
+<\ ><name>
+<if(value)> = <value><endif>
+%>
+
+writeEnumElement(obj) ::= <%
+<obj.name>(<obj.values ; separator=", ">)
+%>

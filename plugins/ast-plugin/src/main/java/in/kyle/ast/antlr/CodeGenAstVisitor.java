@@ -15,7 +15,9 @@ import in.kyle.ast.code.FileSet;
 import in.kyle.ast.code.JavaFile;
 import in.kyle.ast.code.JavaFileType;
 import in.kyle.ast.code.file.EnumElement;
-import in.kyle.ast.code.file.Field;
+import in.kyle.ast.code.file.JavaField;
+import in.kyle.ast.code.processors.FieldDefaultProcessor;
+import in.kyle.ast.code.processors.MethodPlaceholderProcessor;
 import lombok.Getter;
 
 import static in.kyle.ast.code.JavaFileType.ABSTRACT_CLASS;
@@ -59,7 +61,8 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     public Object visitVariable_definition(AstParser.Variable_definitionContext ctx) {
         String text = ctx.STRING().getText();
         text = text.substring(1, text.length() - 1);
-        modifier.addVariable(ctx.IDENTIFIER().getText(), text);
+        modifier.getProcessor(MethodPlaceholderProcessor.class)
+                .addVariable(ctx.IDENTIFIER().getText(), text);
         return null;
     }
     
@@ -67,7 +70,8 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     public Object visitDefault_definition(AstParser.Default_definitionContext ctx) {
         String value = ctx.STRING().getText();
         value = value.substring(1, value.length() - 1);
-        modifier.addFieldDefault(ctx.IDENTIFIER().getText(), value);
+        modifier.getProcessor(FieldDefaultProcessor.class)
+                .registerFieldDefault(ctx.IDENTIFIER().getText(), value);
         return null;
     }
     
@@ -134,7 +138,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
         }
         
         for (AstParser.Variable_placeholderContext varCtx : ctx.variable_placeholder()) {
-            file.addMethod(varCtx.IDENTIFIER().getText());
+            file.addBodyElement(varCtx.IDENTIFIER().getText());
         }
         return subObjects;
     }
@@ -174,11 +178,11 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     }
     
     @Override
-    public Field visitObject_variable(AstParser.Object_variableContext ctx) {
-        return new Field(ctx.variable_type().getText(),
-                         visitDiamondType(ctx.diamondType()),
-                         ctx.IDENTIFIER().getText(),
-                         null);
+    public JavaField visitObject_variable(AstParser.Object_variableContext ctx) {
+        return new JavaField(ctx.variable_type().getText(),
+                             visitDiamondType(ctx.diamondType()),
+                             ctx.IDENTIFIER().getText(),
+                             null);
     }
     
     @Override
@@ -209,7 +213,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
         }
         for (AstParser.Variable_placeholderContext varCtx : ctx.enum_block()
                                                                .variable_placeholder()) {
-            file.addMethod(varCtx.IDENTIFIER().getText());
+            file.addBodyElement(varCtx.IDENTIFIER().getText());
         }
     }
 }

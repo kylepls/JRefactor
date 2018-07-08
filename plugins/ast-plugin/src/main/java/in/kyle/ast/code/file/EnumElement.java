@@ -3,7 +3,7 @@ package in.kyle.ast.code.file;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.kyle.ast.util.Formatter;
+import in.kyle.ast.util.StringTemplate;
 import lombok.Data;
 
 @Data
@@ -18,6 +18,6 @@ public class EnumElement implements WritableElement {
     
     @Override
     public String write() {
-        return Formatter.fromTemplate("enumElement", this);
+        return StringTemplate.render("enumElement", this);
     }
 }

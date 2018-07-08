@@ -67,7 +67,7 @@ class AbstractJObjListener {
     // probably need a better method identifier
     public void enterChildren(JObj object) {
         if (object != null) {
-            for (JObj child : JObjUtils.getDirectChildren(object)) {
+            for (JObj child : JObjUtils.getAllChildren(object)) {
                 enter(child);
             }
         }

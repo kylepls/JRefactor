@@ -1,0 +1,43 @@
+addMethods(file) ::= <<<\\>
+<if(file.type.isClass || file.type.isAbstractClass)>
+public java.util.List\<Object> getAllChildren() {
+    java.util.List\<Object> children = new java.util.ArrayList<>();
+    children.addAll(getDirectChildren());<\\>
+<if(file.superType)>    children.addAll(super.getDirectChildren());<endif>
+    return children;
+}
+
+public java.util.List\<Object> getDirectChildren() {
+    java.util.List\<Object> children = new java.util.ArrayList<>();<\\>
+    <file.fields : {field | <addField(field)>}; separator="\n">
+    return children;
+}
+
+public void replaceChild(Object child, Object replacement) {
+    boolean replaced = false;
+    <file.fields : {field | <replaceField(field)>}; separator="\n">
+    if (!replaced) throw new RuntimeException("Could not find " + child + " in " + this);
+}<\\>
+<endif><\\>
+<if(file.type.isEnum)><\\>
+public java.util.List\<Object> getDirectChildren() {
+    return java.util.Collections.emptyList();
+}
+
+public java.util.List\<Object> getAllChildren() {
+    return java.util.Collections.emptyList();
+}<\\>
+<endif>
+>>
+
+addField(field) ::= <%
+<if(field.isCollection)>
+children.addAll(<field.name>);
+<endif>
+<if(field.isOptional)>
+<field.name>.ifPresent(children::add);
+<endif>
+<if(!field.isCollection && !field.isOptional)>
+children.add(<field.name>);
+<endif>
+%>

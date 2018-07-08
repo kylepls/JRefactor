@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.ast.code.file.EnumElement;
-import in.kyle.ast.code.file.Field;
+import in.kyle.ast.code.file.JavaField;
 import in.kyle.ast.util.FileUtils;
 
 public class TestJavaFile {
@@ -40,7 +40,7 @@ public class TestJavaFile {
     @Test
     public void testSimpleFileField() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        Field field = new Field("String", null, "string", null);
+        JavaField field = new JavaField("String", null, "string", null);
         file.getFields().add(field);
         String result = file.write();
         matchesFile(result, "simpleFileField");
@@ -79,7 +79,7 @@ public class TestJavaFile {
     public void testGetRewritableTypes() {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         file.setGenericSuper("A");
-        Field field = new Field("B", "C", "name", null);
+        JavaField field = new JavaField("B", "C", "name", null);
         file.getFields().add(field);
         file.addIsType("D");
         

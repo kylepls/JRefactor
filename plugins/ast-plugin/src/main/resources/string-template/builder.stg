@@ -1,0 +1,47 @@
+writeBuilder(obj) ::= <<
+public static class <obj.name>Builder {
+    
+    private final <obj.name> <obj.name; format="lower">;
+    
+    private <obj.name>Builder() {
+        <obj.name; format="lower"> = new <obj.name>();
+    }
+    
+    <!
+    public static <obj.name>Builder create() {
+        return new <simpleName>Builder();
+    }
+    !>
+    
+    <obj.fields : { field |
+<if(field.isOptional)>
+public <obj.name>Builder <field.name>(<field.generic> <field.name; format="lower">) {
+    <simpleName; format="lower">.set<field.name; format="cap">(java.util.Optional.ofNullable(<field.name; format="lower">));
+    return this;
+\}
+<elseif(field.isCollection)>
+public <obj.name>Builder add<field.name; format="cap">(<field.generic>... <field.nameSingular>) {
+    for (<field.generic> e : <field.nameSingular>) {
+        <obj.name; format="lower">.add<field.nameSingular; format="cap">(e);
+    \}
+    return this;
+\}
+<else>
+public <obj.name>Builder <field.name>(<field.type> <field.name; format="lower">) {
+    <obj.name; format="lower">.set<field.name; format="cap">(<field.name; format="lower">);
+    return this;
+\}
+<endif>
+    }; separator="\n">
+    
+    public <obj.name> build() {
+        return <obj.name; format="lower">;
+    }
+}
+>>
+
+writeBuilderMethod(obj) ::= <<
+public static <obj.name>Builder builder() {
+    return new <obj.name>Builder();
+}
+>>

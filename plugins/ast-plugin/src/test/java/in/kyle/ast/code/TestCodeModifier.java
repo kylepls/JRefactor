@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.ast.code.file.EnumElement;
-import in.kyle.ast.code.file.Field;
+import in.kyle.ast.code.file.JavaField;
 import in.kyle.ast.util.FileUtils;
 
 public class TestCodeModifier {
@@ -60,7 +60,7 @@ public class TestCodeModifier {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         file.addIsType("AType");
         file.setGenericSuper("AType");
-        Field field = new Field("AType", "AType", "test", null);
+        JavaField field = new JavaField("AType", "AType", "test", null);
         file.getFields().add(field);
         
         modifier.getOldFiles().put("AType", "ANewType");
@@ -98,7 +98,7 @@ public class TestCodeModifier {
     @Test
     public void testAddConstructorField() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        Field field = new Field("Q", "A", "p", null);
+        JavaField field = new JavaField("Q", "A", "p", null);
         file.addField(field);
         modifier.addConstructors(file);
         
@@ -110,7 +110,7 @@ public class TestCodeModifier {
     @Test
     public void testAddConstructorSuperField() throws IOException {
         JavaFile superType = new JavaFile("Super", JavaFileType.CLASS);
-        Field field = new Field("A", "b");
+        JavaField field = new JavaField("A", "b");
         superType.addField(field);
         
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
@@ -126,7 +126,7 @@ public class TestCodeModifier {
     public void testConstructorGenericsTransposition() throws IOException {
         JavaFile superType = new JavaFile("Super", JavaFileType.CLASS);
         superType.setGenericDefine("T");
-        Field field = new Field("T", "value");
+        JavaField field = new JavaField("T", "value");
         superType.addField(field);
         
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
@@ -171,8 +171,8 @@ public class TestCodeModifier {
         modifier.addVariable("test", "HELLO WORLD");
         JavaFile file = new JavaFile("Test", JavaFileType.ENUM);
         file.addMethod("test");
-        modifier.process(file);
+        modifier.transposeVariables(file);
         Verify.that(file.getMethods()).sizeIs(1);
-        Verify.that(file.getMethods()).allMatch(string -> string.equals("HELLO WORLD"));
+        Verify.that(file.getMethods().iterator().next()).isEqual("HELLO WORLD");
     }
 }

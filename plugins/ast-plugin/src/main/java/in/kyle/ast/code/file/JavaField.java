@@ -1,19 +1,19 @@
 package in.kyle.ast.code.file;
 
-import in.kyle.ast.util.Formatter;
+import in.kyle.ast.util.StringTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Field implements WritableElement {
+public class JavaField implements WritableElement {
     
     private String type;
     private String generic;
     private String name;
     private String value;
     
-    public Field(String type, String name) {
+    public JavaField(String type, String name) {
         if (type.contains("<")) {
             this.generic = type.substring(type.indexOf("<") + 1, type.lastIndexOf(">"));
             type = type.substring(0, type.indexOf("<"));
@@ -32,6 +32,6 @@ public class Field implements WritableElement {
     
     @Override
     public String write() {
-        return Formatter.fromTemplate("field", this);
+        return StringTemplate.render("field", this);
     }
 }

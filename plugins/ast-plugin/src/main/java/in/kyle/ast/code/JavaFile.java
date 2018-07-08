@@ -4,50 +4,43 @@ import org.antlr.v4.runtime.misc.OrderedHashSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import in.kyle.ast.code.file.EnumElement;
-import in.kyle.ast.code.file.Field;
+import in.kyle.ast.code.file.JavaField;
 import in.kyle.ast.code.file.JavaFileHeader;
 import in.kyle.ast.code.file.WritableElement;
-import in.kyle.ast.mojo.GenerationMojo;
-import in.kyle.ast.util.Formatter;
-import in.kyle.ast.util.Formatter.KV;
+import in.kyle.ast.util.StringTemplate;
 import lombok.Data;
 import lombok.experimental.Delegate;
-
-import static in.kyle.ast.code.JavaFileType.ABSTRACT_CLASS;
-import static in.kyle.ast.code.JavaFileType.CLASS;
-import static in.kyle.ast.code.JavaFileType.ENUM;
-import static in.kyle.ast.code.JavaFileType.INTERFACE;
 
 @Data
 public class JavaFile implements WritableElement {
     
     @Delegate(excludes = WritableElement.class)
     private final JavaFileHeader header;
-    private final Set<String> imports = new HashSet<>();
-    private final Set<Field> fields = new OrderedHashSet<>();
+    private final Set<JavaField> fields = new OrderedHashSet<>();
     private final Set<JavaFile> innerClasses = new OrderedHashSet<>();
     private final Set<EnumElement> enumElements = new OrderedHashSet<>();
     private final Set<String> enumVariables = new OrderedHashSet<>();
-    private final Set<String> methods = new HashSet<>();
     private final List<String> constructors = new ArrayList<>();
+    private final List<String> bodyElements = new ArrayList<>();
     private String packageName;
-    private boolean concrete;
     private boolean innerClass;
     
     public JavaFile(String name, JavaFileType type) {
         this.header = new JavaFileHeader(name, type);
     }
     
-    public void addImport(String importString) {
-        imports.add(importString);
+    public void addBodyElement(String string) {
+        bodyElements.add(string);
+    }
+    
+    public void removeBodyElement(String string) {
+        bodyElements.remove(string);
     }
     
     public void addEnumVariable(String variable) {
@@ -59,20 +52,12 @@ public class JavaFile implements WritableElement {
         file.setInnerClass(true);
     }
     
-    public void addField(Field field) {
+    public void addField(JavaField field) {
         fields.add(field);
     }
     
     public void addConstructor(String constructor) {
         constructors.add(constructor);
-    }
-    
-    public void addImports(Set<String> imports) {
-        this.imports.addAll(imports);
-    }
-    
-    public void addMethod(String method) {
-        this.methods.add(method);
     }
     
     public boolean hasPackage() {
@@ -87,46 +72,19 @@ public class JavaFile implements WritableElement {
         enumElements.add(element);
     }
     
+    public boolean hasInnerClasses() {
+        return !getInnerClasses().isEmpty();
+    }
+    
     @Override
     public String write() {
-        List<String> stringFields =
-                fields.stream().map(WritableElement::write).collect(Collectors.toList());
-        if (getType() == JavaFileType.ENUM) {
-            stringFields.addAll(computeEnumFieldStrings());
-        }
-        
-        innerClasses.forEach(inner -> imports.addAll(inner.getImports()));
-        
-        List<KV<String, Object>> kvs = new ArrayList<>();
-        kvs.add(KV.of("isEnum", typeIs(ENUM)));
-        kvs.add(KV.of("isClass", typeIs(CLASS) || typeIs(ABSTRACT_CLASS)));
-        kvs.add(KV.of("isAbstract", typeIs(ABSTRACT_CLASS) || typeIs(INTERFACE) && !typeIs(ENUM)));
-        kvs.add(KV.of("isConcrete", typeIs(CLASS)));
-        kvs.add(KV.of("stringFields", stringFields));
-        kvs.add(KV.of("enumStrings", computeEnumStrings()));
-        kvs.add(KV.of("innerClassStrings", computeInnerClassStrings()));
-        kvs.add(KV.of("hasBuilder", GenerationMojo.shouldGenerateBuilder(this)));
-        kvs.add(KV.of("builderName", getName() + "Builder"));
-        return Formatter.fromTemplate("file", this, kvs);
-    }
-    
-    public List<Field> computeEnumFields() {
-        List<Field> fields = new ArrayList<>();
-        for (String variableName : enumVariables) {
-            Field field = new Field("String", variableName);
-            fields.add(field);
-        }
-        return fields;
-    }
-    
-    public List<String> computeEnumFieldStrings() {
-        return computeEnumFields().stream().map(Field::write).collect(Collectors.toList());
+        return StringTemplate.render("writeFile", this);
     }
     
     public Map<Consumer<String>, String> getRewritableTypes() {
         Map<Consumer<String>, String> rewritable = new HashMap<>();
         addIfNonNull(rewritable, header::setGenericSuper, getGenericSuper());
-        for (Field field : fields) {
+        for (JavaField field : fields) {
             addIfNonNull(rewritable, field::setType, field.getType());
             addIfNonNull(rewritable, field::setGeneric, field.getGeneric());
         }
@@ -143,17 +101,5 @@ public class JavaFile implements WritableElement {
         if (k != null) {
             map.put(k, v);
         }
-    }
-    
-    private List<String> computeEnumStrings() {
-        return enumElements.stream().map(WritableElement::write).collect(Collectors.toList());
-    }
-    
-    private List<String> computeInnerClassStrings() {
-        return innerClasses.stream().map(WritableElement::write).collect(Collectors.toList());
-    }
-    
-    public boolean hasInnerClasses() {
-        return !getInnerClasses().isEmpty();
     }
 }

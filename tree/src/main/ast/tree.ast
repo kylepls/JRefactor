@@ -19,7 +19,15 @@ public static <name> of(String value) {
 }
 "
 
+#directChildren = "
+default java.util.List\<Object> getDirectChildren() { return java.util.Collections.emptyList(); }
+default java.util.List\<Object> getAllChildren() { return java.util.Collections.emptyList(); }
+"
+
 Obj {
+
+    #directChildren
+    
     PropertyLookup {
         List<String> areas
     }
@@ -491,4 +499,5 @@ Obj {
         
         #fromJava
     }
+    
 }

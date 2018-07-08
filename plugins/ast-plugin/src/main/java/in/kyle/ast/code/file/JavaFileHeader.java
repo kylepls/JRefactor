@@ -1,21 +1,13 @@
 package in.kyle.ast.code.file;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import in.kyle.ast.code.JavaFile;
 import in.kyle.ast.code.JavaFileType;
-import in.kyle.ast.util.Formatter;
-import in.kyle.ast.util.Formatter.KV;
+import in.kyle.ast.util.StringTemplate;
 import lombok.Data;
-
-import static in.kyle.ast.code.JavaFileType.ABSTRACT_CLASS;
-import static in.kyle.ast.code.JavaFileType.CLASS;
-import static in.kyle.ast.code.JavaFileType.ENUM;
-import static in.kyle.ast.code.JavaFileType.INTERFACE;
 
 @Data
 public class JavaFileHeader implements WritableElement {
@@ -26,6 +18,7 @@ public class JavaFileHeader implements WritableElement {
     private JavaFileType type;
     private JavaFile superType;
     private String genericSuper;
+    private boolean concrete;
     
     public JavaFileHeader(String name, JavaFileType type) {
         this.name = name;
@@ -54,49 +47,6 @@ public class JavaFileHeader implements WritableElement {
     
     @Override
     public String write() {
-        ExtendsImplements ei = computeExtendImplement();
-        
-        List<KV<String, Object>> kvs = new ArrayList<>();
-        kvs.add(KV.of("extends", ei.getExtending()));
-        kvs.add(KV.of("implements", ei.getImplementing()));
-        return Formatter.fromTemplate("header", this, kvs);
-    }
-    
-    private ExtendsImplements computeExtendImplement() {
-        List<String> extend = new ArrayList<>();
-        List<String> implement = new ArrayList<>();
-        
-        String superTypeName = "";
-        if (hasSuperType()) {
-            superTypeName = superType.getName();
-            if (hasGenericSuper()) {
-                superTypeName += String.format("<%s>", genericSuper);
-            }
-        }
-        if (typeIs(INTERFACE)) {
-            if (hasSuperType()) {
-                extend.add(superTypeName);
-            }
-            extend.addAll(isTypes);
-        } else if (typeIs(CLASS) || typeIs(ABSTRACT_CLASS)) {
-            if (hasSuperType()) {
-                extend.add(superTypeName);
-            }
-            implement.addAll(isTypes);
-        } else if (typeIs(ENUM)) {
-            implement.addAll(isTypes);
-        }
-        
-        return new ExtendsImplements(extend, implement);
-    }
-    
-    private boolean hasGenericSuper() {
-        return genericSuper != null;
-    }
-    
-    @Data
-    private class ExtendsImplements {
-        private final List<String> extending;
-        private final List<String> implementing;
+        return StringTemplate.render("header.stg", this);
     }
 }

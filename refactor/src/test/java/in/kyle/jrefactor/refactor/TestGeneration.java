@@ -38,7 +38,7 @@ public class TestGeneration {
         session.rename(identifier, "swag");
     }
     
-    private static JCompilationUnit loadFile() throws IOException {
+    private static JCompilationUnit loadFile() {
         InputStream is = TestGeneration.class.getResourceAsStream("/test");
         return JavaParser.parseFile(is);
     }
