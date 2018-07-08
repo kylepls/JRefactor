@@ -4,13 +4,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import in.kyle.ast.code.JavaFile;
-import in.kyle.ast.code.JavaFileType;
-import in.kyle.ast.util.StringTemplate;
 import lombok.Data;
 
 @Data
-public class JavaFileHeader implements WritableElement {
+public class JavaFileHeader {
     
     private final Set<String> isTypes = new HashSet<>();
     private String genericDefine;
@@ -43,10 +40,5 @@ public class JavaFileHeader implements WritableElement {
     
     public boolean hasSuperType() {
         return superType != null;
-    }
-    
-    @Override
-    public String write() {
-        return StringTemplate.render("header.stg", this);
     }
 }

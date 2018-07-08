@@ -1,9 +1,9 @@
-collectionMethods(obj) ::= <<
-public void add<obj.type; format="singular|cap">(<obj.generic> <obj.name; format="singular">) { 
+addMethods(obj) ::= <<
+public void add<obj.name; format="singular|cap">(<obj.generic> <obj.name; format="singular">) { 
     <obj.name>.add(<obj.name; format="singular">); 
 }
 
-public void remove<obj.type; format="singular|cap">(<obj.generic> <obj.name; format="singular">) { 
+public void remove<obj.name; format="singular|cap">(<obj.generic> <obj.name; format="singular">) { 
     <obj.name>.remove(<obj.name; format="singular">); 
 }
 

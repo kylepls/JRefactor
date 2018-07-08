@@ -1,43 +1,86 @@
-addMethods(file) ::= <<<\\>
-<if(file.type.isClass || file.type.isAbstractClass)>
+addMethods(obj) ::= <<
+<if(obj.type.isClass || obj.type.isAbstractClass)>
+<writeGetAllChildrenMethod(obj)>
+<writeGetDirectChildrenMethod(obj)>
+<writeReplaceChildMethod(obj)>
+<endif>
+<if(obj.type.isEnum)>
+<writeEnumMethods(obj)>
+<endif>
+>>
+
+writeGetAllChildrenMethod(obj) ::= <<
 public java.util.List\<Object> getAllChildren() {
-    java.util.List\<Object> children = new java.util.ArrayList<>();
-    children.addAll(getDirectChildren());<\\>
-<if(file.superType)>    children.addAll(super.getDirectChildren());<endif>
+    java.util.List\<Object> children = new java.util.ArrayList\<>();
+    <obj.fields : {field | <addField(field)>}; separator="\n">
+<if(obj.superType)>    children.addAll(super.getAllChildren());<endif>
     return children;
 }
+>>
 
+writeGetDirectChildrenMethod(obj) ::= <<
 public java.util.List\<Object> getDirectChildren() {
-    java.util.List\<Object> children = new java.util.ArrayList<>();<\\>
-    <file.fields : {field | <addField(field)>}; separator="\n">
+    java.util.List\<Object> children = new java.util.ArrayList\<>();
+    <obj.fields : {field | <addField(field)>}; separator="\n">
     return children;
 }
+>>
 
+writeReplaceChildMethod(obj) ::= <<
 public void replaceChild(Object child, Object replacement) {
-    boolean replaced = false;
-    <file.fields : {field | <replaceField(field)>}; separator="\n">
-    if (!replaced) throw new RuntimeException("Could not find " + child + " in " + this);
-}<\\>
-<endif><\\>
-<if(file.type.isEnum)><\\>
-public java.util.List\<Object> getDirectChildren() {
-    return java.util.Collections.emptyList();
+    <obj.fields : {field | <replaceField(field)>}; separator="\n"><\\>
+<if(obj.superType)>
+    super.replaceChild(child, replacement);
+<else>
+    throw new RuntimeException("Could not find " + child + " in " + this);
+<endif>
 }
+>>
 
-public java.util.List\<Object> getAllChildren() {
-    return java.util.Collections.emptyList();
+replaceField(obj) ::= <<
+<if(obj.isSet)>
+if (<obj.name>.removeIf(s -> s == child)) {
+    <obj.name>.add((<obj.generic>) replacement);
+    return;
+}
+<elseif(obj.isList)><\\>
+for (int i = 0; i \< <obj.name>.size(); i++) {
+    if (<obj.name>.get(i) == child) {
+        <obj.name>.set(i, (<obj.generic>) replacement);
+        return;
+    }
+}
+<elseif(obj.isOptional)>
+if (<obj.name>.isPresent() && <obj.name>.get() == child) {
+    this.<obj.name> = java.util.Optional.of((<obj.generic>) replacement);
+    return;
+}
+<elseif(!obj.isPrimitive)>
+if (<obj.name> == child) {
+    this.<obj.name> = (<obj.type>) replacement;
+    return;
 }<\\>
 <endif>
 >>
 
-addField(field) ::= <%
-<if(field.isCollection)>
-children.addAll(<field.name>);
+writeEnumMethods(obj) ::= <<
+public java.util.List\<Object> getDirectChildren() {
+    return java.util.Collections.emptyList();
+}
+
+public java.util.List\<Object> getAllChildren() {
+    return java.util.Collections.emptyList();
+}
+>>
+
+addField(obj) ::= <%
+<if(obj.isCollection)>
+children.addAll(<obj.name>);
 <endif>
-<if(field.isOptional)>
-<field.name>.ifPresent(children::add);
+<if(obj.isOptional)>
+<obj.name>.ifPresent(children::add);
 <endif>
-<if(!field.isCollection && !field.isOptional)>
-children.add(<field.name>);
+<if(!obj.isCollection && !obj.isOptional)>
+children.add(<obj.name>);
 <endif>
 %>

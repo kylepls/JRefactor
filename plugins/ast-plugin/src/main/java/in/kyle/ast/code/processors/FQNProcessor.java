@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 
 public class FQNProcessor implements CodeProcessor {
     
@@ -32,11 +32,15 @@ public class FQNProcessor implements CodeProcessor {
     
     // FQN - Fully Qualified Name
     private String createFQNForFile(JavaFile file) {
-        String importString = "";
-        if (file.getPackageName() != null) {
-            importString += file.getPackageName() + ".";
+        if (file.isInnerClass()) {
+            return file.getName();
+        } else {
+            String importString = "";
+            if (file.getPackageName() != null) {
+                importString += file.getPackageName() + ".";
+            }
+            importString += file.getName();
+            return importString;
         }
-        importString += file.getName();
-        return importString;
     }
 }

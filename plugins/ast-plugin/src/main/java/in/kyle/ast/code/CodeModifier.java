@@ -1,12 +1,14 @@
 package in.kyle.ast.code;
 
+import org.antlr.v4.misc.OrderedHashMap;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import in.kyle.ast.code.file.JavaFile;
 import in.kyle.ast.code.processors.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,14 +21,14 @@ public class CodeModifier {
     private final ClassMap<CodeProcessor> processors = new ClassMap<>();
     
     {
+        addProcessor(new PackageNamePreprocessor());
+        addProcessor(new TypeNameProcessor());
+        addProcessor(new FQNProcessor());
         addProcessor(new ChildMethodsProcessor());
         addProcessor(new FieldDefaultProcessor());
         addProcessor(new FieldMethodProcessor());
         addProcessor(new GenericProcessor());
-        addProcessor(new FQNProcessor());
         addProcessor(new MethodPlaceholderProcessor());
-        addProcessor(new PackageNamePreprocessor());
-        addProcessor(new TypeNameProcessor());
     }
     
     public void addProcessor(CodeProcessor processor) {
@@ -66,6 +68,6 @@ public class CodeModifier {
         return result;
     }
     
-    private static class ClassMap<T> extends HashMap<Class<? extends T>, T> {
+    private static class ClassMap<T> extends OrderedHashMap<Class<? extends T>, T> {
     }
 }

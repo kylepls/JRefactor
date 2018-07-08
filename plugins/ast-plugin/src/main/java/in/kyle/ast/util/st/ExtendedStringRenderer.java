@@ -1,4 +1,4 @@
-package in.kyle.ast.code.st;
+package in.kyle.ast.util.st;
 
 import org.stringtemplate.v4.StringRenderer;
 
@@ -10,7 +10,7 @@ public class ExtendedStringRenderer extends StringRenderer {
     public String toString(Object o, String formatString, Locale locale) {
         String string = (String) o;
         if ("singular".equals(formatString)) {
-            return string.substring(1);
+            return string.substring(0, string.length() - 1);
         } else if (formatString != null && formatString.contains("|")) { // | acts as pipe
             String[] split = formatString.split("\\|");
             String temp = string;

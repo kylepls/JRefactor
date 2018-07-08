@@ -1,11 +1,11 @@
-package in.kyle.ast.code.st;
+package in.kyle.ast.util.st;
 
 import org.stringtemplate.v4.Interpreter;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.misc.ObjectModelAdaptor;
 import org.stringtemplate.v4.misc.STNoSuchPropertyException;
 
-import in.kyle.ast.code.JavaFileType;
+import in.kyle.ast.code.file.JavaFileType;
 
 public class JavaFileTypeAdaptor extends ObjectModelAdaptor {
     @Override

@@ -1,6 +1,5 @@
 package in.kyle.jrefactor.refactor;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import in.kyle.jrefactor.parser.JavaParser;
@@ -16,12 +15,12 @@ public class TestGeneration {
     
     private static EzWriter writer = new EzWriter();
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         JCompilationUnit unit = loadFile();
         printFile(unit);
         RefactorSession session = new RefactorSession(unit);
         optimizeFile(unit, session);
-//        renameVariable(unit, session);
+        //        renameVariable(unit, session);
         printFile(unit);
         System.out.println("Done");
     }
@@ -51,9 +50,9 @@ public class TestGeneration {
     
     private static void optimizeFile(JCompilationUnit unit, RefactorSession session) {
         LiteralOptimizer visitor = new LiteralOptimizer(session);
-        while (visitor.isRerun()) {
+        do {
             visitor.setRerun(false);
             visitor.visit(unit);
-        }
+        } while (visitor.isRerun());
     }
 }

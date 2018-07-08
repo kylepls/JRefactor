@@ -9,6 +9,9 @@ import java.io.InputStream;
 
 import in.kyle.ast.AstLexer;
 import in.kyle.ast.AstParser;
+import in.kyle.ast.code.CodeModifier;
+import in.kyle.ast.code.FileSet;
+import lombok.Data;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -22,4 +25,9 @@ public final class AstGenerator {
         return visitor.visitAst(parser.ast());
     }
     
+    @Data
+    public static class AstFile {
+        private final FileSet files;
+        private final CodeModifier modifier;
+    }
 }

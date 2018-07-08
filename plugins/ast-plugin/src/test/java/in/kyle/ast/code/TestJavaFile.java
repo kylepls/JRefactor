@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import in.kyle.api.verify.Verify;
-import in.kyle.ast.code.file.EnumElement;
+import in.kyle.ast.code.file.JavaEnumElement;
 import in.kyle.ast.code.file.JavaField;
+import in.kyle.ast.code.file.JavaFile;
+import in.kyle.ast.code.file.JavaFileType;
 import in.kyle.ast.util.FileUtils;
 
 public class TestJavaFile {
@@ -16,17 +18,17 @@ public class TestJavaFile {
     public void testSimpleFile() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         String result = file.write();
-        matchesFile(result, "simpleFile");
+        matchesFile(result, "testSimpleFile");
     }
     
     @Test
     public void testSimpleEnum() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.ENUM);
-        EnumElement one = new EnumElement("ONE");
+        JavaEnumElement one = new JavaEnumElement("ONE");
         one.getValues().add("\"one\"");
-        EnumElement two = new EnumElement("TWO");
+        JavaEnumElement two = new JavaEnumElement("TWO");
         two.getValues().add("\"two\"");
-        EnumElement three = new EnumElement("THREE");
+        JavaEnumElement three = new JavaEnumElement("THREE");
         three.getValues().add("\"three\"");
         file.getEnumElements().add(one);
         file.getEnumElements().add(two);
@@ -34,7 +36,7 @@ public class TestJavaFile {
         file.addEnumVariable("value");
         
         String result = file.write();
-        matchesFile(result, "simpleFileEnum");
+        matchesFile(result, "testSimpleEnum");
     }
     
     @Test
@@ -43,7 +45,7 @@ public class TestJavaFile {
         JavaField field = new JavaField("String", null, "string", null);
         file.getFields().add(field);
         String result = file.write();
-        matchesFile(result, "simpleFileField");
+        matchesFile(result, "testSimpleFileField");
     }
     
     @Test
@@ -51,19 +53,19 @@ public class TestJavaFile {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
         
         JavaFile inner = new JavaFile("Test2", JavaFileType.ENUM);
-        inner.getEnumElements().add(new EnumElement("ONE"));
+        inner.getEnumElements().add(new JavaEnumElement("ONE"));
         file.addInnerClass(inner);
         
         String result = file.write();
-        matchesFile(result, "simpleFileInnerClass");
+        matchesFile(result, "testSimpleFileInnerClass");
     }
     
     @Test
     public void testSimpleFileMethod() throws IOException {
         JavaFile file = new JavaFile("Test", JavaFileType.CLASS);
-        file.getMethods().add("public void test() {}");
+        file.addBodyElement("public void test() {}");
         String result = file.write();
-        matchesFile(result, "simpleFileMethod");
+        matchesFile(result, "testSimpleFileMethod");
     }
     
     @Test
@@ -72,7 +74,7 @@ public class TestJavaFile {
         file.setPackageName("in.kyle.test");
         
         String result = file.write();
-        matchesFile(result, "simpleFilePackage");
+        matchesFile(result, "testSimpleFilePackage");
     }
     
     @Test

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 
 public class MethodPlaceholderProcessor implements CodeProcessor {
     

@@ -1,6 +1,6 @@
-Set = "new HashSet<>()"
-List = "new ArrayList<>()"
-Optional = "Optional.empty()"
+Set = "new java.util.HashSet<>()"
+List = "new java.util.ArrayList<>()"
+Optional = "java.util.Optional.empty()"
     
 #fromJava = "
 public static <name> fromJava(String string) {
@@ -22,6 +22,9 @@ public static <name> of(String value) {
 #directChildren = "
 default java.util.List\<Object> getDirectChildren() { return java.util.Collections.emptyList(); }
 default java.util.List\<Object> getAllChildren() { return java.util.Collections.emptyList(); }
+default void replaceChild(Object child, Object replacement) {
+    throw new RuntimeException();
+}
 "
 
 Obj {

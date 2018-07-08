@@ -1,4 +1,4 @@
-package in.kyle.ast.code;
+package in.kyle.ast.code.file;
 
 import org.antlr.v4.runtime.misc.OrderedHashSet;
 
@@ -9,24 +9,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import in.kyle.ast.code.file.EnumElement;
-import in.kyle.ast.code.file.JavaField;
-import in.kyle.ast.code.file.JavaFileHeader;
-import in.kyle.ast.code.file.WritableElement;
 import in.kyle.ast.util.StringTemplate;
 import lombok.Data;
 import lombok.experimental.Delegate;
 
 @Data
-public class JavaFile implements WritableElement {
+public class JavaFile {
     
-    @Delegate(excludes = WritableElement.class)
+    @Delegate
     private final JavaFileHeader header;
     private final Set<JavaField> fields = new OrderedHashSet<>();
     private final Set<JavaFile> innerClasses = new OrderedHashSet<>();
-    private final Set<EnumElement> enumElements = new OrderedHashSet<>();
+    private final Set<JavaEnumElement> enumElements = new OrderedHashSet<>();
     private final Set<String> enumVariables = new OrderedHashSet<>();
-    private final List<String> constructors = new ArrayList<>();
     private final List<String> bodyElements = new ArrayList<>();
     private String packageName;
     private boolean innerClass;
@@ -56,10 +51,6 @@ public class JavaFile implements WritableElement {
         fields.add(field);
     }
     
-    public void addConstructor(String constructor) {
-        constructors.add(constructor);
-    }
-    
     public boolean hasPackage() {
         return packageName != null;
     }
@@ -68,17 +59,12 @@ public class JavaFile implements WritableElement {
         return getGenericSuper() != null;
     }
     
-    public void addEnumElement(EnumElement element) {
+    public void addEnumElement(JavaEnumElement element) {
         enumElements.add(element);
     }
     
-    public boolean hasInnerClasses() {
-        return !getInnerClasses().isEmpty();
-    }
-    
-    @Override
     public String write() {
-        return StringTemplate.render("writeFile", this);
+        return StringTemplate.render("file/writeFile", this);
     }
     
     public Map<Consumer<String>, String> getRewritableTypes() {

@@ -1,6 +1,6 @@
 package in.kyle.ast.code.processors;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 
 public interface CodeProcessor {
     

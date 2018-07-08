@@ -23,7 +23,7 @@ public class LiteralOptimizer extends JavaBaseVisitor {
     
     @Getter
     @Setter
-    private boolean rerun = true;
+    private boolean rerun;
     
     @Override
     public Object visitJExpressionLeftRight(JExpressionLeftRight object) {

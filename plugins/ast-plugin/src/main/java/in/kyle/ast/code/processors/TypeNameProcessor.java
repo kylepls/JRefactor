@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 import lombok.Setter;
 
 public class TypeNameProcessor implements CodeProcessor {

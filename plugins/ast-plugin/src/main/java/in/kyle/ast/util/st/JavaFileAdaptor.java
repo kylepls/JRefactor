@@ -1,4 +1,4 @@
-package in.kyle.ast.code.st;
+package in.kyle.ast.util.st;
 
 import org.stringtemplate.v4.Interpreter;
 import org.stringtemplate.v4.ST;
@@ -7,11 +7,12 @@ import org.stringtemplate.v4.misc.STNoSuchPropertyException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import in.kyle.ast.code.JavaFile;
-import in.kyle.ast.code.JavaFileType;
 import in.kyle.ast.code.file.JavaField;
+import in.kyle.ast.code.file.JavaFile;
+import in.kyle.ast.code.file.JavaFileType;
 
 public class JavaFileAdaptor extends ObjectModelAdaptor {
     
@@ -26,8 +27,12 @@ public class JavaFileAdaptor extends ObjectModelAdaptor {
             return hadBuilder(file);
         } else if ("allFields".equals(propertyName)) {
             return getAllFields(file);
+        } else if ("allFields_noDefaults".equals(propertyName)) {
+            List<JavaField> allFields = getAllFields(file);
+            removeDefaultFields(allFields);
+            return allFields;
         } else if ("superFields".equals(propertyName)) {
-            return getSuperFields(file, getAllFields(file));
+            return getSuperFields(file);
         } else if ("statementFields".equals(propertyName)) {
             return getStatementFields(file);
         } else {
@@ -49,36 +54,57 @@ public class JavaFileAdaptor extends ObjectModelAdaptor {
         return isClass && hasFields && !hasConcreteSuper;
     }
     
+    private void transposeGenerics(JavaFile file, List<JavaField> fields) {
+        for (int i = 0; i < fields.size(); i++) {
+            JavaField fieldWithType = fields.get(i);
+            if (isGenericType(fieldWithType.getType()) && file.hasGenericSuper()) {
+                fieldWithType = new JavaField(file.getGenericSuper(),
+                                              fieldWithType.getGeneric(),
+                                              fieldWithType.getName(),
+                                              fieldWithType.getValue());
+                fields.set(i, fieldWithType);
+            }
+            if (fieldWithType.hasGeneric() && isGenericType(fieldWithType.getGeneric()) &&
+                file.hasGenericSuper()) {
+                fieldWithType = new JavaField(fieldWithType.getType(),
+                                              file.getGenericSuper(),
+                                              fieldWithType.getName(),
+                                              fieldWithType.getValue());
+                fields.set(i, fieldWithType);
+            }
+        }
+        
+    }
+    
     private List<JavaField> getAllFields(JavaFile file) {
         List<JavaField> allFields = new ArrayList<>();
         if (file.hasSuperType()) {
             allFields.addAll(getAllFields(file.getSuperType()));
         }
         allFields.addAll(file.getFields());
-        // generics transposition
-        for (int i = 0; i < allFields.size(); i++) {
-            JavaField typeParameter = allFields.get(i);
-            if (typeParameter.getType().length() == 1 && file.hasGenericSuper()) {
-                JavaField field = new JavaField(file.getGenericSuper(),
-                                                typeParameter.getGeneric(),
-                                                typeParameter.getName(),
-                                                typeParameter.getValue());
-                allFields.set(i, field);
-            }
-        }
-        removeDefaultFields(allFields);
+        transposeGenerics(file, allFields);
         return allFields;
     }
     
-    private List<JavaField> getSuperFields(JavaFile file, List<JavaField> allFields) {
-        List<JavaField> superFields = new ArrayList<>(allFields);
-        superFields.removeAll(file.getFields());
-        return superFields;
+    private boolean isGenericType(String string) {
+        return string.length() == 1;
+    }
+    
+    private List<JavaField> getSuperFields(JavaFile file) {
+        if (file.hasSuperType()) {
+            List<JavaField> superFields = getAllFields(file.getSuperType());
+            transposeGenerics(file, superFields);
+            removeDefaultFields(superFields);
+            return superFields;
+        } else {
+            return Collections.emptyList();
+        }
     }
     
     private List<JavaField> getStatementFields(JavaFile file) {
         List<JavaField> statementFields = new ArrayList<>(file.getFields());
         removeDefaultFields(statementFields);
+        transposeGenerics(file, statementFields);
         return statementFields;
     }
     

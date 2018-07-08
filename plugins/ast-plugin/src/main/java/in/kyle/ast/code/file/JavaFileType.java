@@ -1,4 +1,4 @@
-package in.kyle.ast.code;
+package in.kyle.ast.code.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

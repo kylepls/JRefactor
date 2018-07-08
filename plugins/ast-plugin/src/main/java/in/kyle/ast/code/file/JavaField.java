@@ -1,12 +1,11 @@
 package in.kyle.ast.code.file;
 
-import in.kyle.ast.util.StringTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class JavaField implements WritableElement {
+public class JavaField {
     
     private String type;
     private String generic;
@@ -23,15 +22,18 @@ public class JavaField implements WritableElement {
     }
     
     public boolean hasGeneric() {
-        return getGeneric() != null;
+        return generic != null;
     }
     
     public boolean hasValue() {
         return getValue() != null;
     }
     
-    @Override
-    public String write() {
-        return StringTemplate.render("field", this);
+    public String getSimpleType() {
+        if (type.contains(".")) {
+            return type.substring(type.lastIndexOf(".") + 1);
+        } else {
+            return type;
+        }
     }
 }

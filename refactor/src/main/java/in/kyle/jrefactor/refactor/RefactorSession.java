@@ -3,7 +3,6 @@ package in.kyle.jrefactor.refactor;
 import java.lang.reflect.Field;
 
 import in.kyle.api.utils.Conditions;
-import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.refactor.symbol.UnitSymbolTable;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
@@ -50,6 +49,6 @@ public class RefactorSession {
     
     public <T extends JObj> void replace(T subject, T replacement) {
         JObj parent = findParent(subject);
-        Try.to(() -> replaceField(parent, subject, replacement));
+        parent.replaceChild(subject, replacement);
     }
 }

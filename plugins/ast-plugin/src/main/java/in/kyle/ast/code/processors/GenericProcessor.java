@@ -1,6 +1,6 @@
 package in.kyle.ast.code.processors;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 import in.kyle.ast.code.file.JavaField;
 
 public class GenericProcessor implements CodeProcessor {

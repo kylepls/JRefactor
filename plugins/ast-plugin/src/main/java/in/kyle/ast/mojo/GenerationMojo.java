@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Objects;
 
-import in.kyle.ast.antlr.AstFile;
 import in.kyle.ast.antlr.AstGenerator;
 import in.kyle.ast.code.CodeModifier;
 import in.kyle.ast.code.FileSet;
@@ -58,7 +57,7 @@ public class GenerationMojo extends AbstractMojo {
     
     private void generateSourcesForFile(File file) throws IOException {
         InputStream stream = Files.newInputStream(file.toPath());
-        AstFile astFile = AstGenerator.generateAstFromStream(stream);
+        AstGenerator.AstFile astFile = AstGenerator.generateAstFromStream(stream);
         FileSet files = astFile.getFiles();
         
         CodeModifier modifier = astFile.getModifier();

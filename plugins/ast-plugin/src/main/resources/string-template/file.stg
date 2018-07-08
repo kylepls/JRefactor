@@ -1,45 +1,44 @@
-import "header.stg"
-import "constructor.stg"
-import "field.stg"
-import "builder.stg"
-
 writeFile(obj) ::= <<
 <if(!obj.innerClass)><if(obj.packageName)>package <obj.packageName>;
-
 <endif>
 <if(obj.packageName || obj.imports || obj.isClass || obj.isEnum)>
 
 <endif>
-<if(obj.type.isClass)>lombok.@Data<endif>
-<endif><if(obj.type.isEnum)>lombok.@Getter<endif>
-<writeHeader(obj.header)> {
+<if(obj.type.isClass || obj.type.isAbstractClass)>@lombok.Data<endif>
+<endif><if(obj.type.isEnum)>@lombok.Getter
+@lombok.AllArgsConstructor
+<endif>
+</header/writeHeader(obj.header)> {
     <obj.enumElements : {element | <writeEnumElement(element)>}; separator=",\n"><\\>
-    <if(obj.enumStrings)>;<endif><\\>
+    <if(obj.enumElements)>;<\n><endif><\\>
     
-    <writeConstructor(obj)>
+    <writeFileFields(obj)><\\>
+    <if(obj.fields && !obj.enumVariables)><\n><endif><\\>
     
-    <writeFields(obj)>
+    </constructor/writeConstructor(obj)><\\>
+    
     <obj.bodyElements ; separator="\n"><if(obj.bodyElements)><\n><endif>
     <obj.innerClasses: {class | <writeFile(class)>}; separator="\n\n">
     <\\>
     <if(obj.hasBuilder)>
-    <writeBuilderMethod(obj)>
+    </builder/writeBuilderMethod(obj)>
     
-    <writeBuilder(obj)>
+    </builder/writeBuilder(obj)>
     <endif>
 }
 >>
 
-writeFields(obj) ::= <%
-<obj.fields : {field | <writeField(field)>}; separator="\n">
+writeFileFields(obj) ::= <%
+<obj.fields : {field | <writeFileField(field)>}; separator="\n">
 <obj.enumVariables : {var | private final String <var>;}; separator="\n">
 %>
 
-writeField(obj) ::= <%
-<type>
-<if(generic)>\<<generic>><endif>
-<\ ><name>
-<if(value)> = <value><endif>
+writeFileField(obj) ::= <%
+private 
+<obj.type>
+<if(obj.generic)>\<<obj.generic>><endif>
+<\ ><obj.name>
+<if(obj.value)> = <obj.value><endif>;
 %>
 
 writeEnumElement(obj) ::= <%

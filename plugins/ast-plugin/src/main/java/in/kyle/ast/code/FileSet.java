@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import in.kyle.ast.code.file.JavaFile;
 import lombok.Getter;
 
 public class FileSet {

@@ -12,16 +12,16 @@ import in.kyle.ast.AstBaseVisitor;
 import in.kyle.ast.AstParser;
 import in.kyle.ast.code.CodeModifier;
 import in.kyle.ast.code.FileSet;
-import in.kyle.ast.code.JavaFile;
-import in.kyle.ast.code.JavaFileType;
-import in.kyle.ast.code.file.EnumElement;
+import in.kyle.ast.code.file.JavaEnumElement;
 import in.kyle.ast.code.file.JavaField;
+import in.kyle.ast.code.file.JavaFile;
+import in.kyle.ast.code.file.JavaFileType;
 import in.kyle.ast.code.processors.FieldDefaultProcessor;
 import in.kyle.ast.code.processors.MethodPlaceholderProcessor;
 import lombok.Getter;
 
-import static in.kyle.ast.code.JavaFileType.ABSTRACT_CLASS;
-import static in.kyle.ast.code.JavaFileType.CLASS;
+import static in.kyle.ast.code.file.JavaFileType.ABSTRACT_CLASS;
+import static in.kyle.ast.code.file.JavaFileType.CLASS;
 
 public class CodeGenAstVisitor extends AstBaseVisitor {
     
@@ -29,7 +29,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     private final CodeModifier modifier = new CodeModifier();
     
     @Override
-    public AstFile visitAst(AstParser.AstContext ctx) {
+    public AstGenerator.AstFile visitAst(AstParser.AstContext ctx) {
         FileSet tree = new FileSet();
         for (AstParser.Ast_elementContext element : ctx.ast_element()) {
             if (element.default_definition() == null) {
@@ -38,7 +38,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
                 visitDefault_definition(element.default_definition());
             }
         }
-        return new AstFile(tree, modifier);
+        return new AstGenerator.AstFile(tree, modifier);
     }
     
     @Override
@@ -205,7 +205,7 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
             file.addEnumVariable(variableCtx.getText());
         }
         for (AstParser.Enum_partContext part : ctx.enum_block().enum_part()) {
-            EnumElement element = new EnumElement(part.IDENTIFIER().getText());
+            JavaEnumElement element = new JavaEnumElement(part.IDENTIFIER().getText());
             for (TerminalNode value : part.STRING()) {
                 element.getValues().add(value.toString());
             }

@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.io.File;
 
 import in.kyle.api.verify.Verify;
+import in.kyle.ast.code.file.JavaFile;
+import in.kyle.ast.code.file.JavaFileType;
 
 public class TestFileSet {
     

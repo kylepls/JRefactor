@@ -3,7 +3,7 @@ package in.kyle.ast.code.processors;
 import java.util.HashMap;
 import java.util.Map;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 import in.kyle.ast.code.file.JavaField;
 
 public class FieldDefaultProcessor implements CodeProcessor {
@@ -18,7 +18,7 @@ public class FieldDefaultProcessor implements CodeProcessor {
     public void process(JavaFile file) {
         for (JavaField field : file.getFields()) {
             if (field.getValue() == null) {
-                field.setValue(fieldDefaults.get(field.getType()));
+                field.setValue(fieldDefaults.get(field.getSimpleType()));
             }
         }
     }

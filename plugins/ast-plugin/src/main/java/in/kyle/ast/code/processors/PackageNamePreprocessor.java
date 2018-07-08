@@ -1,6 +1,6 @@
 package in.kyle.ast.code.processors;
 
-import in.kyle.ast.code.JavaFile;
+import in.kyle.ast.code.file.JavaFile;
 import lombok.Setter;
 
 public class PackageNamePreprocessor implements CodeProcessor {

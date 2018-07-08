@@ -1,4 +1,4 @@
-package in.kyle.ast.code.st;
+package in.kyle.ast.util.st;
 
 import org.stringtemplate.v4.Interpreter;
 import org.stringtemplate.v4.ST;
@@ -17,10 +17,18 @@ public class JavaFieldAdapter extends ObjectModelAdaptor {
                                            String propertyName) throws STNoSuchPropertyException {
         JavaField field = (JavaField) o;
         if ("isCollection".equals(propertyName)) {
-            return field.getType().equals("Set") || field.getType().equals("List");
+            return field.getSimpleType().equals("Set") || field.getSimpleType().equals("List");
         } else if ("isOptional".equals(propertyName)) {
-            return field.getType().equals("Optional");
+            return field.getSimpleType().equals("Optional");
+        } else if ("isSet".equals(propertyName)) {
+            return field.getSimpleType().equals("Set");
+        } else if ("isList".equals(propertyName)) {
+            return field.getSimpleType().equals("List");
+        } else if ("isPrimitive".equals(propertyName)) {
+            return Character.isLowerCase(field.getSimpleType().charAt(0));
+        } else {
+            return super.getProperty(interp, self, o, property, propertyName);
         }
-        return super.getProperty(interp, self, o, property, propertyName);
     }
+    
 }

@@ -43,7 +43,7 @@ class AbstractJObjVisitor<T> {
     
     public T visitChildren(JObj object) {
         if (object != null) {
-            for (JObj child : JObjUtils.getDirectChildren(object)) {
+            for (JObj child : JObjUtils.getAllChildren(object)) {
                 visit(child);
             }
         }
