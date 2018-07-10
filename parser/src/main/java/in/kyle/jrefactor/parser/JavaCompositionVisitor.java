@@ -1437,7 +1437,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JTypeName visitTypeName(TypeNameContext ctx) {
-        return new JTypeName(ctx.getText());
+        JTypeName typeName = new JTypeName(ctx.getText());
+        if (has(ctx.packageName())) {
+            typeName.setArea(Optional.of(visitPackageName(ctx.packageName())));
+        }
+        return typeName;
     }
     
     @Override

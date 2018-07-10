@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.kyle.jrefactor.refactor.JObjUtils;
+import in.kyle.jrefactor.refactor.util.JObjUtils;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JBlock;
 import in.kyle.jrefactor.tree.obj.JIdentifier;

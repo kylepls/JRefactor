@@ -11,16 +11,26 @@
 
     <artifactId>refactor</artifactId>
 
+    <properties>
+        <slf4j.version>1.7.6</slf4j.version>
+        <log4j.version>2.0-rc1</log4j.version> 
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>in.kyle.refactor</groupId>
             <artifactId>tree</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>in.kyle.refactor</groupId>
+            <artifactId>parser</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>in.kyle.refactor</groupId>
             <artifactId>writer</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -31,7 +41,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -91,7 +101,8 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/template</source>
+                                <source>${project.build.directory}/generated-sources/template
+                                </source>
                             </sources>
                         </configuration>
                     </execution>

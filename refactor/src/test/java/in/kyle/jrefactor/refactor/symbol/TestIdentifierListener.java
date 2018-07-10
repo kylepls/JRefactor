@@ -27,7 +27,7 @@ public class TestIdentifierListener {
         JMethod method = JMethod.builder()
            .header(JMethodHeader.builder()
                 .returns(JTypeName.of("void"))
-                .identifier(JIdentifier.of("test"))
+                .identifier(JIdentifier.of("Test.java"))
                 .addParameters(JParameter.builder()
                      .type(JTypeName.of("String"))
                      .name(JIdentifier.of("string"))

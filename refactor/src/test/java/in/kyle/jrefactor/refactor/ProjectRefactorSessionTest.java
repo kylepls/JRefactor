@@ -3,20 +3,21 @@ package in.kyle.jrefactor.refactor;
 import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
+import in.kyle.jrefactor.refactor.files.ProjectRefactorSession;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JTypeName;
 import in.kyle.jrefactor.tree.obj.JVariable;
 import in.kyle.jrefactor.tree.obj.block.JStatementBlock;
 import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
 
-public class RefactorSessionTest {
+public class ProjectRefactorSessionTest {
     
     @Test
     public void testReplace() throws IllegalAccessException {
         TestClass test = new TestClass();
         test.a = "hello";
-        RefactorSession.replaceField(test, test.a, "test");
-        Verify.that(test.a).isEqual("test");
+        ProjectRefactorSession.replaceField(test, test.a, "Test.java");
+        Verify.that(test.a).isEqual("Test.java");
         Verify.that(test.b).isEqual("b");
     }
     
@@ -33,10 +34,10 @@ public class RefactorSessionTest {
             .build();        
         // @formatter:on
         
-        RefactorSession session = new RefactorSession(block);
-        session.rename(var.getName(), "test");
+        ProjectRefactorSession session = new ProjectRefactorSession(block);
+        session.rename(var.getName(), "Test.java");
         JIdentifier name = variable.getVariables().get(0).getName();
-        Verify.that(name.getName()).isEqual("test");
+        Verify.that(name.getName()).isEqual("Test.java");
     }
     
     class TestClass {

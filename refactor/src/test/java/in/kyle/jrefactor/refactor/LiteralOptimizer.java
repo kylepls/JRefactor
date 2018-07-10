@@ -2,6 +2,7 @@ package in.kyle.jrefactor.refactor;
 
 import java.util.Arrays;
 
+import in.kyle.jrefactor.refactor.files.ProjectRefactorSession;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLiteral;
@@ -19,7 +20,7 @@ import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRi
 @RequiredArgsConstructor
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final RefactorSession session;
+    private final ProjectRefactorSession session;
     
     @Getter
     @Setter

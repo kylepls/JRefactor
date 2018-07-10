@@ -1,4 +1,4 @@
-Set = "new java.util.HashSet<>()"
+Set = "new java.util.LinkedHashSet<>()"
 List = "new java.util.ArrayList<>()"
 Optional = "java.util.Optional.empty()"
     
@@ -27,6 +27,10 @@ default void replaceChild(Object child, Object replacement) {
 }
 "
 
+#identifierHolder = "
+in.kyle.jrefactor.tree.obj.JIdentifier getIdentifier();
+"
+
 Obj {
 
     #directChildren
@@ -38,6 +42,7 @@ Obj {
     AnnotationElementValue { }
 
     concrete TypeName {
+        Optional<PropertyLookup> area
         String type
         
         #staticStringConstructor
@@ -385,13 +390,15 @@ Obj {
                 }
             }
         }
-        
-        
     }
 
-    Variable {
-        Identifier name
-        Optional<Expression> initializer
+    VariableDefinition {
+        #identifierHolder 
+        
+        Variable {
+            Identifier identifier
+            Optional<Expression> initializer
+        }
     }
 
     Modifiable {
@@ -412,9 +419,9 @@ Obj {
                 List<Variable> variables
             }
             
-            Parameter is LambdaParameter {
+            Parameter is LambdaParameter, VariableDefinition  {
                 TypeName type
-                Identifier name
+                Identifier identifier
             }
             
             ConstructorDeclaration is ClassMember {
@@ -431,11 +438,11 @@ Obj {
                     List<TypeName> bounds
                 } 
                 
-                EnumConstant is EnumMember {
+                EnumConstant is EnumMember, VariableDefinition {
                     List<Expression> arguments
                     Optional<ClassBody> body
                 }
-                
+               
                 MethodHeader {
                     TypeName returns
                     List<Parameter> parameters
@@ -481,7 +488,7 @@ Obj {
     }
 
     CompilationUnit {
-        Optional<String> packageName
+        Optional<PropertyLookup> packageName
         List<Import> importss
         List<Type> types
     }

@@ -140,22 +140,18 @@ arrayDimension
     :   '[' ']'
     ;
 
-
 typeParameter
 	:	annotation* identifier typeBound?
 	;
-
 
 typeBound
 	:	'extends' typeVariable                          #simpleTypeBound
 	|	'extends' classOrInterfaceType additionalBound* #classTypeBound
 	;
 
-
 additionalBound
 	:	'&' interfaceType
 	;
-
 
 typeArguments
 	:	'<' typeArgumentList '>'

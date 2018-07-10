@@ -1,12 +1,10 @@
-package in.kyle.jrefactor.refactor;
+package in.kyle.jrefactor.refactor.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,16 +35,6 @@ public final class JObjUtils {
         }
     }
     
-    private static <T extends JObj> T cloneInternal(T object)
-            throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(object);
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return (T) ois.readObject();
-    }
-    
     public static JBlock getFirstUpwardBlock(JObj root, JObj object) {
         Conditions.notNull(root);
         Conditions.notNull(object);
@@ -60,7 +48,6 @@ public final class JObjUtils {
             throw new RuntimeException("No upward block found for " + object);
         }
     }
-    
     
     public static JObj findParent(JObj child, JObj tree) {
         if (isChild(tree, child)) {
@@ -78,29 +65,25 @@ public final class JObjUtils {
         return null;
     }
     
-    public static Collection<JObj> getDirectChildren(JObj obj) {
-        return obj.getDirectChildren()
-                  .stream()
-                  .filter(o -> o instanceof JObj)
-                  .map(o -> (JObj) o)
-                  .collect(Collectors.toList());
+    public static List<JObj> getAllChildren(JObj obj) {
+        return JObjUtilsStreams.getAllChildren(obj).collect(Collectors.toList());
     }
     
-    public static List<JObj> getAllChildren(JObj obj) {
-        return obj.getAllChildren()
-                  .stream()
-                  .filter(o -> o instanceof JObj)
-                  .map(o -> (JObj) o)
-                  .collect(Collectors.toList());
+    public static List<JObj> getDirectChildren(JObj obj) {
+        return JObjUtilsStreams.getDirectChildren(obj).collect(Collectors.toList());
     }
     
     public static List<JObj> getAllElements(JObj obj) {
-        List<JObj> objs = new ArrayList<>();
-        objs.addAll(getAllChildren(obj));
-        getAllChildren(obj).stream()
-                           .map(JObjUtils::getAllElements)
-                           .flatMap(List::stream)
-                           .forEach(objs::add);
-        return objs;
+        return JObjUtilsStreams.getAllElements(obj).collect(Collectors.toList());
+    }
+    
+    private static <T extends JObj> T cloneInternal(T object)
+            throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(object);
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        return (T) ois.readObject();
     }
 }
