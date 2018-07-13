@@ -1,9 +1,10 @@
-package in.kyle.jrefactor.refactor.files;
+package in.kyle.jrefactor.refactor.session;
 
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+import in.kyle.jrefactor.refactor.files.SourceDirectory;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

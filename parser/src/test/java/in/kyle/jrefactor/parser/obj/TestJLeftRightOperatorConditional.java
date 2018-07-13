@@ -4,26 +4,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
+import in.kyle.jrefactor.tree.obj.JLeftRightOperator;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
 import lombok.AllArgsConstructor;
 
 @RunWith(Parameterized.class)
 @AllArgsConstructor
-public class TestJLeftRightOperator {
-    
+public class TestJLeftRightOperatorConditional {
+        
     private final JLeftRightOperator operator;
     
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
-        return Arrays.stream(JLeftRightOperator.values())
-                     .map(a -> new Object[]{a})
-                     .collect(Collectors.toList());
+        List<JLeftRightOperator> collect = new ArrayList<>();
+        collect.addAll(Arrays.asList(JExpressionLeftRight.JLeftRightOperatorConditional.values()));
+        
+        return collect.stream().map(a -> new Object[]{a}).collect(Collectors.toList());
+        
     }
     
     @Test

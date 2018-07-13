@@ -2,7 +2,7 @@ package in.kyle.jrefactor.refactor;
 
 import java.util.Arrays;
 
-import in.kyle.jrefactor.refactor.files.ProjectRefactorSession;
+import in.kyle.jrefactor.refactor.session.FileRefactorSession;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLiteral;
@@ -10,20 +10,15 @@ import in.kyle.jrefactor.tree.obj.expression.JExpressionParenthesis;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralNumeric;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralString;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator.ADD;
+import static in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorMath.ADD;
 
 
-@RequiredArgsConstructor
+@Data
 public class LiteralOptimizer extends JavaBaseVisitor {
     
-    private final ProjectRefactorSession session;
-    
-    @Getter
-    @Setter
+    private final FileRefactorSession session;
     private boolean rerun;
     
     @Override
@@ -37,13 +32,9 @@ public class LiteralOptimizer extends JavaBaseVisitor {
         } else if (contains(JExpressionParenthesis.class, object.getLeft(), object.getRight())) {
             JExpressionLiteral left = extractLiteral(object.getLeft());
             JExpressionLiteral right = extractLiteral(object.getRight());
-            if (left != null) {
-                object.setLeft(left);
-            }
-            if (right != null) {
-                object.setRight(right);
-            }
             if (left != null || right != null) {
+                object.setRight(right);
+                object.setLeft(left);
                 visitJExpressionLeftRight(object);
                 rerun = true;
             }

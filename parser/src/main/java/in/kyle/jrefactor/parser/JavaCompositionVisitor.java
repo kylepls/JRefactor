@@ -21,7 +21,9 @@ import in.kyle.jrefactor.tree.obj.block.typebody.JEnumBody;
 import in.kyle.jrefactor.tree.obj.block.typebody.JInterfaceBody;
 import in.kyle.jrefactor.tree.obj.expression.*;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionAssignment.JAssignmentOperator;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorBinary;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorConditional;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorMath;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralBoolean;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralCharacter;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.JLiteralNumeric;
@@ -88,6 +90,7 @@ import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmem
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember
         .classinitializer.JClassStaticInitializer;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.interfacemember.JInterfaceMethod;
+import in.kyle.jrefactor.tree.obj.variabledefinition.JVariable;
 
 public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
@@ -99,7 +102,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JCompilationUnit visitCompilationUnit(Java8Parser.CompilationUnitContext ctx) {
         JCompilationUnit unit = new JCompilationUnit();
         if (ctx.packageDeclaration() != null) {
-            String packageName = visitPackageDeclaration(ctx.packageDeclaration());
+            JPropertyLookup packageName = visitPackageDeclaration(ctx.packageDeclaration());
             unit.setPackageName(Optional.of(packageName));
         }
         List<JImport> imports = visitImports(ctx.importDeclaration());
@@ -119,22 +122,28 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     @Override
-    public String visitPackageDeclaration(PackageDeclarationContext ctx) {
-        return ctx.packageName().getText();
+    public JPropertyLookup visitPackageDeclaration(PackageDeclarationContext ctx) {
+        return visitPropertyLookup(ctx.packageName().propertyLookup());
     }
     
     @Override
     public JImport visitImportDeclaration(ImportDeclarationContext ctx) {
         JImport jImport = new JImport();
-        jImport.setName(visitTypeName(ctx.typeName()));
+        
+        JPropertyLookup area;
+        if (ctx.packageName() != null) {
+            area = visitPackageName(ctx.packageName());
+        } else {
+            area = new JPropertyLookup();
+        }
+        area.addArea(ctx.typeName().getText());
+        jImport.setArea(area);
+        
         if (ctx.import_static() != null) {
             jImport.setStaticImport(true);
         }
         if (ctx.import_wildcard() != null) {
             jImport.setOnDemand(true);
-        }
-        if (ctx.packageName() != null) {
-            jImport.setPackageName(Optional.of(visitPackageName(ctx.packageName())));
         }
         return jImport;
     }
@@ -169,10 +178,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public Collection<JTypeName> visitSuperinterfaces(SuperinterfacesContext ctx) {
         return ctx.interfaceTypeList()
-                  .interfaceType()
-                  .stream()
-                  .map(type -> visitClassType(type.classType()))
-                  .collect(Collectors.toSet());
+                .interfaceType()
+                .stream()
+                .map(type -> visitClassType(type.classType()))
+                .collect(Collectors.toSet());
     }
     
     @Override
@@ -297,9 +306,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JTypeName> visitInterfaceTypeList(InterfaceTypeListContext ctx) {
         return ctx.interfaceType()
-                  .stream()
-                  .map(c -> new JTypeName(c.getText()))
-                  .collect(Collectors.toList());
+                .stream()
+                .map(c -> new JTypeName(c.getText()))
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -377,9 +386,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JVariable> visitVariableDeclaratorList(VariableDeclaratorListContext ctx) {
         return ctx.variableDeclarator()
-                  .stream()
-                  .map(this::visitVariableDeclarator)
-                  .collect(Collectors.toList());
+                .stream()
+                .map(this::visitVariableDeclarator)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -397,7 +406,26 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JLeftRightOperator visitLeftRightOperator(LeftRightOperatorContext ctx) {
-        return JLeftRightOperator.fromJava(ctx.getText());
+        JLeftRightOperator operator;
+        String text = ctx.getText();
+        if (has((operator = getOperator(JLeftRightOperatorConditional.values(), text)))) {
+            return operator;
+        } else if (has((operator = getOperator(JLeftRightOperatorBinary.values(), text)))) {
+            return operator;
+        } else if (has((operator = getOperator(JLeftRightOperatorMath.values(), text)))) {
+            return operator;
+        } else {
+            throw new IllegalArgumentException(text);
+        }
+    }
+    
+    private JLeftRightOperator getOperator(JLeftRightOperator[] values, String text) {
+        for (JLeftRightOperator value : values) {
+            if (value.getJavaString().equals(text)) {
+                return value;
+            }
+        }
+        return null;
     }
     
     @Override
@@ -433,7 +461,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JVariable visitVariableDeclarator(VariableDeclaratorContext ctx) {
         JVariable variable = new JVariable();
-        variable.setName(visitVariableDeclaratorId(ctx.variableDeclaratorId()));
+        variable.setIdentifier(visitVariableDeclaratorId(ctx.variableDeclaratorId()));
         
         if (ctx.variableInitializer() != null) {
             JExpression visit = (JExpression) visit(ctx.variableInitializer());
@@ -573,23 +601,23 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     private List<JAnnotation> visitAnnotations(Collection<AnnotationContext> list) {
         return list.stream()
-                   .map(this::visitAnnotation)
-                   .map(JAnnotation.class::cast)
-                   .collect(Collectors.toList());
+                .map(this::visitAnnotation)
+                .map(JAnnotation.class::cast)
+                .collect(Collectors.toList());
     }
     
     private List<JType> visitTypeDeclarations(List<TypeDeclarationContext> list) {
         return list.stream()
-                   .map(this::visitTypeDeclaration)
-                   .map(JType.class::cast)
-                   .collect(Collectors.toList());
+                .map(this::visitTypeDeclaration)
+                .map(JType.class::cast)
+                .collect(Collectors.toList());
     }
     
     private List<JImport> visitImports(Collection<ImportDeclarationContext> imports) {
         return imports.stream()
-                      .map(this::visitImportDeclaration)
-                      .map(JImport.class::cast)
-                      .collect(Collectors.toList());
+                .map(this::visitImportDeclaration)
+                .map(JImport.class::cast)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -614,7 +642,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         
         if (ctx.methodDeclarator().formalParameterList() != null) {
             header.setParameters(visitFormalParameterList(ctx.methodDeclarator()
-                                                             .formalParameterList()));
+                                                                  .formalParameterList()));
         }
         
         header.setReturns(visitResult(ctx.result()));
@@ -710,9 +738,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JTypeName> visitExceptionTypeList(Java8Parser.ExceptionTypeListContext ctx) {
         return ctx.exceptionType()
-                  .stream()
-                  .map(c -> new JTypeName(c.getText()))
-                  .collect(Collectors.toList());
+                .stream()
+                .map(c -> new JTypeName(c.getText()))
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -724,8 +752,8 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         }
         if (ctx.formalParameters() != null) {
             ctx.formalParameters()
-               .formalParameter()
-               .forEach(c -> parameters.add(visitFormalParameter(c)));
+                    .formalParameter()
+                    .forEach(c -> parameters.add(visitFormalParameter(c)));
         }
         
         
@@ -808,7 +836,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpressionName visitExpressionName(ExpressionNameContext ctx) {
-        return new JExpressionName(new JIdentifier(ctx.getText()));
+        JExpressionName name = new JExpressionName(new JIdentifier(ctx.getText()));
+        if (has(ctx.propertyLookup())) {
+            name.setArea(Optional.of(visitPropertyLookup(ctx.propertyLookup())));
+        }
+        return name;
     }
     
     @Override
@@ -857,14 +889,20 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpressionClassReference visitPrimaryClassType(PrimaryClassTypeContext ctx) {
-        JTypeName type;
-        String typeName = ctx.primaryClassTypeAlternates().getText();
-        if (ctx.bracketPair() != null) {
-            type = new JArrayTypeName(typeName, ctx.bracketPair().size());
-        } else {
-            type = new JTypeName(typeName);
+        JTypeName type = visitPrimaryClassTypeAlternates(ctx.primaryClassTypeAlternates());
+        
+        if (ctx.bracketPair().size() != 0) {
+            Optional<JPropertyLookup> area = type.getArea();
+            type = new JArrayTypeName(type.getType(), ctx.bracketPair().size());
+            type.setArea(area);
         }
+        
         return new JExpressionClassReference(type);
+    }
+    
+    @Override
+    public JTypeName visitPrimaryClassTypeAlternates(PrimaryClassTypeAlternatesContext ctx) {
+        return (JTypeName) super.visitPrimaryClassTypeAlternates(ctx);
     }
     
     @Override
@@ -916,9 +954,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JStatement> visitStatementExpressionList(StatementExpressionListContext ctx) {
         return ctx.statementExpression()
-                  .stream()
-                  .map(this::visitStatementExpression)
-                  .collect(Collectors.toList());
+                .stream()
+                .map(this::visitStatementExpression)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -972,10 +1010,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JTypeArgument> visitTypeArguments(TypeArgumentsContext ctx) {
         return ctx.typeArgumentList()
-                  .typeArgument()
-                  .stream()
-                  .map(this::visitTypeArgument)
-                  .collect(Collectors.toList());
+                .typeArgument()
+                .stream()
+                .map(this::visitTypeArgument)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -1296,14 +1334,14 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         
         declaration.setAnnotations(visitAnnotations(ctx.annotation()));
         declaration.setIdentifier(visitSimpleTypeName(ctx.constructorDeclarator()
-                                                         .simpleTypeName()));
+                                                              .simpleTypeName()));
         if (ctx.throws_() != null) {
             declaration.setThrowsTypes(visitThrows_(ctx.throws_()));
         }
         declaration.setBody(visitConstructorBody(ctx.constructorBody()));
         if (ctx.constructorDeclarator().formalParameterList() != null) {
             declaration.setParameters(visitFormalParameterList(ctx.constructorDeclarator()
-                                                                  .formalParameterList()));
+                                                                       .formalParameterList()));
         }
         
         return declaration;
@@ -1353,9 +1391,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     private List<JAnnotationMember> visitAnnotationBody(AnnotationTypeBodyContext ctx) {
         return ctx.annotationTypeMemberDeclaration()
-                  .stream()
-                  .map(this::visitAnnotationTypeMemberDeclaration)
-                  .collect(Collectors.toList());
+                .stream()
+                .map(this::visitAnnotationTypeMemberDeclaration)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -1422,9 +1460,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public List<JAnnotationValue> visitElementValuePairList(ElementValuePairListContext ctx) {
         return ctx.elementValuePair()
-                  .stream()
-                  .map(this::visitElementValuePair)
-                  .collect(Collectors.toList());
+                .stream()
+                .map(this::visitElementValuePair)
+                .collect(Collectors.toList());
     }
     
     @Override
@@ -1437,7 +1475,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JTypeName visitTypeName(TypeNameContext ctx) {
-        JTypeName typeName = new JTypeName(ctx.getText());
+        JTypeName typeName = new JTypeName(ctx.Identifier().getText());
         if (has(ctx.packageName())) {
             typeName.setArea(Optional.of(visitPackageName(ctx.packageName())));
         }

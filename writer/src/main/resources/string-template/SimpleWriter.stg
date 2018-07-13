@@ -87,6 +87,7 @@ JExpressionMethodInvocation(obj) ::= <%
 %>
 
 JExpressionName(obj) ::= <<
+<if(obj.area.present)><obj.area>.<endif>
 <obj.identifier>
 >>
 

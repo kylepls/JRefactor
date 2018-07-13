@@ -6,11 +6,6 @@ public static class <obj.name>Builder {
     private <obj.name>Builder() {
         <obj.name; format="lower"> = new <obj.name>();
     }
-    <!
-    public static <obj.name>Builder create() {
-        return new <simpleName>Builder();
-    }
-    !>
     
     <obj.allFields : { field |
 <if(field.isOptional)>
@@ -23,6 +18,11 @@ public <obj.name>Builder add<field.name; format="cap">(<field.generic>... <field
     for (<field.generic> e : <field.name; format="singular">) {
         <obj.name; format="lower">.add<field.name; format="singular|cap">(e);
     \}
+    return this;
+\}
+
+public <obj.name>Builder add<field.name; format="cap">(java.util.Collection\<<field.generic>\> <field.name>) {
+    <obj.name; format="lower">.get<field.name; format="cap">().addAll(<field.name>);
     return this;
 \}
 <else>

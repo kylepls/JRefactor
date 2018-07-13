@@ -12,7 +12,7 @@ public class TestJParameter {
     public void test() {
         String test = "String string";
         JParameter parameter = Parser.parse(test, JParameter.class);
-        Verify.that(parameter.getName()).isNotNull();
+        Verify.that(parameter.getIdentifier()).isNotNull();
         Verify.that(parameter.getType()).isNotNull();
     }
 }

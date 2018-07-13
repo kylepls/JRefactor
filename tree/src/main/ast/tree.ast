@@ -31,6 +31,10 @@ default void replaceChild(Object child, Object replacement) {
 in.kyle.jrefactor.tree.obj.JIdentifier getIdentifier();
 "
 
+#getJavaString = "
+String getJavaString();
+"
+
 Obj {
 
     #directChildren
@@ -40,6 +44,10 @@ Obj {
     }
     
     AnnotationElementValue { }
+    
+    LeftRightOperator {
+        #getJavaString
+    }
 
     concrete TypeName {
         Optional<PropertyLookup> area
@@ -158,6 +166,7 @@ Obj {
         
         ExpressionName {
             Identifier identifier
+            Optional<PropertyLookup> area
         }
         
         ExpressionClassReference {
@@ -207,13 +216,19 @@ Obj {
             Expression left
             Expression right
             
-            inside LeftRightOperator is Obj {
+            inside LeftRightOperatorMath is LeftRightOperator {
                 <javaString>
                 ADD, "+"
                 SUBTRACT, "-"
                 MULTIPLY, "*"
                 DIVIDE, "/"
                 MODULUS, "%"
+                
+                #fromJava
+            }
+            
+            inside LeftRightOperatorConditional is LeftRightOperator {
+                <javaString>
                 CONDITIONAL_AND, "&&"
                 CONDITIONAL_OR, "||"
                 CONDITIONAL_LESS_THAN, "<"
@@ -223,6 +238,12 @@ Obj {
                 INSTANCE_OF, "instanceof"
                 EQUAL, "=="
                 NOT_EQUAL, "!="
+                
+                #fromJava
+            }
+            
+            inside LeftRightOperatorBinary is LeftRightOperator {
+                <javaString>
                 BINARY_SHIFT_LEFT, "<<"
                 BINARY_SHIFT_RIGHT, ">>"
                 BINARY_ALLIGN_RIGHT, ">>>"
@@ -233,6 +254,7 @@ Obj {
                 #fromJava
             }
         }
+        
     }
 
     SwitchCase {
@@ -481,8 +503,7 @@ Obj {
     }
 
     Import {
-        Optional<PropertyLookup> packageName
-        TypeName name
+        PropertyLookup area
         boolean onDemand
         boolean staticImport
     }

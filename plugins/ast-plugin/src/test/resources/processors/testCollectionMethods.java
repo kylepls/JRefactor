@@ -42,6 +42,11 @@ public class Test {
             return this;
         }
 
+        public TestBuilder addStrings(java.util.Collection<String> strings) {
+            test.getStrings().addAll(strings);
+            return this;
+        }
+
         public Test build() {
             return test;
         }

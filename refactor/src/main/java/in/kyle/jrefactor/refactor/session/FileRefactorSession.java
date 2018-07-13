@@ -1,13 +1,15 @@
-package in.kyle.jrefactor.refactor.files;
+package in.kyle.jrefactor.refactor.session;
 
 import in.kyle.api.utils.Conditions;
 import in.kyle.jrefactor.refactor.symbol.UnitSymbolTable;
 import in.kyle.jrefactor.refactor.util.JObjUtils;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class FileRefactorSession {
-    private JObj root;
+    private final JObj root;
     
     public void rename(JIdentifier identifier, String newName) {
         Conditions.isTrue(contains(identifier),
@@ -24,7 +26,7 @@ public class FileRefactorSession {
     }
     
     public JObj findParent(JObj subject) {
-        return JObjUtils.findParent(subject, root);
+        return JObjUtils.findParent(root, subject);
     }
     
     public <T extends JObj> void replace(T subject, T replacement) {

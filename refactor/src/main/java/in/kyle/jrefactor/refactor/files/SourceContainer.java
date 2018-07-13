@@ -8,4 +8,6 @@ import in.kyle.jrefactor.tree.obj.JPropertyLookup;
 public interface SourceContainer {
     
     Stream<JCompilationUnit> getDefinitionsInPackage(JPropertyLookup packageName);
+    
+    Stream<JCompilationUnit> getAllDefinitions();
 }

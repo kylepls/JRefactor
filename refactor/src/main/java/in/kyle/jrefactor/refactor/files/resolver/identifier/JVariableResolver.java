@@ -19,7 +19,6 @@ public class JVariableResolver implements JResolver<JIdentifier, Optional<JVaria
     
     @Override
     public Optional<JVariableDefinition> resolve(JIdentifier input) {
-        // check type
         Optional<JVariableDefinition> resolve =
                 new JVariableResolverBlock(unit, block).resolve(input);
         if (resolve.isPresent()) {

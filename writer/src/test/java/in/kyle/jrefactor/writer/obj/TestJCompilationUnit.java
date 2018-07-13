@@ -8,7 +8,7 @@ import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.tree.obj.JCompilationUnit;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JImport;
-import in.kyle.jrefactor.tree.obj.JTypeName;
+import in.kyle.jrefactor.tree.obj.JPropertyLookup;
 import in.kyle.jrefactor.tree.obj.block.typebody.JClassBody;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.type.superinterfacetype
         .typeparametertype.JClass;
@@ -19,17 +19,19 @@ public class TestJCompilationUnit {
     @Test
     public void testJustPackage() {
         JCompilationUnit unit = new JCompilationUnit();
-        unit.setPackageName(Optional.of("pack.age"));
+        unit.setPackageName(Optional.of(JPropertyLookup.builder().addAreas("pack", "age").build()));
         Verify.that(Write.object(unit)).isEqual("package pack.age;");
     }
     
     @Test
     public void testJustImports() {
         JCompilationUnit unit = new JCompilationUnit();
-        JImport import1 = new JImport();
-        import1.setName(new JTypeName("Import1"));
-        JImport import2 = new JImport();
-        import2.setName(new JTypeName("Import2"));
+        JImport import1 = JImport.builder()
+                .area(JPropertyLookup.builder().addAreas("Import1").build())
+                .build();
+        JImport import2 = JImport.builder()
+                .area(JPropertyLookup.builder().addAreas("Import2").build())
+                .build();
         unit.addImports(import1);
         unit.addImports(import2);
         Verify.that(Write.object(unit)).isEqual("import Import1;\nimport Import2;");

@@ -6,13 +6,13 @@ import java.util.List;
 import in.kyle.jrefactor.refactor.JavaBaseListener;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
-import in.kyle.jrefactor.tree.obj.JVariable;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JParameter;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JEnumConstant;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
 import in.kyle.jrefactor.tree.obj.statement.JStatementLocalVariableDeclaration;
 import in.kyle.jrefactor.tree.obj.unit.bodymember.typemember.enummember.classmember.JMethod;
+import in.kyle.jrefactor.tree.obj.variabledefinition.JVariable;
 import lombok.Data;
 import lombok.Getter;
 
@@ -24,7 +24,7 @@ class IdentifierListener extends JavaBaseListener {
     @Override
     public void enterJMethod(JMethod object) {
         for (JParameter parameter : object.getHeader().getParameters()) {
-            addDeclaration(object.getBody(), parameter.getName());
+            addDeclaration(object.getBody(), parameter.getIdentifier());
         }
         enterJBlock(object.getBody());
     }
@@ -32,14 +32,14 @@ class IdentifierListener extends JavaBaseListener {
     @Override
     public void enterJStatementLocalVariableDeclaration(JStatementLocalVariableDeclaration object) {
         for (JVariable variable : object.getVariables()) {
-            addDeclaration(object, variable.getName());
+            addDeclaration(object, variable.getIdentifier());
         }
     }
     
     @Override
     public void enterJField(JField object) {
         for (JVariable variable : object.getVariables()) {
-            addDeclaration(object, variable.getName());
+            addDeclaration(object, variable.getIdentifier());
         }
     }
     

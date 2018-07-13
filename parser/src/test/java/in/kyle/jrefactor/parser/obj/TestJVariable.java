@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
-import in.kyle.jrefactor.tree.obj.JVariable;
+import in.kyle.jrefactor.tree.obj.variabledefinition.JVariable;
 
 public class TestJVariable {
 
@@ -13,7 +13,7 @@ public class TestJVariable {
         String test = "i";
         JVariable variable = Parser.parse(test, JVariable.class);
         Verify.that(variable.getInitializer()).isNotPresent();
-        Verify.that(variable.getName()).isNotNull();
+        Verify.that(variable.getIdentifier()).isNotNull();
     }
     
     @Test
@@ -21,6 +21,6 @@ public class TestJVariable {
         String test = "i = 0";
         JVariable variable = Parser.parse(test, JVariable.class);
         Verify.that(variable.getInitializer()).isPresent();
-        Verify.that(variable.getName()).isNotNull();        
+        Verify.that(variable.getIdentifier()).isNotNull();        
     }
 }

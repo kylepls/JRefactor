@@ -12,8 +12,7 @@ public class TestJImport {
     public void test() {
         String test = "import test;";
         JImport anImport = Parser.parse(test, JImport.class);
-        Verify.that(anImport.getName()).isNotNull();
-        Verify.that(anImport.getPackageName()).isNotPresent();
+        Verify.that(anImport.getArea()).isNotNull();
         Verify.that(anImport.isOnDemand()).isFalse();
         Verify.that(anImport.isStaticImport()).isFalse();
     }
@@ -32,10 +31,9 @@ public class TestJImport {
         Verify.that(anImport.isOnDemand()).isTrue();                
     }
     
-    @Test
     public void testPackage() {
         String test = "import static test.test;";
         JImport anImport = Parser.parse(test, JImport.class);
-        Verify.that(anImport.getPackageName()).isPresent();                        
+        Verify.that(anImport.getArea()).isNotNull();                        
     }
 }

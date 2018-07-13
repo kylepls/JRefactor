@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.tree.obj.JIdentifier;
-import in.kyle.jrefactor.tree.obj.JVariable;
 import in.kyle.jrefactor.tree.obj.expression.expressionliteral.literalnumeric.JLiteralInteger;
+import in.kyle.jrefactor.tree.obj.variabledefinition.JVariable;
 import in.kyle.jrefactor.writer.Write;
 
 public class TestJVariable {

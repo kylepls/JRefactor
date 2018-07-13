@@ -1,8 +1,10 @@
 package in.kyle.jrefactor.refactor.files;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -16,6 +18,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SourceDirectory implements SourceContainer {
     
+    private static final PathMatcher JAVA_MATCHER =
+            FileSystems.getDefault().getPathMatcher("glob:**.java");
+    
     private final Set<SourceFile> files = new HashSet<>();
     private final Path path;
     
@@ -24,15 +29,24 @@ public class SourceDirectory implements SourceContainer {
     }
     
     private void loadFile(Path path) {
-        try {
-            files.add(new SourceFile(JavaParser.parseFile(Files.newInputStream(path))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (JAVA_MATCHER.matches(path)) {
+            try {
+                JCompilationUnit unit = JavaParser.parseFile(Files.newInputStream(path));
+                SourceFile file = new SourceFile(unit);
+                files.add(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     
     @Override
     public Stream<JCompilationUnit> getDefinitionsInPackage(JPropertyLookup packageName) {
         return files.stream().flatMap(file -> file.getDefinitionsInPackage(packageName));
+    }
+    
+    @Override
+    public Stream<JCompilationUnit> getAllDefinitions() {
+        return files.stream().flatMap(SourceContainer::getAllDefinitions);
     }
 }

@@ -1,17 +1,10 @@
 package in.kyle.jrefactor.refactor.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import in.kyle.api.utils.Conditions;
-import in.kyle.api.utils.Try;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JBlock;
 
@@ -26,21 +19,12 @@ public final class JObjUtils {
         return false;
     }
     
-    public static <T extends JObj> T clone(T object) {
-        Class<?> clazz = object.getClass();
-        if (!clazz.isEnum()) {
-            return Try.to(() -> cloneInternal(object));
-        } else {
-            return object;
-        }
-    }
-    
     public static JBlock getFirstUpwardBlock(JObj root, JObj object) {
         Conditions.notNull(root);
         Conditions.notNull(object);
         JObj search = object;
         while (!(search instanceof JBlock) && search != null) {
-            search = JObjUtils.findParent(search, root);
+            search = JObjUtils.findParent(root, search);
         }
         if (search != null) {
             return (JBlock) search;
@@ -49,20 +33,16 @@ public final class JObjUtils {
         }
     }
     
-    public static JObj findParent(JObj child, JObj tree) {
+    public static JObj findParent(JObj tree, JObj child) {
         if (isChild(tree, child)) {
             return tree;
         } else {
-            List<JObj> allChildren = getAllChildren(tree);
-            Optional<JObj> parent = allChildren.stream()
-                                               .map(sub -> findParent(child, sub))
-                                               .filter(Objects::nonNull)
-                                               .findAny();
-            if (parent.isPresent()) {
-                return parent.get();
-            }
+            return JObjUtilsStreams.getAllChildren(tree)
+                    .map(sub -> findParent(sub, child))
+                    .filter(Objects::nonNull)
+                    .findAny()
+                    .orElse(null);
         }
-        return null;
     }
     
     public static List<JObj> getAllChildren(JObj obj) {
@@ -77,13 +57,19 @@ public final class JObjUtils {
         return JObjUtilsStreams.getAllElements(obj).collect(Collectors.toList());
     }
     
-    private static <T extends JObj> T cloneInternal(T object)
-            throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(object);
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        return (T) ois.readObject();
+    public static String getStringTree(Object obj) {
+        if (obj instanceof JObj) {
+            String collect = ((JObj) obj).getAllChildren()
+                    .stream()
+                    .map(JObjUtils::getStringTree)
+                    .collect(Collectors.joining("\n"));
+            return String.format("%s:\n%s", obj.getClass().getSimpleName(), indent(collect));
+        } else {
+            return Objects.toString(obj);
+        }
+    }
+    
+    private static String indent(String string) {
+        return string.replaceAll("(?m)^", "\t");
     }
 }

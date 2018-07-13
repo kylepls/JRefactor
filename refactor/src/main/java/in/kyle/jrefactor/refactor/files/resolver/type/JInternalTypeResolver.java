@@ -1,10 +1,11 @@
-package in.kyle.jrefactor.refactor.files.resolver;
+package in.kyle.jrefactor.refactor.files.resolver.type;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import in.kyle.api.utils.Conditions;
 import in.kyle.jrefactor.refactor.files.SourceContainer;
+import in.kyle.jrefactor.refactor.files.resolver.JResolver;
 import in.kyle.jrefactor.refactor.util.JObjUtilsStreams;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JPropertyLookup;

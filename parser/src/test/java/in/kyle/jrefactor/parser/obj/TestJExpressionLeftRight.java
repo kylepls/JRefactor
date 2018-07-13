@@ -9,8 +9,11 @@ import java.util.Collection;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.parser.Parser;
+import in.kyle.jrefactor.tree.obj.JLeftRightOperator;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight;
-import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperator;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorBinary;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorConditional;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionLeftRight.JLeftRightOperatorMath;
 import in.kyle.jrefactor.tree.obj.expression.JExpressionName;
 import lombok.AllArgsConstructor;
 
@@ -24,26 +27,26 @@ public class TestJExpressionLeftRight {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         Collection<Object[]> data = new ArrayList<>();
-        data.add(testCase(JLeftRightOperator.ADD, 1));
-        data.add(testCase(JLeftRightOperator.SUBTRACT, 1));
-        data.add(testCase(JLeftRightOperator.MULTIPLY, 1));
-        data.add(testCase(JLeftRightOperator.DIVIDE, 1));
-        data.add(testCase(JLeftRightOperator.MODULUS, 1));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_AND, true));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_OR, true));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_LESS_THAN, 1));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_GREATER_THAN, 1));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_LESS_THAN_EQUAL, 1));
-        data.add(testCase(JLeftRightOperator.CONDITIONAL_GREATER_EQUAL, 1));
-        data.add(testCase(JLeftRightOperator.INSTANCE_OF, "var2"));
-        data.add(testCase(JLeftRightOperator.EQUAL, 1));
-        data.add(testCase(JLeftRightOperator.NOT_EQUAL, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_SHIFT_LEFT, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_SHIFT_RIGHT, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_ALLIGN_RIGHT, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_INCLUSIVE_OR, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_EXCLUSIVE_OR, 1));
-        data.add(testCase(JLeftRightOperator.BINARY_AND, 1));
+        data.add(testCase(JLeftRightOperatorMath.ADD, 1));
+        data.add(testCase(JLeftRightOperatorMath.SUBTRACT, 1));
+        data.add(testCase(JLeftRightOperatorMath.MULTIPLY, 1));
+        data.add(testCase(JLeftRightOperatorMath.DIVIDE, 1));
+        data.add(testCase(JLeftRightOperatorMath.MODULUS, 1));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_AND, true));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_OR, true));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_LESS_THAN, 1));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_GREATER_THAN, 1));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_LESS_THAN_EQUAL, 1));
+        data.add(testCase(JLeftRightOperatorConditional.CONDITIONAL_GREATER_EQUAL, 1));
+        data.add(testCase(JLeftRightOperatorConditional.INSTANCE_OF, "var2"));
+        data.add(testCase(JLeftRightOperatorConditional.EQUAL, 1));
+        data.add(testCase(JLeftRightOperatorConditional.NOT_EQUAL, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_SHIFT_LEFT, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_SHIFT_RIGHT, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_ALLIGN_RIGHT, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_INCLUSIVE_OR, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_EXCLUSIVE_OR, 1));
+        data.add(testCase(JLeftRightOperatorBinary.BINARY_AND, 1));
         return data;
     }
     

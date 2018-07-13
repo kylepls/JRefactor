@@ -32,6 +32,10 @@
 
 grammar Java8;
 
+compilationUnit
+	:	packageDeclaration? importDeclaration* typeDeclaration* EOF
+	;
+
 modifier
     :   'public'
     |   'private'
@@ -157,23 +161,18 @@ typeArguments
 	:	'<' typeArgumentList '>'
 	;
 
-
 typeArgumentList
 	:	typeArgument (',' typeArgument)*
 	;
-
-
 
 typeArgument
 	:	referenceType
 	|	wildcard
 	;
 
-
 wildcard
 	:	'?' wildcardBounds?
 	;
-
 
 wildcardBounds
 	:	wildcardType referenceType
@@ -199,26 +198,12 @@ packageName
 
 expressionName
 	:	Identifier
-	|	ambiguousName '.' Identifier
+	|	propertyLookup '.' Identifier
 	;
-
-
-ambiguousName
-	:	Identifier
-	|	ambiguousName '.' Identifier
-	;
-
-// common entry point
-
-compilationUnit
-	:	packageDeclaration? importDeclaration* typeDeclaration* EOF
-	;
-
 
 packageDeclaration
 	:	'package' packageName ';'
 	;
-
 
 import_static: 'static';
 
@@ -228,7 +213,6 @@ importDeclaration
     : 'import' import_static? (packageName '.')? typeName import_wildcard? ';'
     ;
     
-
 typeDeclaration
 	:	classDeclaration
 	|   enumDeclaration
@@ -236,36 +220,29 @@ typeDeclaration
 	|	';'
 	;
 
-
 classDeclaration
 	:	annotation* modifier* 'class' identifier typeParameters? superclass? superinterfaces? classBody
 	;
 
-
 typeParameterList
 	:	typeParameter (',' typeParameter)*
 	;
-	
 
 typeParameters
 	:	'<' typeParameterList '>'
 	;
 
-
 superclass
 	:	'extends' classType
 	;
-
 
 superinterfaces
 	:	'implements' interfaceTypeList
 	;
 
-
 interfaceTypeList
 	:	interfaceType (',' interfaceType)*
 	;
-
 
 classBody
 	:	'{' classBodyDeclaration* '}'
@@ -363,28 +340,23 @@ unannArrayType
 	|	unannTypeVariable arrayDimension+
 	;
 
-
 methodDeclaration
 	:	annotation* modifier* methodHeader methodBody
 	;
-
 
 methodHeader
 	:	result methodDeclarator throws_?
 	|	typeParameters annotation* result methodDeclarator throws_?
 	;
 
-
 result
 	:	unannType
 	|	'void'
 	;
 
-
 methodDeclarator
 	:	identifier '(' formalParameterList? ')' 
 	;
-	
 
 formalParameterList
 	:	receiverParameter
@@ -410,43 +382,35 @@ receiverParameter
 	:	annotation* unannType (identifier '.')? 'this'
 	;
 
-
 throws_
 	:	'throws' exceptionTypeList
 	;
 
-
 exceptionTypeList
 	:	exceptionType (',' exceptionType)*
 	;
-
 
 exceptionType
 	:	classType
 	|	typeVariable
 	;
 
-
 methodBody
 	:	block
 	|	';'
 	;
 
-
 instanceInitializer
 	:	block
 	;
-
 
 staticInitializer
 	:	'static' block
 	;
 
-
 constructorDeclaration
 	:	annotation* modifier* constructorDeclarator throws_? constructorBody
 	;
-
 
 constructorDeclarator
 	:	typeParameters? simpleTypeName '(' formalParameterList? ')'
@@ -455,7 +419,6 @@ constructorDeclarator
 simpleTypeName
 	:	Identifier
 	;
-
 
 constructorBody
 	:	'{' explicitConstructorInvocation? blockStatements? '}'
@@ -468,26 +431,21 @@ explicitConstructorInvocation
 	|	primary '.' typeArguments? 'super' '(' argumentList? ')' ';'
 	;
 
-
 enumDeclaration
 	:	annotation* modifier* 'enum' identifier superinterfaces? enumBody
 	;
-
 
 enumBody
 	:	'{' enumConstantList? ','? enumBodyDeclarations? '}'
 	;
 
-
 enumConstantList
 	:	enumConstant (',' enumConstant)*
 	;
 
-
 enumConstant
 	:	annotation* identifier ('(' argumentList? ')')? classBody?
 	;
-
 
 enumBodyDeclarations
 	:	';' classBodyDeclaration*
@@ -496,28 +454,22 @@ enumBodyDeclarations
 /*
  * Productions from §9 (Interfaces)
  */
-
-
 interfaceDeclaration
 	:	normalInterfaceDeclaration
 	|	annotationTypeDeclaration
 	;
 
-
 normalInterfaceDeclaration
 	:	annotation* modifier* 'interface' identifier typeParameters? extendsInterfaces? interfaceBody
 	;
-
 
 extendsInterfaces
 	:	'extends' interfaceTypeList
 	;
 
-
 interfaceBody
 	:	'{' interfaceMemberDeclaration* '}'
 	;
-
 
 interfaceMemberDeclaration
 	:	constantDeclaration
@@ -527,26 +479,21 @@ interfaceMemberDeclaration
 	|   emptyStatement	
 	;
 
-
 constantDeclaration
 	:	annotation* modifier* unannType variableDeclaratorList ';'
 	;
-
 
 interfaceMethodDeclaration
 	:	annotation* modifier* DEFAULT? methodHeader methodBody
 	;
 
-
 annotationTypeDeclaration
 	:	annotation* modifier* '@' 'interface' identifier annotationTypeBody
 	;
 
-
 annotationTypeBody
 	:	'{' annotationTypeMemberDeclaration* '}'
 	;
-
 
 annotationTypeMemberDeclaration
 	:	annotationTypeElementDeclaration
@@ -556,16 +503,13 @@ annotationTypeMemberDeclaration
 	|	';'
 	;
 
-
 annotationTypeElementDeclaration
 	:	annotation* modifier* unannType identifier '(' ')' arrayDimension* defaultValue? ';'
 	;
 
-
 defaultValue
 	:	'default' elementValue
 	;
-
 
 annotation
 	:	normalAnnotation
@@ -573,21 +517,17 @@ annotation
 	|	singleElementAnnotation
 	;
 
-
 normalAnnotation
 	:	'@' typeName '(' elementValuePairList? ')'
 	;
-
 
 elementValuePairList
 	:	elementValuePair (',' elementValuePair)*
 	;
 
-
 elementValuePair
 	:	identifier '=' elementValue
 	;
-
 
 elementValue
 	:	conditionalExpression           #elementValueExpression
@@ -599,16 +539,13 @@ elementValueArrayInitializer
 	:	'{' elementValueList? ','? '}'
 	;
 
-
 elementValueList
 	:	elementValue (',' elementValue)*
 	;
 
-
 markerAnnotation
 	:	'@' typeName
 	;
-
 
 singleElementAnnotation
 	:	'@' typeName '(' elementValue ')'
@@ -630,16 +567,13 @@ variableInitializerList
  * Productions from §14 (Blocks and Statements)
  */
 
-
 block
 	:	'{' blockStatement* '}'
 	;
 
-
 blockStatements
 	:	blockStatement+
 	;
-
 
 blockStatement
 	:	localVariableDeclarationStatement
@@ -647,16 +581,13 @@ blockStatement
 	|	statement
 	;
 
-
 localVariableDeclarationStatement
 	:	localVariableDeclaration ';'
 	;
 
-
 localVariableDeclaration
 	:	annotation* modifier* unannType variableDeclaratorList
 	;
-
 
 statement
 	:	statementWithoutTrailingSubstatement
@@ -667,7 +598,6 @@ statement
 	|	forStatement
 	;
 
-
 statementNoShortIf
 	:	statementWithoutTrailingSubstatement
 	|	labeledStatementNoShortIf
@@ -675,7 +605,6 @@ statementNoShortIf
 	|	whileStatementNoShortIf
 	|	forStatementNoShortIf
 	;
-
 
 statementWithoutTrailingSubstatement
 	:	block
@@ -692,21 +621,17 @@ statementWithoutTrailingSubstatement
 	|	tryStatement
 	;
 
-
 emptyStatement
 	:	';'
 	;
-
 
 labeledStatement
 	:	identifier ':' statement
 	;
 
-
 labeledStatementNoShortIf
 	:	identifier ':' statementNoShortIf
 	;
-
 
 expressionStatement
 	:	statementExpression ';'
@@ -744,16 +669,13 @@ ifThenStatement
 	:	'if' '(' expression ')' statement
 	;
 
-
 ifThenElseStatement
 	:	'if' '(' expression ')' statementNoShortIf 'else' statement
 	;
 
-
 ifThenElseStatementNoShortIf
 	:	'if' '(' expression ')' statementNoShortIf 'else' statementNoShortIf
 	;
-
 
 assertStatement
 	:	'assert' expression ';'
@@ -780,33 +702,27 @@ whileStatement
 	:	'while' '(' expression ')' statement
 	;
 
-
 whileStatementNoShortIf
 	:	'while' '(' expression ')' statementNoShortIf
 	;
 
-
 doStatement
 	:	'do' statement 'while' '(' expression ')' ';'
 	;
-
 
 forStatement
 	:	basicForStatement
 	|	enhancedForStatement
 	;
 
-
 forStatementNoShortIf
 	:	basicForStatementNoShortIf
 	|	enhancedForStatementNoShortIf
 	;
 
-
 basicForStatement
 	:	'for' '(' forInit? ';' expression? ';' forUpdate? ')' statement
 	;
-
 
 basicForStatementNoShortIf
 	:	'for' '(' forInit? ';' expression? ';' forUpdate? ')' statementNoShortIf
@@ -821,52 +737,42 @@ forUpdate
 	:	statementExpressionList
 	;
 
-
 statementExpressionList
 	:	statementExpression (',' statementExpression)*
 	;
-
 
 enhancedForStatement
 	:	'for' '(' modifier* unannType variableDeclaratorId ':' expression ')' statement
 	;
 
-
 enhancedForStatementNoShortIf
 	:	'for' '(' modifier* unannType variableDeclaratorId ':' expression ')' statementNoShortIf
 	;
-
 
 breakStatement
 	:	'break' identifier? ';'
 	;
 
-
 continueStatement
 	:	'continue' identifier? ';'
 	;
-
 
 returnStatement
 	:	'return' expression? ';'
 	;
 
-
 throwStatement
 	:	'throw' expression ';'
 	;
-
 
 synchronizedStatement
 	:	'synchronized' '(' expression ')' block
 	;
 
-
 tryStatement
     :   basicTryStatement
 	|	tryWithResourcesStatement
 	;
-
 
 basicTryStatement
     :   'try' block catches             #tryCatchStatement
@@ -877,11 +783,9 @@ catches
 	:	catchClause catchClause*
 	;
 
-
 catchClause
 	:	'catch' '(' modifier* unannClassType ('|' classType)* variableDeclaratorId ')' block
 	;
-
 
 finally_
 	:	'finally' block
@@ -963,7 +867,11 @@ primaryClassType
 primaryClassTypeAlternates
     : typeName
     | unannPrimitiveType
-    | 'void'
+    | voidType
+    ;
+
+voidType
+    : 'void'
     ;
 
 bracketPair
@@ -1016,7 +924,6 @@ classInstanceCreationExpression_lfno_primary
 	:	'new' typeArguments? annotation* Identifier ('.' annotation* Identifier)* typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
 	|	expressionName '.' 'new' typeArguments? annotation* Identifier typeArgumentsOrDiamond? '(' argumentList? ')' classBody?
 	;
-
 
 typeArgumentsOrDiamond
 	:	typeArguments   #ig22
@@ -1159,18 +1066,15 @@ inferredFormalParameterList
 	:	identifier (',' identifier)*
 	;
 
-
 lambdaBody
 	:	expression
 	|	block
 	;
 
-
 assignmentExpression
 //	:	conditionalExpression
 	:	assignment
 	;
-
 
 assignment
 	:	leftHandSide assignmentOperator expression
@@ -1487,7 +1391,6 @@ BinaryDigitOrUnderscore
 	;
 
 // §3.10.2 Floating-Point Literals
-
 FloatingPointLiteral
 	:	DecimalFloatingPointLiteral
 	|	HexadecimalFloatingPointLiteral

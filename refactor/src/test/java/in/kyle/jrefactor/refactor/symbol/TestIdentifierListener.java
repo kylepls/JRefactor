@@ -30,7 +30,7 @@ public class TestIdentifierListener {
                 .identifier(JIdentifier.of("Test.java"))
                 .addParameters(JParameter.builder()
                      .type(JTypeName.of("String"))
-                     .name(JIdentifier.of("string"))
+                     .identifier(JIdentifier.of("string"))
                      .build())
                 .build())
            .body(new JStatementBlock())

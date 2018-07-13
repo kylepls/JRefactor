@@ -22,4 +22,9 @@ public class SourceFile implements SourceContainer {
             return Stream.empty();
         }
     }
+    
+    @Override
+    public Stream<JCompilationUnit> getAllDefinitions() {
+        return Stream.of(unit);
+    }
 }

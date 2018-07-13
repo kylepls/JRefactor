@@ -82,6 +82,21 @@ public class BaseMapper extends AbstractParseMapper {
     }
     
     @Override
+    protected ParserRuleContext parseJLeftRightOperatorBinary(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJLeftRightOperatorConditional(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJLeftRightOperatorMath(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
     protected ParserRuleContext parseJLeftRightOperator(Java8Parser object) {
         return object.leftRightOperator();
     }
@@ -203,6 +218,11 @@ public class BaseMapper extends AbstractParseMapper {
     
     @Override
     protected ParserRuleContext parseJUnit(Java8Parser object) {
+        return null;
+    }
+    
+    @Override
+    protected ParserRuleContext parseJVariableDefinition(Java8Parser object) {
         return null;
     }
     
