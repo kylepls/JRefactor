@@ -16,18 +16,18 @@ import lombok.AllArgsConstructor;
 import static in.kyle.jrefactor.refactor.util.JObjUtilsStreams.RECURSIVE;
 
 @AllArgsConstructor
-public class TypeUsageSearch {
+public class TypeUsageSearch implements UsageSearch<JTypeName, JObj> {
     
     private final SourceContainer context;
-    private final JTypeName input;
     
-    public List<JObj> findUsages() {
-        List<JCompilationUnit> importUsages = findImportUsages();
-        List<JTypeName> fqReferences = findFullyQualifiedReferences(importUsages);
+    @Override
+    public Stream<JObj> findUsages(JTypeName input) {
+        List<JCompilationUnit> importUsages = findImportUsages(input);
+        List<JTypeName> fqReferences = findFullyQualifiedReferences(importUsages, input);
         return joinLists(importUsages, fqReferences);
     }
     
-    private List<JCompilationUnit> findImportUsages() {
+    private List<JCompilationUnit> findImportUsages(JTypeName input) {
         return context.getAllDefinitions()
                 .filter(unit -> isImportingType(unit, input))
                 .collect(Collectors.toList());
@@ -56,7 +56,8 @@ public class TypeUsageSearch {
         }
     }
     
-    private List<JTypeName> findFullyQualifiedReferences(List<JCompilationUnit> importUsages) {
+    private List<JTypeName> findFullyQualifiedReferences(List<JCompilationUnit> importUsages,
+                                                         JTypeName input) {
         return context.getAllDefinitions()
                 .filter(unit -> !importUsages.contains(unit))
                 .flatMap(this::findTypeNames)
@@ -68,7 +69,7 @@ public class TypeUsageSearch {
         return JObjUtilsStreams.getChildrenOfType(RECURSIVE, unit, JTypeName.class);
     }
     
-    private <T> List<T> joinLists(List a, List b) {
-        return (List<T>) Stream.concat(a.stream(), b.stream()).collect(Collectors.toList());
+    private <T> Stream<T> joinLists(List a, List b) {
+        return Stream.concat(a.stream(), b.stream());
     }
 }

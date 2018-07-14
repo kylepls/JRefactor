@@ -10,4 +10,5 @@ public interface SourceContainer {
     Stream<JCompilationUnit> getDefinitionsInPackage(JPropertyLookup packageName);
     
     Stream<JCompilationUnit> getAllDefinitions();
+    
 }

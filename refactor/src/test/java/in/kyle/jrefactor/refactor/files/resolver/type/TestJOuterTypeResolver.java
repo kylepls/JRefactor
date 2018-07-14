@@ -1,4 +1,4 @@
-package in.kyle.jrefactor.refactor.files.resolver;
+package in.kyle.jrefactor.refactor.files.resolver.type;
 
 import org.junit.Test;
 

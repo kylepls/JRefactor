@@ -70,6 +70,7 @@ public class JavaFile {
     public Map<Consumer<String>, String> getRewritableTypes() {
         Map<Consumer<String>, String> rewritable = new HashMap<>();
         addIfNonNull(rewritable, header::setGenericSuper, getGenericSuper());
+        addIfNonNull(rewritable, header::setGenericDefine, getGenericDefine());
         for (JavaField field : fields) {
             addIfNonNull(rewritable, field::setType, field.getType());
             addIfNonNull(rewritable, field::setGeneric, field.getGeneric());

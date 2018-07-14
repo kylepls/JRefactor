@@ -477,7 +477,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         jEnum.setAnnotations(visitAnnotations(ctx.annotation()));
         jEnum.setModifiers(visitModifiers(ctx.modifier()));
         jEnum.setIdentifier(visitIdentifier(ctx.identifier()));
-        jEnum.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
+        if (has(ctx.superinterfaces())) {
+            jEnum.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
+        }
         jEnum.setBody(visitEnumBody(ctx.enumBody()));
         return jEnum;
     }
@@ -836,7 +838,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpressionName visitExpressionName(ExpressionNameContext ctx) {
-        JExpressionName name = new JExpressionName(new JIdentifier(ctx.getText()));
+        JExpressionName name = new JExpressionName(new JIdentifier(ctx.Identifier().getText()));
         if (has(ctx.propertyLookup())) {
             name.setArea(Optional.of(visitPropertyLookup(ctx.propertyLookup())));
         }

@@ -29,6 +29,13 @@ public class TestFileHeader {
     }
     
     @Test
+    public void testGenericDefineExtends() {
+        header.setGenericDefine("Test");
+        String result = writeHeader(header);
+        Verify.that(result).isEqual("public class Test<T extends Test>");        
+    }
+    
+    @Test
     public void testExtendsType() {
         JavaFile superType = new JavaFile("Test2", JavaFileType.CLASS);
         header.setSuperType(superType);

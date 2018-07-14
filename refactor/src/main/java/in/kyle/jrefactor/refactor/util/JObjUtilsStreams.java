@@ -35,7 +35,7 @@ public class JObjUtilsStreams {
                                                                JObj obj,
                                                                Class<T> clazz) {
         return identity.apply(obj)
-                .filter(child -> child.getClass().isAssignableFrom(clazz))
+                .filter(child -> clazz.isAssignableFrom(child.getClass()))
                 .map(child -> (T) child);
     }
     

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import in.kyle.api.utils.Conditions;
 import in.kyle.jrefactor.tree.JObj;
 import in.kyle.jrefactor.tree.obj.JBlock;
 
@@ -20,8 +19,6 @@ public final class JObjUtils {
     }
     
     public static JBlock getFirstUpwardBlock(JObj root, JObj object) {
-        Conditions.notNull(root);
-        Conditions.notNull(object);
         JObj search = object;
         while (!(search instanceof JBlock) && search != null) {
             search = JObjUtils.findParent(root, search);
@@ -29,7 +26,7 @@ public final class JObjUtils {
         if (search != null) {
             return (JBlock) search;
         } else {
-            throw new RuntimeException("No upward block found for " + object);
+            return null;
         }
     }
     

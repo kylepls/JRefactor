@@ -66,16 +66,21 @@ Obj {
         #staticStringConstructor
     }
     
-    Block<T> {
+    Block<BlockMember> {
         List<T> elements
+        
         concrete StatementBlock<Statement> is Statement, LambdaBody {
         }
+        
         TypeBody<T> is Unit {
             concrete ClassBody<ClassMember> {}
             concrete AnnotationBody<AnnotationMember> {}
             concrete EnumBody<EnumMember> {}
             concrete InterfaceBody<InterfaceMember> {}
         }
+    }
+    
+    BlockMember {
     }
     
     Reference {
@@ -266,7 +271,7 @@ Obj {
         }
     }
 
-    Statement {
+    Statement is BlockMember {
         StatementControl {
             StatementControlLoop {
                 StatementFor {
@@ -384,7 +389,7 @@ Obj {
 
     Unit {
         BodyMember {
-            TypeMember {
+            TypeMember is BlockMember {
                 AnnotationMember {
                 }
                 
@@ -477,7 +482,7 @@ Obj {
                     Optional<AnnotationValue> defaultValue
                 }
                 
-                Type<T> is Unit {
+                Type<TypeBody> is Unit {
                     T body
                     
                     AnnotationType<AnnotationBody> {}

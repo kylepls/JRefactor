@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import in.kyle.jrefactor.refactor.files.resolver.JResolver;
 import in.kyle.jrefactor.tree.JModifier;
-import in.kyle.jrefactor.tree.obj.JIdentifier;
 import in.kyle.jrefactor.tree.obj.JVariableDefinition;
 import in.kyle.jrefactor.tree.obj.block.JTypeBody;
+import in.kyle.jrefactor.tree.obj.expression.JExpressionName;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.JField;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JEnumConstant;
 import in.kyle.jrefactor.tree.obj.modifiable.annotatable.identifiable.JType;
@@ -20,18 +20,18 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public class JStaticIdentifierResolver
-        implements JResolver<JIdentifier, Optional<JVariableDefinition>> {
+        implements JResolver<JExpressionName, Optional<JVariableDefinition>> {
     
     private final JType type;
     
     @Override
-    public Optional<JVariableDefinition> resolve(JIdentifier input) {
-        JTypeBody body = (JTypeBody) type.getBody();
+    public Optional<JVariableDefinition> resolve(JExpressionName input) {
+        JTypeBody body = type.getBody();
         for (Object o : body.getElements()) {
             JBodyMember element = (JBodyMember) o;
             if (element instanceof JEnumConstant) {
                 JEnumConstant constant = (JEnumConstant) element;
-                if (constant.getIdentifier().equals(input)) {
+                if (constant.getIdentifier().equals(input.getIdentifier())) {
                     return Optional.of(constant);
                 }
             } else if (element instanceof JField) {
@@ -49,10 +49,10 @@ public class JStaticIdentifierResolver
         return Optional.empty();
     }
     
-    private Optional<JVariableDefinition> resolveVariables(JIdentifier input,
+    private Optional<JVariableDefinition> resolveVariables(JExpressionName input,
                                                            Collection<JVariable> variables) {
         return variables.stream()
-                .filter(var -> var.getIdentifier().equals(input))
+                .filter(var -> var.getIdentifier().equals(input.getIdentifier()))
                 .map(var -> (JVariableDefinition) var)
                 .findAny();
     }

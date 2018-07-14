@@ -41,4 +41,12 @@ public class JavaFileHeader {
     public boolean hasSuperType() {
         return superType != null;
     }
+    
+    public boolean hasGeneric() {
+        return hasSuperType() || hasGenericDefine();
+    }
+    
+    public boolean hasGenericDefine() {
+        return genericDefine != null;
+    }
 }

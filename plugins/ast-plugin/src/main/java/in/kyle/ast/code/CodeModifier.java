@@ -27,7 +27,6 @@ public class CodeModifier {
         addProcessor(new ChildMethodsProcessor());
         addProcessor(new FieldDefaultProcessor());
         addProcessor(new FieldMethodProcessor());
-        addProcessor(new GenericProcessor());
         addProcessor(new MethodPlaceholderProcessor());
     }
     

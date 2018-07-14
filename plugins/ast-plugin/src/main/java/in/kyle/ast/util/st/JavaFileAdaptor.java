@@ -56,22 +56,18 @@ public class JavaFileAdaptor extends ObjectModelAdaptor {
     
     private void transposeGenerics(JavaFile file, List<JavaField> fields) {
         for (int i = 0; i < fields.size(); i++) {
-            JavaField fieldWithType = fields.get(i);
-            if (isGenericType(fieldWithType.getType()) && file.hasGenericSuper()) {
-                fieldWithType = new JavaField(file.getGenericSuper(),
-                                              fieldWithType.getGeneric(),
-                                              fieldWithType.getName(),
-                                              fieldWithType.getValue());
-                fields.set(i, fieldWithType);
+            JavaField field = fields.get(i);
+            JavaField replacement = new JavaField(field.getType(),
+                                                  field.getGeneric(),
+                                                  field.getName(),
+                                                  field.getValue());
+            if (isGenericType(field.getType()) && file.hasGenericSuper()) {
+                replacement.setType(file.getGenericSuper());
             }
-            if (fieldWithType.hasGeneric() && isGenericType(fieldWithType.getGeneric()) &&
-                file.hasGenericSuper()) {
-                fieldWithType = new JavaField(fieldWithType.getType(),
-                                              file.getGenericSuper(),
-                                              fieldWithType.getName(),
-                                              fieldWithType.getValue());
-                fields.set(i, fieldWithType);
+            if (field.hasGeneric() && isGenericType(field.getGeneric()) && file.hasGenericSuper()) {
+                replacement.setGeneric(file.getGenericSuper());
             }
+            fields.set(i, replacement);
         }
         
     }

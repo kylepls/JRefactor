@@ -165,10 +165,13 @@ public class CodeGenAstVisitor extends AstBaseVisitor {
     }
     
     private void addGenerics(AstParser.Object_genericContext ctx, JavaFile file) {
-        if (ctx.object_generic_define() != null) {
-            file.setGenericDefine(ctx.object_generic_define().UPPER_LETTER().getText());
+        if (file.hasSuperType() && file.getSuperType().hasGenericDefine()) {
+            file.setGenericSuper(ctx.IDENTIFIER().getText());
+            if (ctx.IDENTIFIER().getText().length() == 1) {
+                file.setGenericDefine(file.getSuperType().getGenericDefine());
+            }
         } else {
-            file.setGenericSuper(ctx.object_generic_super().IDENTIFIER().getText());
+            file.setGenericDefine(ctx.IDENTIFIER().getText());
         }
     }
     

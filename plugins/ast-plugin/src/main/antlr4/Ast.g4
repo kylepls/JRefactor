@@ -10,15 +10,15 @@ ast_element
     ;
 
 variable_definition
-    : TAG IDENTIFIER EQUALS STRING 
+    : '#' IDENTIFIER '=' STRING 
     ;
 
 variable_placeholder
-    : TAG IDENTIFIER
+    : '#' IDENTIFIER
     ;
     
 default_definition
-    : IDENTIFIER EQUALS STRING NL
+    : IDENTIFIER '=' STRING NL
     ;
     
 enum_element
@@ -26,15 +26,15 @@ enum_element
     ;
     
 enum_block
-    : OPEN_BLOCK NL* enum_header NL* (enum_part NL*)+ (variable_placeholder | NL)* CLOSE_BLOCK 
+    : '{' NL* enum_header NL* (enum_part NL*)+ (variable_placeholder | NL)* '}' 
     ;
 
 enum_header
-    : OPEN_DIAMOND (IDENTIFIER (COMMA IDENTIFIER)*)? CLOSE_DIAMOND
+    : '<' (IDENTIFIER (',' IDENTIFIER)*)? '>'
     ;
     
 enum_part
-    : IDENTIFIER (COMMA STRING)*
+    : IDENTIFIER (',' STRING)*
     ;
     
 object
@@ -42,24 +42,16 @@ object
     ;
 
 object_generic
-    : object_generic_define
-    | object_generic_super
+    : '<' (IDENTIFIER) '>'
     ;
-
-object_generic_define
-    : OPEN_DIAMOND UPPER_LETTER CLOSE_DIAMOND 
-    ;
-
-object_generic_super
-    : OPEN_DIAMOND IDENTIFIER CLOSE_DIAMOND     
-    ;
+    
 
 object_implements
-    : IS IDENTIFIER (COMMA IDENTIFIER)*
+    : 'is' IDENTIFIER (',' IDENTIFIER)*
     ;
 
 object_block
-    : OPEN_BLOCK object_elements CLOSE_BLOCK 
+    : '{' object_elements '}' 
     ;
 
 object_elements
@@ -71,16 +63,15 @@ object_variable
     ;
 
 diamondType
-    : OPEN_DIAMOND typeList CLOSE_DIAMOND
+    : '<' typeList '>'
     ;
 
 typeList
-    : variable_type (COMMA variable_type)*
+    : variable_type (',' variable_type)*
     ;
 
 variable_type
     : IDENTIFIER
-    | UPPER_LETTER
     ;
 
 inside_object
@@ -95,7 +86,6 @@ EQUALS      :  '=' ;
 COMMA       :  ',' ;
 OPEN_BLOCK  :  '{' ;
 CLOSE_BLOCK :  '}' ;
-UPPER_LETTER: [A-Z] ;
 IDENTIFIER  :  IDENTIFIER_LETTER+ ;
 OPEN_DIAMOND:  '<' ;
 CLOSE_DIAMOND: '>' ;

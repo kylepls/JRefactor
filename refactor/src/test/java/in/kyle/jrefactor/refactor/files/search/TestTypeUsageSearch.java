@@ -3,6 +3,8 @@ package in.kyle.jrefactor.refactor.files.search;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import in.kyle.api.verify.Verify;
 import in.kyle.jrefactor.refactor.Projects;
@@ -26,22 +28,25 @@ public class TestTypeUsageSearch {
     
     @Test
     public void testDirectImport() {
-        SourceContainer project = Projects.loadProject("files/search/directImport");
-        List<JObj> usages = new TypeUsageSearch(project, search).findUsages();
-        Verify.that(usages).sizeIs(1);
+        SourceContainer project = Projects.loadProject("files/search/typeUsageSearch/directImport");
+        Stream<JObj> usages = new TypeUsageSearch(project).findUsages(search);
+        List<JObj> collect = usages.collect(Collectors.toList());
+        Verify.that(collect).sizeIs(1);
     }
     
     @Test
     public void testWildcardImport() {
-        SourceContainer project = Projects.loadProject("files/search/wildcardImport");
-        List<JObj> usages = new TypeUsageSearch(project, search).findUsages();
-        Verify.that(usages).sizeIs(1);
+        SourceContainer project = Projects.loadProject("files/search/typeUsageSearch/wildcardImport");
+        Stream<JObj> usages = new TypeUsageSearch(project).findUsages(search);
+        List<JObj> collect = usages.collect(Collectors.toList());
+        Verify.that(collect).sizeIs(1);
     }
     
     @Test
     public void testFullyQualifiedName() {
-        SourceContainer project = Projects.loadProject("files/search/fqn");
-        List<JObj> usages = new TypeUsageSearch(project, search).findUsages();
-        Verify.that(usages).sizeIs(1);
+        SourceContainer project = Projects.loadProject("files/search/typeUsageSearch/fqn");
+        Stream<JObj> usages = new TypeUsageSearch(project).findUsages(search);
+        List<JObj> collect = usages.collect(Collectors.toList());
+        Verify.that(collect).sizeIs(1);
     }
 }

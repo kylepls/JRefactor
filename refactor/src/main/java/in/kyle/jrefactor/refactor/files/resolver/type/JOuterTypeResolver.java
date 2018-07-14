@@ -53,7 +53,6 @@ public class JOuterTypeResolver implements JResolver<JObj, JTypeName> {
         JObj search = input;
         while (search != unit) {
             search = JObjUtils.findParent(unit, search);
-//            System.out.println(search);
             if (search instanceof JType) {
                 strings.add(((JType) search).getIdentifier().getName());
             }

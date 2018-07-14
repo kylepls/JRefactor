@@ -25,11 +25,9 @@ JIdentifier(obj) ::= <<
 JImport(obj) ::= <%
 import 
 <if(obj.staticImport)>static <endif>
-<if(obj.packageName.present)><obj.packageName>.<endif><obj.name>
-<if(obj.onDemand)>
-    <if(obj.name)>.<endif>
-*
-<endif>;
+<obj.area>
+<if(obj.onDemand)>.*<endif>
+;
 %>
 
 JPropertyLookup(obj) ::= <<
@@ -41,7 +39,7 @@ JTypeName(obj) ::= <<
 >>
 
 JVariable(obj) ::= <<
-<obj.name><if(obj.initializer.present)> = <obj.initializer><endif>
+<obj.identifier><if(obj.initializer.present)> = <obj.initializer><endif>
 >>
 
 JValuePair(obj) ::= <<
@@ -75,7 +73,15 @@ JExpressionLeftRight(obj) ::= <<
 <obj.left> <obj.operator> <obj.right>
 >>
 
-JLeftRightOperator(obj) ::= <<
+JLeftRightOperatorMath(obj) ::= <<
+<obj.javaString>
+>>
+
+JLeftRightOperatorConditional(obj) ::= <<
+<obj.javaString>
+>>
+
+JLeftRightOperatorBinary(obj) ::= <<
 <obj.javaString>
 >>
 
@@ -86,10 +92,10 @@ JExpressionMethodInvocation(obj) ::= <%
 (<csv(obj.arguments)>)
 %>
 
-JExpressionName(obj) ::= <<
+JExpressionName(obj) ::= <%
 <if(obj.area.present)><obj.area>.<endif>
 <obj.identifier>
->>
+%>
 
 JExpressionParenthesis(obj) ::= <<
 (<obj.expression>)
@@ -143,7 +149,7 @@ JField(obj) ::= <%
 %>
 
 JParameter(obj) ::= <<
-<obj.type> <obj.name>
+<obj.type> <obj.identifier>
 >>
 
 JAnnotationField(obj) ::= <%
