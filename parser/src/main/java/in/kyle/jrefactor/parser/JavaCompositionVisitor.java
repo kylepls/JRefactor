@@ -101,7 +101,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JCompilationUnit visitCompilationUnit(Java8Parser.CompilationUnitContext ctx) {
         JCompilationUnit unit = new JCompilationUnit();
-        if (ctx.packageDeclaration() != null) {
+        if (has(ctx.packageDeclaration())) {
             JPropertyLookup packageName = visitPackageDeclaration(ctx.packageDeclaration());
             unit.setPackageName(Optional.of(packageName));
         }
@@ -131,7 +131,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JImport jImport = new JImport();
         
         JPropertyLookup area;
-        if (ctx.packageName() != null) {
+        if (has(ctx.packageName())) {
             area = visitPackageName(ctx.packageName());
         } else {
             area = new JPropertyLookup();
@@ -139,10 +139,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         area.addArea(ctx.typeName().getText());
         jImport.setArea(area);
         
-        if (ctx.import_static() != null) {
+        if (has(ctx.import_static())) {
             jImport.setStaticImport(true);
         }
-        if (ctx.import_wildcard() != null) {
+        if (has(ctx.import_wildcard())) {
             jImport.setOnDemand(true);
         }
         return jImport;
@@ -163,11 +163,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         clazz.setIdentifier(visitIdentifier(ctx.identifier()));
         
         setClassSuperClass(ctx, clazz);
-        if (ctx.superinterfaces() != null) {
+        if (has(ctx.superinterfaces())) {
             clazz.setSuperInterfaces(visitSuperinterfaces(ctx.superinterfaces()));
         }
         
-        if (ctx.typeParameters() != null) {
+        if (has(ctx.typeParameters())) {
             clazz.setTypeParameters(visitTypeParameters(ctx.typeParameters()));
         }
         
@@ -189,15 +189,15 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JIdentifier identifier = visitIdentifier(ctx.identifier());
         JExpressionMethodInvocation invocation = new JExpressionMethodInvocation();
         invocation.setMethodName(identifier);
-        if (ctx.methodArea() != null) {
+        if (has(ctx.methodArea())) {
             JPropertyLookup area = visitMethodArea(ctx.methodArea());
             invocation.setMethodArea(Optional.of(area));
         }
-        if (ctx.typeArguments() != null) {
+        if (has(ctx.typeArguments())) {
             List<JTypeArgument> typeArguments = visitTypeArguments(ctx.typeArguments());
             invocation.setTypeArguments(typeArguments);
         }
-        if (ctx.argumentList() != null) {
+        if (has(ctx.argumentList())) {
             List<JExpression> arguments = visitArgumentList(ctx.argumentList());
             invocation.setArguments(arguments);
         }
@@ -214,13 +214,13 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JExpression visitUnaryExpression(UnaryExpressionContext ctx) {
-        if (ctx.preExpression() != null) {
+        if (has(ctx.preExpression())) {
             return visitPreExpression(ctx.preExpression());
-        } else if (ctx.postfixExpression() != null) {
+        } else if (has(ctx.postfixExpression())) {
             return visitPostfixExpression(ctx.postfixExpression());
-        } else if (ctx.binaryExpression() != null) {
+        } else if (has(ctx.binaryExpression())) {
             return visitBinaryExpression(ctx.binaryExpression());
-        } else if (ctx.castExpression() != null) {
+        } else if (has(ctx.castExpression())) {
             return visitCastExpression(ctx.castExpression());
         } else {
             return null;
@@ -248,7 +248,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JUnaryCast visitCastReference(CastReferenceContext ctx) {
         JUnaryCast cast = new JUnaryCast();
-        if (ctx.unaryExpression() != null) {
+        if (has(ctx.unaryExpression())) {
             cast.setExpression(visitUnaryExpression(ctx.unaryExpression()));
         }
         
@@ -282,7 +282,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JExpression visitPostfixExpression(PostfixExpressionContext ctx) {
         if (has(ctx.postfixOperator())) {
             JUnaryPrePost expression = new JUnaryPrePost();
-            if (ctx.primary() != null) {
+            if (has(ctx.primary())) {
                 expression.setExpression(visitPrimary(ctx.primary()));
             } else {
                 expression.setExpression(visitExpressionName(ctx.expressionName()));
@@ -314,7 +314,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JTypeParameter visitTypeParameter(TypeParameterContext ctx) {
         JTypeParameter typeParameter = new JTypeParameter(visitIdentifier(ctx.identifier()));
-        if (ctx.typeBound() != null) {
+        if (has(ctx.typeBound())) {
             typeParameter.setBounds((List<JTypeName>) visit(ctx.typeBound()));
         }
         return typeParameter;
@@ -338,7 +338,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     }
     
     private void setClassSuperClass(ClassDeclarationContext ctx, JClass clazz) {
-        if (ctx.superclass() != null) {
+        if (has(ctx.superclass())) {
             JTypeName extendsType = new JTypeName(ctx.superclass().getText());
             clazz.setSuperType(Optional.of(extendsType));
         }
@@ -352,19 +352,19 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JClassMember visitClassBodyDeclaration(ClassBodyDeclarationContext ctx) {
-        if (ctx.classDeclaration() != null) {
+        if (has(ctx.classDeclaration())) {
             return visitClassDeclaration(ctx.classDeclaration());
-        } else if (ctx.interfaceDeclaration() != null) {
+        } else if (has(ctx.interfaceDeclaration())) {
             return (JClassMember) visitInterfaceDeclaration(ctx.interfaceDeclaration());
-        } else if (ctx.fieldDeclaration() != null) {
+        } else if (has(ctx.fieldDeclaration())) {
             return visitFieldDeclaration(ctx.fieldDeclaration());
-        } else if (ctx.methodDeclaration() != null) {
+        } else if (has(ctx.methodDeclaration())) {
             return visitMethodDeclaration(ctx.methodDeclaration());
-        } else if (ctx.constructorDeclaration() != null) {
+        } else if (has(ctx.constructorDeclaration())) {
             return visitConstructorDeclaration(ctx.constructorDeclaration());
-        } else if (ctx.instanceInitializer() != null) {
+        } else if (has(ctx.instanceInitializer())) {
             return visitInstanceInitializer(ctx.instanceInitializer());
-        } else if (ctx.staticInitializer() != null) {
+        } else if (has(ctx.staticInitializer())) {
             return visitStaticInitializer(ctx.staticInitializer());
         }
         return null;
@@ -463,7 +463,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JVariable variable = new JVariable();
         variable.setIdentifier(visitVariableDeclaratorId(ctx.variableDeclaratorId()));
         
-        if (ctx.variableInitializer() != null) {
+        if (has(ctx.variableInitializer())) {
             JExpression visit = (JExpression) visit(ctx.variableInitializer());
             variable.setInitializer(Optional.of(visit));
         }
@@ -520,10 +520,10 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JEnumConstant visitEnumConstant(EnumConstantContext ctx) {
         JEnumConstant constant = new JEnumConstant(visitIdentifier(ctx.identifier()));
         constant.setAnnotations(visitAnnotations(ctx.annotation()));
-        if (ctx.argumentList() != null) {
+        if (has(ctx.argumentList())) {
             constant.setArguments(visitArgumentList(ctx.argumentList()));
         }
-        if (ctx.classBody() != null) {
+        if (has(ctx.classBody())) {
             JClassBody body = visitClassBody(ctx.classBody());
             constant.setBody(Optional.of(body));
         }
@@ -544,15 +544,15 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JInterface visitNormalInterfaceDeclaration(NormalInterfaceDeclarationContext ctx) {
         JInterface jInterface = new JInterface();
         jInterface.setAnnotations(visitAnnotations(ctx.annotation()));
-        if (ctx.modifier() != null) {
+        if (has(ctx.modifier())) {
             jInterface.setModifiers(visitModifiers(ctx.modifier()));
         }
         jInterface.setIdentifier(visitIdentifier(ctx.identifier()));
-        if (ctx.typeParameters() != null) {
+        if (has(ctx.typeParameters())) {
             jInterface.setTypeParameters(visitTypeParameters(ctx.typeParameters()));
         }
         
-        if (ctx.extendsInterfaces() != null) {
+        if (has(ctx.extendsInterfaces())) {
             jInterface.setSuperInterfaces(visitExtendsInterfaces(ctx.extendsInterfaces()));
         }
         
@@ -563,7 +563,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JInterfaceBody visitInterfaceBody(InterfaceBodyContext ctx) {
         JInterfaceBody body = new JInterfaceBody();
-        if (ctx.interfaceMemberDeclaration() != null) {
+        if (has(ctx.interfaceMemberDeclaration())) {
             visitInterfaceMemberDeclarations(ctx.interfaceMemberDeclaration()).forEach
                     (body::addElement);
         }
@@ -579,7 +579,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JInterfaceMethod visitInterfaceMethodDeclaration(InterfaceMethodDeclarationContext ctx) {
         JInterfaceMethod method = new JInterfaceMethod();
         method.setHeader(visitMethodHeader(ctx.methodHeader()));
-        if (ctx.methodBody().block() != null) {
+        if (has(ctx.methodBody().block())) {
             JBlock block = visitMethodBody(ctx.methodBody());
             method.setBody(Optional.of(block));
         }
@@ -638,17 +638,17 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JMethodHeader header = new JMethodHeader();
         header.setIdentifier(visitIdentifier(ctx.methodDeclarator().identifier()));
         header.setAnnotations(visitAnnotations(ctx.annotation()));
-        if (ctx.typeParameters() != null) {
+        if (has(ctx.typeParameters())) {
             header.setTypeParameters(visitTypeParameters(ctx.typeParameters()));
         }
         
-        if (ctx.methodDeclarator().formalParameterList() != null) {
+        if (has(ctx.methodDeclarator().formalParameterList())) {
             header.setParameters(visitFormalParameterList(ctx.methodDeclarator()
                                                                   .formalParameterList()));
         }
         
         header.setReturns(visitResult(ctx.result()));
-        if (ctx.throws_() != null) {
+        if (has(ctx.throws_())) {
             header.setThrowsTypes(visitThrows_(ctx.throws_()));
         }
         return header;
@@ -691,9 +691,9 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public List<JLambdaParameter> visitLambdaParameters(LambdaParametersContext ctx) {
-        if (ctx.lambdaIdentifierParameter() != null) {
+        if (has(ctx.lambdaIdentifierParameter())) {
             return Collections.singletonList(visitLambdaIdentifierParameter(ctx.lambdaIdentifierParameter()));
-        } else if (ctx.lambdaParameterList() != null) {
+        } else if (has(ctx.lambdaParameterList())) {
             return visitLambdaParameterList(ctx.lambdaParameterList());
         } else {
             return (List<JLambdaParameter>) visit(ctx.lambdaInteredParameterList());
@@ -708,7 +708,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public List<JLambdaParameter> visitLambdaParameterList(LambdaParameterListContext ctx) {
-        if (ctx.formalParameterList() != null) {
+        if (has(ctx.formalParameterList())) {
             return new ArrayList<>(visitFormalParameterList(ctx.formalParameterList()));
         } else {
             return Collections.emptyList();
@@ -749,17 +749,17 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public List<JParameter> visitFormalParameterList(FormalParameterListContext ctx) {
         List<JParameter> parameters = new ArrayList<>();
         
-        if (ctx.receiverParameter() != null) {
+        if (has(ctx.receiverParameter())) {
             parameters.add(visitReceiverParameter(ctx.receiverParameter()));
         }
-        if (ctx.formalParameters() != null) {
+        if (has(ctx.formalParameters())) {
             ctx.formalParameters()
                     .formalParameter()
                     .forEach(c -> parameters.add(visitFormalParameter(c)));
         }
         
         
-        if (ctx.lastFormalParameter() != null) {
+        if (has(ctx.lastFormalParameter())) {
             parameters.add(visitLastFormalParameter(ctx.lastFormalParameter()));
         }
         return parameters;
@@ -786,7 +786,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public JParameter visitLastFormalParameter(Java8Parser.LastFormalParameterContext ctx) {
-        if (ctx.formalParameter() != null) {
+        if (has(ctx.formalParameter())) {
             return visitFormalParameter(ctx.formalParameter());
         } else {
             return createJParameter(ctx.variableDeclaratorId(), ctx.unannType());
@@ -922,13 +922,13 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JStatementBasicFor visitBasicForStatement(BasicForStatementContext ctx) {
         JStatementBasicFor statement = new JStatementBasicFor();
         statement.setStatement(visitStatement(ctx.statement()));
-        if (ctx.forInit() != null) {
+        if (has(ctx.forInit() )) {
             statement.setInit(visitForInit(ctx.forInit()));
         }
-        if (ctx.expression() != null) {
+        if (has(ctx.expression() )) {
             statement.setCondition(Optional.of(visitExpression(ctx.expression())));
         }
-        if (ctx.forUpdate() != null) {
+        if (has(ctx.forUpdate())) {
             statement.setUpdate(visitForUpdate(ctx.forUpdate()));
         }
         return statement;
@@ -941,7 +941,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     
     @Override
     public List<JStatement> visitForInit(ForInitContext ctx) {
-        if (ctx.localVariableDeclaration() != null) {
+        if (has(ctx.localVariableDeclaration())) {
             return Collections.singletonList(visitLocalVariableDeclaration(ctx.localVariableDeclaration()));
         } else {
             return visitStatementExpressionList(ctx.statementExpressionList());
@@ -984,19 +984,19 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JExpressionClassInstanceCreation creationExpression =
                 new JExpressionClassInstanceCreation(type);
         
-        if (ctx.typeArgumentsOrDiamond() != null) {
+        if (has(ctx.typeArgumentsOrDiamond())) {
             List<JTypeArgument> arguments =
                     (List<JTypeArgument>) visit(ctx.typeArgumentsOrDiamond());
             creationExpression.setTypeArguments(arguments);
             
         }
         
-        if (ctx.argumentList() != null) {
+        if (has(ctx.argumentList())) {
             List<JExpression> argumentList = visitArgumentList(ctx.argumentList());
             creationExpression.setArguments(argumentList);
         }
         
-        if (ctx.classBody() != null) {
+        if (has(ctx.classBody())) {
             JClassBody body = visitClassBody(ctx.classBody());
             creationExpression.setBody(Optional.of(body));
         }
@@ -1031,7 +1031,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JTypeArgument visitWildcard(WildcardContext ctx) {
         
         JTypeArgumentWildcard wildcard = new JTypeArgumentWildcard();
-        if (ctx.wildcardBounds() != null) {
+        if (has(ctx.wildcardBounds())) {
             JWildcardType type = visitWildcardType(ctx.wildcardBounds().wildcardType());
             JTypeName reference = visitReferenceType(ctx.wildcardBounds().referenceType());
             wildcard.setReference(Optional.of(reference));
@@ -1176,7 +1176,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JStatementBreak visitBreakStatement(BreakStatementContext ctx) {
         JStatementBreak statement = new JStatementBreak();
-        if (ctx.identifier() != null) {
+        if (has(ctx.identifier())) {
             JIdentifier identifier = visitIdentifier(ctx.identifier());
             statement.setIdentifier(Optional.of(identifier));
         }
@@ -1186,7 +1186,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JStatementContinue visitContinueStatement(ContinueStatementContext ctx) {
         JStatementContinue statement = new JStatementContinue();
-        if (ctx.identifier() != null) {
+        if (has(ctx.identifier())) {
             JIdentifier identifier = visitIdentifier(ctx.identifier());
             statement.setIdentifier(Optional.of(identifier));
         }
@@ -1196,7 +1196,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JStatementReturn visitReturnStatement(ReturnStatementContext ctx) {
         JStatementReturn statement = new JStatementReturn();
-        if (ctx.expression() != null) {
+        if (has(ctx.expression())) {
             JExpression expression = visitExpression(ctx.expression());
             statement.setExpression(Optional.of(expression));
         }
@@ -1206,7 +1206,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JStatementThrow visitThrowStatement(ThrowStatementContext ctx) {
         JStatementThrow statement = new JStatementThrow();
-        if (ctx.expression() != null) {
+        if (has(ctx.expression())) {
             statement.setExpression(visitExpression(ctx.expression()));
         }
         return statement;
@@ -1232,7 +1232,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JStatementTry visitTryCatchFinallyStatement(TryCatchFinallyStatementContext ctx) {
         JStatementTry statement = new JStatementTry();
         statement.setBlock(visitBlock(ctx.block()));
-        if (ctx.catches() != null) {
+        if (has(ctx.catches())) {
             statement.setCatchClauses(visitCatches(ctx.catches()));
         }
         JBlock finallyBlock = visitFinally_(ctx.finally_());
@@ -1260,7 +1260,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         clause.setModifiers(visitModifiers(ctx.modifier()));
         List<JTypeName> catchTypes = new ArrayList<>();
         catchTypes.add(visitUnannClassType(ctx.unannClassType()));
-        if (ctx.classType() != null) {
+        if (has(ctx.classType())) {
             for (ClassTypeContext classTypeContext : ctx.classType()) {
                 catchTypes.add(visitClassType(classTypeContext));
             }
@@ -1337,11 +1337,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         declaration.setAnnotations(visitAnnotations(ctx.annotation()));
         declaration.setIdentifier(visitSimpleTypeName(ctx.constructorDeclarator()
                                                               .simpleTypeName()));
-        if (ctx.throws_() != null) {
+        if (has(ctx.throws_())) {
             declaration.setThrowsTypes(visitThrows_(ctx.throws_()));
         }
         declaration.setBody(visitConstructorBody(ctx.constructorBody()));
-        if (ctx.constructorDeclarator().formalParameterList() != null) {
+        if (has(ctx.constructorDeclarator().formalParameterList())) {
             declaration.setParameters(visitFormalParameterList(ctx.constructorDeclarator()
                                                                        .formalParameterList()));
         }
@@ -1354,11 +1354,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         JBlock block = new JStatementBlock();
         
         List<JStatement> statements = new ArrayList<>();
-        if (ctx.explicitConstructorInvocation() != null) {
+        if (has(ctx.explicitConstructorInvocation())) {
             statements.add((JStatement) visitExplicitConstructorInvocation(ctx.explicitConstructorInvocation()));
         }
         
-        if (ctx.blockStatements() != null) {
+        if (has(ctx.blockStatements())) {
             List<JStatement> temp = visitBlockStatements(ctx.blockStatements());
             statements.addAll(temp);
         }
@@ -1371,11 +1371,11 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     @Override
     public JAnnotationType visitAnnotationTypeDeclaration(AnnotationTypeDeclarationContext ctx) {
         JAnnotationType declaration = new JAnnotationType();
-        if (ctx.annotation() != null) {
+        if (has(ctx.annotation())) {
             declaration.setAnnotations(visitAnnotations(ctx.annotation()));
         }
         
-        if (ctx.modifier() != null) {
+        if (has(ctx.modifier())) {
             declaration.setModifiers(visitModifiers(ctx.modifier()));
         }
         
@@ -1413,7 +1413,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
         element.setType(visitUnannType(ctx.unannType()));
         element.setIdentifier(visitIdentifier(ctx.identifier()));
         
-        if (ctx.defaultValue() != null) {
+        if (has(ctx.defaultValue())) {
             element.setDefaultValue(Optional.of((JAnnotationValue) visitDefaultValue(ctx.defaultValue())));
         }
         return element;
@@ -1438,7 +1438,7 @@ public class JavaCompositionVisitor extends Java8BaseVisitor<Object> {
     public JAnnotation visitNormalAnnotation(NormalAnnotationContext ctx) {
         JAnnotation annotation = new JAnnotation();
         annotation.setType(visitTypeName(ctx.typeName()));
-        if (ctx.elementValuePairList() != null) {
+        if (has(ctx.elementValuePairList())) {
             annotation.setValues(visitElementValuePairList(ctx.elementValuePairList()));
         }
         return annotation;
