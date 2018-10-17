@@ -33,8 +33,16 @@ public class LiteralOptimizer extends JavaBaseVisitor {
             JExpressionLiteral left = extractLiteral(object.getLeft());
             JExpressionLiteral right = extractLiteral(object.getRight());
             if (left != null || right != null) {
-                object.setRight(right);
-                object.setLeft(left);
+                if (right != null) {
+                    object.setRight(right);
+                } else {
+                    object.setRight(object.getRight());
+                }
+                if (left != null) {
+                    object.setLeft(left);
+                } else {
+                    object.setLeft(object.getLeft());
+                }
                 visitJExpressionLeftRight(object);
                 rerun = true;
             }

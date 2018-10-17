@@ -20,8 +20,8 @@ public class TestGeneration {
         JCompilationUnit unit = loadFile();
         printFile(unit);
         FileRefactorSession session = new FileRefactorSession(unit);
-        optimizeFile(unit, session);
-//        renameVariable(unit, session);
+//        optimizeFile(unit, session);
+        renameVariable(unit, session);
         printFile(unit);
         System.out.println("Done");
     }

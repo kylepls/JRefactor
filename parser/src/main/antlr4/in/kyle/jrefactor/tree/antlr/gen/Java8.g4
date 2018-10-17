@@ -83,43 +83,14 @@ floatingPointType
 	;
 
 referenceType
-	:	classOrInterfaceType
+	:	classType
 	|	typeVariable
 	|	arrayType
 	;
 
-classOrInterfaceType
-	:	(	classType_lfno_classOrInterfaceType
-		|	interfaceType_lfno_classOrInterfaceType
-		)
-		(	classType_lf_classOrInterfaceType
-		|	interfaceType_lf_classOrInterfaceType
-		)*
-	;
-
 classType
 	:	annotation* identifier typeArguments?
-	|	classOrInterfaceType '.' annotation* identifier typeArguments?
-	;
-
-classType_lf_classOrInterfaceType
-	:	'.' annotation* identifier typeArguments?
-	;
-
-classType_lfno_classOrInterfaceType
-	:	annotation* identifier typeArguments?
-	;
-
-interfaceType
-	:	classType
-	;
-
-interfaceType_lf_classOrInterfaceType
-	:	classType_lf_classOrInterfaceType
-	;
-
-interfaceType_lfno_classOrInterfaceType
-	:	classType_lfno_classOrInterfaceType
+	|	classType '.' classType
 	;
 
 typeVariable
@@ -132,7 +103,7 @@ arrayType
 
 arrayTypeName
     :   primitiveType
-    |   classOrInterfaceType
+    |   classType
     |   typeVariable
     ;
 
@@ -150,11 +121,11 @@ typeParameter
 
 typeBound
 	:	'extends' typeVariable                          #simpleTypeBound
-	|	'extends' classOrInterfaceType additionalBound* #classTypeBound
+	|	'extends' classType additionalBound* #classTypeBound
 	;
 
 additionalBound
-	:	'&' interfaceType
+	:	'&' classType
 	;
 
 typeArguments
@@ -241,7 +212,7 @@ superinterfaces
 	;
 
 interfaceTypeList
-	:	interfaceType (',' interfaceType)*
+	:	classType (',' classType)*
 	;
 
 classBody
@@ -316,10 +287,6 @@ unannClassType_lf_unannClassOrInterfaceType
 
 unannClassType_lfno_unannClassOrInterfaceType
 	:	Identifier typeArguments?
-	;
-
-unannInterfaceType
-	:	unannClassType
 	;
 
 unannInterfaceType_lf_unannClassOrInterfaceType
@@ -1021,9 +988,9 @@ methodReference_lfno_primary
 
 arrayCreationExpression
 	:	'new' primitiveType dimExprs dims?
-	|	'new' classOrInterfaceType dimExprs dims?
+	|	'new' classType dimExprs dims?
 	|	'new' primitiveType dims arrayInitializer
-	|	'new' classOrInterfaceType dims arrayInitializer
+	|	'new' classType dims arrayInitializer
 	;
 
 dimExprs
