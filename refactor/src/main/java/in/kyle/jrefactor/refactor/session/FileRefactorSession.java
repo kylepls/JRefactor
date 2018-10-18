@@ -1,5 +1,7 @@
 package in.kyle.jrefactor.refactor.session;
 
+import java.util.List;
+
 import in.kyle.api.utils.Conditions;
 import in.kyle.jrefactor.refactor.symbol.UnitSymbolTable;
 import in.kyle.jrefactor.refactor.util.JObjUtils;
@@ -22,7 +24,10 @@ public class FileRefactorSession {
     }
     
     public boolean contains(JObj obj) {
-        return JObjUtils.getAllElements(root).stream().anyMatch(o -> o == obj);
+        List<JObj> allElements = JObjUtils.getAllElements(root);
+        return allElements.stream().anyMatch(o -> {
+            return o == obj;
+        });
     }
     
     public JObj findParent(JObj subject) {

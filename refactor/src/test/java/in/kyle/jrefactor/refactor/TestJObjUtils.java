@@ -52,4 +52,32 @@ public class TestJObjUtils {
         Verify.that(values).sizeIs(1);
         Verify.that(values.iterator().next()).isInstanceOf(JLiteralInteger.class);
     }
+    
+    @Test
+    public void testGetElementsRecursive() {
+        class A implements JObj {
+            class B implements JObj {
+                class C implements JObj {
+                }
+                
+                C c = new C();
+    
+                @Override
+                public List<Object> getAllChildren() {
+                    return Collections.singletonList(c);
+                }
+            }
+            
+            B b = new B();
+            
+            @Override
+            public List<Object> getAllChildren() {
+                return Collections.singletonList(b);
+            }
+        }
+        
+        A a = new A();
+        List<JObj> children = JObjUtils.getAllElements(a);
+        Verify.that(children).sizeIs(3);
+    }
 }

@@ -40,6 +40,7 @@ public class JObjUtilsStreams {
     }
     
     public static Stream<JObj> getAllElements(JObj obj) {
-        return getAllChildren(obj).flatMap(JObjUtilsStreams::getAllElements);
+        return Stream.concat(Stream.of(obj),
+                             getAllChildren(obj).flatMap(JObjUtilsStreams::getAllElements));
     }
 }

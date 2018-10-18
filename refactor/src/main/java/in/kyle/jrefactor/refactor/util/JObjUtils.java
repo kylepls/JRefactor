@@ -50,6 +50,11 @@ public final class JObjUtils {
         return JObjUtilsStreams.getDirectChildren(obj).collect(Collectors.toList());
     }
     
+    /**
+     * Recursively gets all the child elements in a JObj
+     * @param obj
+     * @return
+     */
     public static List<JObj> getAllElements(JObj obj) {
         return JObjUtilsStreams.getAllElements(obj).collect(Collectors.toList());
     }
